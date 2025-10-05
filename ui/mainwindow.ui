@@ -98,11 +98,7 @@
           <property name="title">
            <string>События дня</string>
           </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_2">
-           <item>
-            <widget class="QGraphicsView" name="eventsViewer"/>
-           </item>
-          </layout>
+          <layout class="QHBoxLayout" name="horizontalLayout_2"/>
          </widget>
         </item>
        </layout>

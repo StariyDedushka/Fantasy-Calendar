@@ -14,9 +14,10 @@ void CalendarView::mousePressEvent(QMouseEvent *event)
     QGraphicsView::mousePressEvent(event);
 }
 
-void CalendarView::slot_windowResized(quint16 wWidth, quint16 wHeight)
+
+void CalendarView::resizeEvent(QResizeEvent *event)
 {
-    m_calendarWidth = wWidth;
-    m_calendarHeight = wHeight;
-    emit signal_windowResized(wWidth, wHeight);
+    m_calendarWidth = this->width();
+    m_calendarHeight = this->height();
+    emit signal_windowResized(m_calendarWidth, m_calendarHeight);
 }

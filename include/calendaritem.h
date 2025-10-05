@@ -9,7 +9,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QtDebug>
-#include "structs.h"
+#include "include/calendarevent.h"
 
 class CalendarItem : public QObject, public QGraphicsItem
 {
@@ -39,6 +39,7 @@ public:
     quint16 day() const;
     quint16 month() const;
     quint32 year() const;
+    QVector<CalendarEvent*> events;
 
     bool isEnabled();
     virtual QRectF boundingRect() const override;

@@ -10,12 +10,15 @@ MainWindow::MainWindow(QWidget *parent)
 
     calendar = new CalendarView();
     // connect(timer, &QTimer::timeout, this, &MainWindow::slot_rebuild);
-    connect(this, &MainWindow::signal_windowResized, calendar, &CalendarView::slot_windowResized);
+    // connect(this, &MainWindow::signal_windowResized, calendar, &CalendarView::slot_windowResized);
 
     calendar->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     calendar->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->verticalLayout_3->addWidget(calendar);
     calendar->show();
+    eventsWindow = new EventView();
+    ui->verticalLayout_2->addWidget(eventsWindow);
+    eventsWindow->show();
 }
 
 MainWindow::~MainWindow()
@@ -25,9 +28,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::initialize()
 {
-    quint16 calendarWidth = calendar->width();
-    quint16 calendarHeight = calendar->height();
-    emit signal_windowResized(calendarWidth, calendarHeight);
+    // emit signal_windowResized(calendarWidth, calendarHeight);
 }
 
 void MainWindow::slot_rebuild()
@@ -35,12 +36,12 @@ void MainWindow::slot_rebuild()
 }
 
 
-void MainWindow::resizeEvent(QResizeEvent *event)
-{
-    quint16 calendarWidth = calendar->width();
-    quint16 calendarHeight = calendar->height();
-    emit signal_windowResized(calendarWidth, calendarHeight);
+// void MainWindow::resizeEvent(QResizeEvent *event)
+// {
+//     quint16 calendarWidth = calendar->width();
+//     quint16 calendarHeight = calendar->height();
+//     emit signal_windowResized(calendarWidth, calendarHeight);
 
-    // qDebug() << "Current QGraphicsView width:" << m_calendarWidth;;
-    // qDebug() << "Current QGraphicsView height:" << m_calendarHeight;
-}
+//     // qDebug() << "Current QGraphicsView width:" << m_calendarWidth;;
+//     // qDebug() << "Current QGraphicsView height:" << m_calendarHeight;
+// }
