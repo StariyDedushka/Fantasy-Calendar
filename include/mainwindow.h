@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QDebug>
+#include <QTimer>
 #include "calendarpainter.h"
 #include "calendaritem.h"
 #include "calendarview.h"
@@ -18,10 +19,10 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 signals:
-    void signal_windowResized(quint32 wWidth, quint32 wHeight);
+    void signal_windowResized(quint16 wWidth, quint16 wHeight);
 
-public slots:
-    void slot_rebuild(CalendarPainter *scene);
+private slots:
+    void slot_rebuild();
 
 public:
     MainWindow(QWidget *parent = nullptr);
@@ -31,8 +32,7 @@ public:
 private:
     Ui::MainWindow *ui;
     CalendarView *calendar;
-    quint32 m_calendarWidth;
-    quint32 m_calendarHeight;
+    QTimer *timer;
 
 
     void resizeEvent(QResizeEvent *event);

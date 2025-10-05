@@ -35,19 +35,32 @@ void CalendarPainter::slot_onItemClicked()
     }
 }
 
-void CalendarPainter::slot_windowChanged(quint32 wWidth, quint32 wHeight)
+void CalendarPainter::slot_windowResized(quint16 wWidth, quint16 wHeight)
 {
     m_wWidth = wWidth;
     m_wHeight = wHeight;
     m_rectSizeX = wWidth / m_daysPerWeek - 10;
     this->setSceneRect(0, 0, m_wWidth, m_wHeight);
 
-    rebuild();
+    reposition();
 }
 
 void CalendarPainter::slot_settingsChanged(quint16 daysPerWeek, quint16 daysPerMonth, quint16 daysPerYear)
 {
 
+}
+
+void CalendarPainter::reposition()
+{
+    int columns = m_daysPerWeek;
+
+    for(int i = 0; i < m_daysPerMonth; i++)
+    {
+        int row = i / columns;
+        int column = i % columns;
+
+        activeItems[i]->setRect(column * (m_rectSizeX + 8) + 10, row * (m_rectSizeY + 8), m_rectSizeX, m_rectSizeY);
+    }
 }
 
 void CalendarPainter::rebuild()
@@ -69,11 +82,15 @@ void CalendarPainter::rebuild()
     {
         int row = i / columns;
         int column = i % columns;
+
+        // временно прописываем позицию отрисовки прямо в иницилизации ячейки календаря
+        // TODO: перенести параметры позиции в настройки
         CalendarItem *item = new CalendarItem(QRectF(column * (m_rectSizeX + 8) + 10, row * (m_rectSizeY + 8), m_rectSizeX, m_rectSizeY));
         item->setDay(i + 1); // +1 т.к. нумерация дней идёт с 1, не с 0
         activeItems.push_back(item);
         this->addItem(item);
         connect(item, &CalendarItem::signal_itemClicked, this, &CalendarPainter::slot_onItemClicked);
     }
-    emit signal_rebuild(this);
+    update();
+    // emit signal_rebuild(this);
 }

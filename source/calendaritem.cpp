@@ -18,6 +18,14 @@ CalendarItem::CalendarItem()
 {
 }
 
+void CalendarItem::setRect(quint16 posX, quint16 posY, quint16 sizeX, quint16 sizeY)
+{
+    QPoint point(posX, posY);
+    m_rect.setWidth(sizeX);
+    m_rect.setHeight(sizeY);
+    m_rect.setTopLeft(point);
+}
+
 void CalendarItem::setDay(quint16 day)
 {
     m_day = day;

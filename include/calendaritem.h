@@ -42,6 +42,7 @@ public:
 
     bool isEnabled();
     virtual QRectF boundingRect() const override;
+    void setRect(quint16 posX, quint16 posY, quint16 sizeX, quint16 sizeY);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
     void setDay(quint16 day);

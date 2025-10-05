@@ -14,9 +14,17 @@ class CalendarView : public QGraphicsView
 public:
     CalendarView();
 
+public slots:
+    void slot_windowResized(quint16 wWidth, quint16 wHeight);
+
+signals:
+    void signal_windowResized(quint16 wWidth, quint16 wHeight);
+
 protected:
     void mousePressEvent(QMouseEvent *event);
     CalendarPainter *scene;
+    quint16 m_calendarWidth;
+    quint16 m_calendarHeight;
 };
 
 #endif // CALENDARVIEW_H

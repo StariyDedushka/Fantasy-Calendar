@@ -20,11 +20,12 @@ signals:
 public slots:
     void slot_callRebuild();
     void slot_settingsChanged(quint16 daysPerWeek, quint16 daysPerMonth, quint16 daysPerYear);
-    void slot_windowChanged(quint32 wWidth, quint32 wHeight);
+    void slot_windowResized(quint16 wWidth, quint16 wHeight);
     void slot_onItemClicked();
 private:
     virtual void addItem(CalendarItem *item);
 
+    void reposition();
     void rebuild();
     QVector<CalendarItem*> activeItems;
     quint16 m_daysPerWeek;
@@ -34,8 +35,8 @@ private:
     quint16 m_rectSizeX;
     quint16 m_rectSizeY;
 
-    quint32 m_wWidth;
-    quint32 m_wHeight;
+    quint16 m_wWidth;
+    quint16 m_wHeight;
 };
 
 #endif // CALENDARPAINTER_H
