@@ -27,17 +27,19 @@ void CalendarPainter::slot_callRebuild()
     rebuild();
 }
 
-// void CalendarPainter::mousePressEvent(QGraphicsSceneMouseEvent *event)
-// {
-//     qDebug() << "Custom view clicked.";
-//     QGraphicsScene::mousePressEvent(event);
-// }
+void CalendarPainter::slot_onItemClicked()
+{
+    CalendarItem *clickedItem = qobject_cast<CalendarItem*>(sender());
+    if(clickedItem) {
+        qDebug() << "item №" << clickedItem->day();
+    }
+}
 
 void CalendarPainter::slot_windowChanged(quint32 wWidth, quint32 wHeight)
 {
     m_wWidth = wWidth;
     m_wHeight = wHeight;
-    m_rectSizeX = wWidth / m_daysPerWeek;
+    m_rectSizeX = wWidth / m_daysPerWeek - 10;
     this->setSceneRect(0, 0, m_wWidth, m_wHeight);
 
     rebuild();
@@ -62,16 +64,16 @@ void CalendarPainter::rebuild()
     }
 
     int columns = m_daysPerWeek;
-    // int rows = (m_daysPerMonth + columns - 1) / columns;
 
     for(int i = 0; i < m_daysPerMonth; i++)
     {
         int row = i / columns;
         int column = i % columns;
-        CalendarItem *item = new CalendarItem(QRectF(column * (m_rectSizeX + 5), row * (m_rectSizeY + 5), m_rectSizeX, m_rectSizeY));
-        // qDebug() << "item №" << i << ": xCoord =" << column * (m_rectSizeX + 5) << " yCoord = " << row * (m_rectSizeY + 5);
+        CalendarItem *item = new CalendarItem(QRectF(column * (m_rectSizeX + 8) + 10, row * (m_rectSizeY + 8), m_rectSizeX, m_rectSizeY));
+        item->setDay(i + 1); // +1 т.к. нумерация дней идёт с 1, не с 0
         activeItems.push_back(item);
         this->addItem(item);
+        connect(item, &CalendarItem::signal_itemClicked, this, &CalendarPainter::slot_onItemClicked);
     }
     emit signal_rebuild(this);
 }

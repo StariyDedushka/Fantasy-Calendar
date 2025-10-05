@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QGraphicsScene>
 #include <QtDebug>
+#include <QEvent>
+#include <QGraphicsSceneMouseEvent>
 #include "calendaritem.h"
 
 class CalendarPainter : public QGraphicsScene
@@ -19,11 +21,9 @@ public slots:
     void slot_callRebuild();
     void slot_settingsChanged(quint16 daysPerWeek, quint16 daysPerMonth, quint16 daysPerYear);
     void slot_windowChanged(quint32 wWidth, quint32 wHeight);
+    void slot_onItemClicked();
 private:
     virtual void addItem(CalendarItem *item);
-
-    // void QGraphicsSceneMouseEvent();
-    // void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
     void rebuild();
     QVector<CalendarItem*> activeItems;

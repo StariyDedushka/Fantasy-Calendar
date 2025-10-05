@@ -5,34 +5,49 @@
 #include <QWidget>
 #include <QRectF>
 #include <QGraphicsItem>
+#include <QEvent>
+#include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QtDebug>
 #include "structs.h"
 
-class CalendarItem : public QGraphicsItem
+class CalendarItem : public QObject, public QGraphicsItem
 {
+    Q_INTERFACES(QGraphicsItem)
+    Q_OBJECT
 private:
-    // QWidget *m_parent;
-    // QRectF m_rect;
-    QDate m_date;
-    // cellPos m_pos;
+    quint16 m_day;
+    quint16 m_month;
+    quint32 m_year;
     bool m_enabled;
+    bool m_hovered;
     QRectF m_rect;
+
+
+signals:
+    void signal_itemClicked(CalendarItem *item);
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
+
 public:
     CalendarItem();
-    CalendarItem(const QRectF &rect, QDate date = QDate(1, 3, 2003), bool enabled = true, QGraphicsItem *parent = nullptr);
-    // QWidget* getParent();
-    QDate getDate();
-    // cellPos getPos();
+    CalendarItem(const QRectF &rect, quint16 day = 1, quint16 month = 1, quint32 year = 2000, bool enabled = true, QGraphicsItem *parent = nullptr);
+
+    quint16 day() const;
+    quint16 month() const;
+    quint32 year() const;
+
     bool isEnabled();
     virtual QRectF boundingRect() const override;
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
-    // void setParent(QWidget* parent);
-    void setDate(QDate date);
-    // void setPos(qreal x1, qreal y1, qreal x2, qreal y2);
+
+    void setDay(quint16 day);
+    void setMonth(quint16 month);
+    void setYear(quint32 year);
+
     void setEnabled(bool enabled);
 };
 

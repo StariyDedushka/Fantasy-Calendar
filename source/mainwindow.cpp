@@ -4,36 +4,36 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , painter(new CalendarPainter)
 {
     ui->setupUi(this);
-    ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    calendar = new CalendarView();
+    calendar->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    calendar->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->verticalLayout_3->addWidget(calendar);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-    delete painter;
 }
 
 void MainWindow::initialize()
 {
-    m_calendarWidth = ui->graphicsView->width();
-    m_calendarHeight = ui->graphicsView->height();
+    m_calendarWidth = calendar->width();
+    m_calendarHeight = calendar->height();
     emit signal_windowResized(m_calendarWidth, m_calendarHeight);
 }
 
 void MainWindow::slot_rebuild(CalendarPainter *scene)
 {
-    ui->graphicsView->setScene(scene);
-    ui->graphicsView->show();
+    calendar->setScene(scene);
+    calendar->show();
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
-    m_calendarWidth = ui->graphicsView->width();
-    m_calendarHeight = ui->graphicsView->height();
+    m_calendarWidth = calendar->width();
+    m_calendarHeight = calendar->height();
     qDebug() << "Current QGraphicsView width:" << m_calendarWidth;;
     qDebug() << "Current QGraphicsView height:" << m_calendarHeight;
     emit signal_windowResized(m_calendarWidth, m_calendarHeight);

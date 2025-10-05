@@ -5,6 +5,7 @@
 #include <QDebug>
 #include "calendarpainter.h"
 #include "calendaritem.h"
+#include "calendarview.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -29,7 +30,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    CalendarPainter *painter;
+    CalendarView *calendar;
     quint32 m_calendarWidth;
     quint32 m_calendarHeight;
 
