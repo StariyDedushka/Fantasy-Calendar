@@ -2,6 +2,14 @@
 
 CalendarPainter::CalendarPainter() {
     // connect(this, &CalendarPainter::signal_rebuild, this, &CalendarPainter::slot_rebuild);
+    previousClickedItem = nullptr;
+    // activeItems = new QVector<CalendarItem*>();
+}
+
+CalendarPainter::~CalendarPainter()
+{
+    delete previousClickedItem;
+    // delete activeItems;
 }
 
 void CalendarPainter::addItem(CalendarItem *item)
@@ -31,8 +39,16 @@ void CalendarPainter::slot_onItemClicked()
 {
     CalendarItem *clickedItem = qobject_cast<CalendarItem*>(sender());
     if(clickedItem) {
+        if(clickedItem->isSelected()) {
+            clickedItem->setSelected(false);
+        } else {
+            clickedItem->setSelected(true);
+            if(previousClickedItem)
+            previousClickedItem->setSelected(false);
+        }
         qDebug() << "item №" << clickedItem->day();
     }
+    previousClickedItem = clickedItem;
 }
 
 void CalendarPainter::slot_windowResized(quint16 wWidth, quint16 wHeight)
@@ -40,6 +56,7 @@ void CalendarPainter::slot_windowResized(quint16 wWidth, quint16 wHeight)
     m_wWidth = wWidth;
     m_wHeight = wHeight;
     m_rectSizeX = wWidth / m_daysPerWeek - 10;
+    m_rectSizeY = wHeight / ((m_daysPerMonth / m_daysPerWeek) + 1) - 10;
     this->setSceneRect(0, 0, m_wWidth, m_wHeight);
 
     reposition();
@@ -59,8 +76,9 @@ void CalendarPainter::reposition()
         int row = i / columns;
         int column = i % columns;
 
-        activeItems[i]->setRect(column * (m_rectSizeX + 8) + 10, row * (m_rectSizeY + 8), m_rectSizeX, m_rectSizeY);
+        activeItems[i]->setRect(column * (m_rectSizeX + 8) + 10, row * (m_rectSizeY + 8) + 10, m_rectSizeX, m_rectSizeY);
     }
+    update();
 }
 
 void CalendarPainter::rebuild()

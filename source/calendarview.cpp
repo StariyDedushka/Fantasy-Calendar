@@ -6,17 +6,28 @@ CalendarView::CalendarView() {
     connect(this, &CalendarView::signal_windowResized, scene, &CalendarPainter::slot_windowResized);
     scene->initialize();
     setScene(scene);
+    timer = new QTimer();
+    timer->setSingleShot(true);
+    timer->setInterval(50);
+    connect(timer, &QTimer::timeout, this, &CalendarView::slot_redraw);
 }
 
 void CalendarView::mousePressEvent(QMouseEvent *event)
 {
-    qDebug() << "Custom view clicked.";
     QGraphicsView::mousePressEvent(event);
 }
 
+void CalendarView::slot_redraw()
+{
+    // qDebug() << "Timeout redraw";
+    // qDebug() << "Width:" << m_calendarWidth << ", height:" << m_calendarHeight;
+    emit signal_windowResized(m_calendarWidth, m_calendarHeight);
+}
 
 void CalendarView::resizeEvent(QResizeEvent *event)
 {
+    timer->start();
+
     m_calendarWidth = this->width();
     m_calendarHeight = this->height();
     emit signal_windowResized(m_calendarWidth, m_calendarHeight);

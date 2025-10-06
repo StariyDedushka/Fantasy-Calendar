@@ -9,13 +9,31 @@ CalendarItem::CalendarItem(const QRectF &rect, quint16 day, quint16 month, quint
     , m_rect(rect)
 {
     m_hovered = false;
+    m_selected = false;
     CalendarItem::setAcceptHoverEvents(true);
     setFlag(QGraphicsItem::ItemIsSelectable, true);
     setFlag(QGraphicsItem::ItemIsFocusable, true);
+    events = new QVector<CalendarEvent*> ();
 }
 
 CalendarItem::CalendarItem()
 {
+}
+
+CalendarItem::~CalendarItem()
+{
+    delete events;
+}
+
+bool CalendarItem::isSelected()
+{
+    return m_selected;
+}
+
+void CalendarItem::setSelected(bool option)
+{
+    m_selected = option;
+    update();
 }
 
 void CalendarItem::setRect(quint16 posX, quint16 posY, quint16 sizeX, quint16 sizeY)
@@ -61,6 +79,8 @@ void CalendarItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     qDebug() << "Item clicked!";
     emit signal_itemClicked(this);
+
+
     event->accept();
 }
 
@@ -90,7 +110,7 @@ void CalendarItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
     QBrush brushHover(Qt::darkGray);
     QPen pen(Qt::black);
     QPen hoverPen(Qt::white);
-    if(m_hovered) {
+    if(m_hovered || m_selected) {
         painter->setBrush(brushHover);
         painter->setPen(hoverPen);
         painter->drawRect(m_rect);
@@ -100,4 +120,5 @@ void CalendarItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
         painter->drawRect(m_rect);
     }
     painter->drawText(m_rect, "День " + QString::number(m_day));
+    update();
 }

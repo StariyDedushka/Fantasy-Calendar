@@ -17,7 +17,25 @@ MainWindow::MainWindow(QWidget *parent)
     ui->verticalLayout_3->addWidget(calendar);
     calendar->show();
     eventsWindow = new EventView();
-    ui->verticalLayout_2->addWidget(eventsWindow);
+    QVBoxLayout *eventsLayout = new QVBoxLayout();
+    QVBoxLayout *rightSideLayout = new QVBoxLayout();
+    QVBoxLayout *leftSideLayout = new QVBoxLayout();
+
+    QHBoxLayout *mainLayout = new QHBoxLayout();
+
+    ui->groupBox_events->setMinimumWidth(400);
+    ui->groupBox_events->setMaximumWidth(600);
+    eventsLayout->addWidget(eventsWindow);
+    rightSideLayout->addWidget(ui->groupBox_events);
+    rightSideLayout->addWidget(ui->groupBox_timeControl);
+    leftSideLayout->addWidget(ui->groupBox_calendar);
+
+    mainLayout->addLayout(leftSideLayout);
+    mainLayout->addLayout(rightSideLayout);
+
+    ui->groupBox_events->setLayout(eventsLayout);
+    ui->centralwidget->setLayout(mainLayout);
+
     eventsWindow->show();
 }
 

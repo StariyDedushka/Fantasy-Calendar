@@ -1,6 +1,8 @@
 #include "include/eventview.h"
 
-EventView::EventView() {}
+EventView::EventView() {
+
+}
 
 void EventView::resizeEvent(QResizeEvent *event)
 {

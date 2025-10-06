@@ -13,6 +13,7 @@ class CalendarPainter : public QGraphicsScene
     Q_OBJECT
 public:
     CalendarPainter();
+    ~CalendarPainter();
     void initialize();
 
 signals:
@@ -37,6 +38,8 @@ private:
 
     quint16 m_wWidth;
     quint16 m_wHeight;
+
+    CalendarItem *previousClickedItem;
 };
 
 #endif // CALENDARPAINTER_H
