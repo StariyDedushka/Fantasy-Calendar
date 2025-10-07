@@ -1,48 +1,14 @@
 #include "include/calendaritem.h"
 
-CalendarItem::CalendarItem(const QRectF &rect, quint16 day, quint16 month, quint32 year,  bool enabled, QGraphicsItem *parent ) :
-    QGraphicsItem(parent)
+CalendarItem::CalendarItem(const QRectF &rect,  bool enabled, quint16 day, quint16 month, quint32 year) :
+
+    AbstractItem(rect, enabled)
     , m_day(day)
     , m_month(month)
     , m_year(year)
-    , m_enabled(enabled)
-    , m_rect(rect)
-{
-    m_hovered = false;
-    m_selected = false;
-    CalendarItem::setAcceptHoverEvents(true);
-    setFlag(QGraphicsItem::ItemIsSelectable, true);
-    setFlag(QGraphicsItem::ItemIsFocusable, true);
-    events = new QVector<CalendarEvent*> ();
-}
-
-CalendarItem::CalendarItem()
 {
 }
 
-CalendarItem::~CalendarItem()
-{
-    delete events;
-}
-
-bool CalendarItem::isSelected()
-{
-    return m_selected;
-}
-
-void CalendarItem::setSelected(bool option)
-{
-    m_selected = option;
-    update();
-}
-
-void CalendarItem::setRect(quint16 posX, quint16 posY, quint16 sizeX, quint16 sizeY)
-{
-    QPoint point(posX, posY);
-    m_rect.setWidth(sizeX);
-    m_rect.setHeight(sizeY);
-    m_rect.setTopLeft(point);
-}
 
 void CalendarItem::setDay(quint16 day)
 {
@@ -74,35 +40,6 @@ quint32 CalendarItem::year() const
     return m_year;
 }
 
-
-void CalendarItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
-    qDebug() << "Item clicked!";
-    emit signal_itemClicked(this);
-
-
-    event->accept();
-}
-
-void CalendarItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
-{
-    m_hovered = true;
-    update();
-    event->accept();
-}
-
-void CalendarItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
-{
-    m_hovered = false;
-    update();
-    event->accept();
-}
-
-
-QRectF CalendarItem::boundingRect() const
-{
-    return m_rect;
-}
 
 void CalendarItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {

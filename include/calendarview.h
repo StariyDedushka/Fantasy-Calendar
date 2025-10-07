@@ -1,7 +1,7 @@
 #ifndef CALENDARVIEW_H
 #define CALENDARVIEW_H
 
-#include <include/calendarpainter.h>
+#include "calendarpainter.h"
 #include <QObject>
 #include <QWidget>
 #include <QGraphicsView>

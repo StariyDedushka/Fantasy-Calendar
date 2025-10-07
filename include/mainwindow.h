@@ -4,8 +4,8 @@
 #include <QMainWindow>
 #include <QDebug>
 #include <QTimer>
-#include "calendarpainter.h"
-#include "calendaritem.h"
+#include "abstractpainter.h"
+#include "abstractitem.h"
 #include "calendarview.h"
 #include "eventview.h"
 

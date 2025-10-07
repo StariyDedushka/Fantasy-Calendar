@@ -3,7 +3,9 @@
 CalendarView::CalendarView() {
     setDragMode(QGraphicsView::NoDrag);
     scene = new CalendarPainter();
-    connect(this, &CalendarView::signal_windowResized, scene, &CalendarPainter::slot_windowResized);
+    if (scene)
+        connect(this, &CalendarView::signal_windowResized, scene, &CalendarPainter::slot_windowResized);
+
     scene->initialize();
     setScene(scene);
     timer = new QTimer();

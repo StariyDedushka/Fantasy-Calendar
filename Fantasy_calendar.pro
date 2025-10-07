@@ -9,18 +9,24 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    source/eventview.cpp \
-    source/calendarview.cpp \
     source/calendarpainter.cpp \
     source/calendaritem.cpp \
+    source/abstractpainter.cpp \
+    source/eventpainter.cpp \
+    source/eventview.cpp \
+    source/calendarview.cpp \
+    source/abstractitem.cpp \
     source/main.cpp \
     source/mainwindow.cpp \
     source/calendarevent.cpp \
 
 HEADERS += \
+    include/abstractpainter.h \
     include/calendarevent.h \
+    include/abstractitem.h \
     include/calendaritem.h \
     include/calendarpainter.h \
+    include/eventpainter.h \
     include/eventview.h \
     include/mainwindow.h \
     include/structs.h \

@@ -1,0 +1,44 @@
+#ifndef ABSTRACTPAINTER_H
+#define ABSTRACTPAINTER_H
+
+#include <QObject>
+#include <QGraphicsScene>
+#include <QtDebug>
+#include <QEvent>
+#include <QGraphicsSceneMouseEvent>
+#include "include/abstractitem.h"
+
+class AbstractPainter : public QGraphicsScene
+{
+    Q_OBJECT
+public:
+    AbstractPainter();
+    ~AbstractPainter();
+    virtual void initialize() = 0;
+
+signals:
+    virtual void signal_rebuild(AbstractPainter *scene);
+
+public slots:
+    virtual void slot_callRebuild();
+    virtual void slot_settingsChanged() = 0;
+    virtual void slot_windowResized(quint16 wWidth, quint16 wHeight) = 0;
+    virtual void slot_onItemClicked() = 0;
+
+protected:
+    virtual void addItem(AbstractItem *item);
+    virtual void reposition() = 0;
+    virtual void rebuild() = 0;
+
+    quint16 m_rectSizeX;
+    quint16 m_rectSizeY;
+
+    quint16 m_wWidth;
+    quint16 m_wHeight;
+
+    QVector<AbstractItem*> activeItems;
+    AbstractItem *previousClickedItem;
+
+};
+
+#endif // ABSTRACTPAINTER_H
