@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent)
     calendar->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->verticalLayout_3->addWidget(calendar);
     calendar->show();
+
     eventsWindow = new EventView();
     QVBoxLayout *eventsLayout = new QVBoxLayout();
     QVBoxLayout *rightSideLayout = new QVBoxLayout();

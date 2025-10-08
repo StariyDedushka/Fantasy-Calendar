@@ -9,10 +9,6 @@ CalendarPainter::~CalendarPainter()
 {
 }
 
-void CalendarPainter::addItem(AbstractItem *item)
-{
-    QGraphicsScene::addItem(item);
-}
 
 void CalendarPainter::initialize()
 {
@@ -97,7 +93,7 @@ void CalendarPainter::rebuild()
 
         // временно прописываем позицию отрисовки прямо в иницилизации ячейки календаря
         // TODO: перенести параметры позиции в настройки
-        CalendarItem *item = new CalendarItem(QRectF(column * (m_rectSizeX + 8) + 10, row * (m_rectSizeY + 8), m_rectSizeX, m_rectSizeY));
+        CalendarItem *item = new CalendarItem(QRectF(column * (m_rectSizeX + 8) + 10, row * (m_rectSizeY + 8), m_rectSizeX, m_rectSizeY), true, i + 1);
         item->setDay(i + 1); // +1 т.к. нумерация дней идёт с 1, не с 0
         activeItems.push_back(item);
         this->addItem(item);

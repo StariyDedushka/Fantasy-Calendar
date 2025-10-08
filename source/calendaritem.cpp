@@ -1,8 +1,8 @@
 #include "include/calendaritem.h"
 
-CalendarItem::CalendarItem(const QRectF &rect,  bool enabled, quint16 day, quint16 month, quint32 year) :
+CalendarItem::CalendarItem(const QRectF &rect, QColor fillColor, bool enabled, quint16 day, quint16 month, quint32 year) :
 
-    AbstractItem(rect, enabled)
+    AbstractItem(rect, fillColor, enabled)
     , m_day(day)
     , m_month(month)
     , m_year(year)

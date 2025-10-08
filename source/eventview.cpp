@@ -1,7 +1,7 @@
 #include "include/eventview.h"
 
 EventView::EventView() {
-
+    painter = new EventPainter();
 }
 
 void EventView::resizeEvent(QResizeEvent *event)

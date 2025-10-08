@@ -1,7 +1,8 @@
 #include "include/abstractitem.h"
 
-AbstractItem::AbstractItem(const QRectF &rect,  bool enabled, QGraphicsItem *parent ) :
+AbstractItem::AbstractItem(const QRectF &rect,  QColor fillColor, bool enabled, QGraphicsItem *parent ) :
     QGraphicsItem(parent)
+    , m_fillColor(fillColor)
     , m_enabled(enabled)
     , m_rect(rect)
 {
@@ -15,6 +16,12 @@ AbstractItem::AbstractItem(const QRectF &rect,  bool enabled, QGraphicsItem *par
 
 AbstractItem::~AbstractItem()
 {
+    delete items;
+}
+
+void AbstractItem::addItem(AbstractItem *item)
+{
+    items->append(item);
 }
 
 bool AbstractItem::isSelected()

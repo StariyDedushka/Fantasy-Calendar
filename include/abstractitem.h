@@ -9,7 +9,6 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QtDebug>
-#include "include/calendarevent.h"
 
 class AbstractItem : public QObject, public QGraphicsItem
 {
@@ -20,18 +19,20 @@ signals:
     void signal_itemClicked(AbstractItem *item);
 
 protected:
-    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
-    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+    virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
+    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
     bool m_enabled;
     bool m_selected;
     bool m_hovered;
+    QVector<AbstractItem*> *items;
+    QColor m_fillColor;
     QRectF m_rect;
 
 public:
     AbstractItem();
     ~AbstractItem();
-    AbstractItem(const QRectF &rect,  bool enabled = true, QGraphicsItem *parent = nullptr);
+    AbstractItem(const QRectF &rect, QColor fillColor, bool enabled = true, QGraphicsItem *parent = nullptr);
 
 
     virtual QRectF boundingRect() const override;
@@ -43,6 +44,7 @@ public:
 
     virtual void setSelected(bool option);
     virtual void setEnabled(bool enabled);
+    virtual void addItem(AbstractItem *item);
 
 
 
