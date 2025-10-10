@@ -23,7 +23,7 @@ public slots:
     virtual void slot_rebuild(QVector<AbstractItem*> *input = nullptr) = 0;
     virtual void slot_settingsChanged() = 0;
     virtual void slot_windowResized(quint16 wWidth, quint16 wHeight) = 0;
-    virtual void slot_onItemClicked() = 0;
+    virtual void slot_onItemClicked(AbstractItem *clickedItem) = 0;
 
 protected:
     virtual void addItem(AbstractItem *item);

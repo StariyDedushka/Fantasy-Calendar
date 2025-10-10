@@ -24,10 +24,8 @@ void CalendarPainter::initialize()
 }
 
 
-void CalendarPainter::slot_onItemClicked()
+void CalendarPainter::slot_onItemClicked(AbstractItem *clickedItem)
 {
-    CalendarItem *clickedItem = qobject_cast<CalendarItem*>(sender());
-    qDebug() << "CalendarPainter onItemClicked() clicked item:" << &clickedItem;
     toggleClicked(clickedItem);
 }
 

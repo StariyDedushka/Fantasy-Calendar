@@ -22,9 +22,8 @@ void EventPainter::initialize()
 }
 
 
-void EventPainter::slot_onItemClicked()
+void EventPainter::slot_onItemClicked(AbstractItem *clickedItem)
 {
-    AbstractItem *clickedItem = qobject_cast<AbstractItem*>(sender());
     qDebug() << "EventPainter::slot_onItemClicked() from:" << static_cast<void*>(sender())
              << "clicked item:" << static_cast<void*>(clickedItem);
 

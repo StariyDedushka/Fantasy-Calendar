@@ -31,7 +31,6 @@ HEADERS += \
     include/eventpainter.h \
     include/eventview.h \
     include/mainwindow.h \
-    include/structs.h \
     include/calendarview.h
 
 FORMS += \
