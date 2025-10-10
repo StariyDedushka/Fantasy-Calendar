@@ -22,6 +22,10 @@ protected:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
     virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
     virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
+
+    QColor colorDarken(QColor baseColor);
+    QColor colorLighten(QColor baseColor);
+
     bool m_enabled;
     bool m_selected;
     bool m_hovered;
@@ -29,10 +33,14 @@ protected:
     QColor m_fillColor;
     QRectF m_rect;
 
+
+private slots:
+    virtual void slot_onItemClicked(AbstractItem *item);
+
 public:
     AbstractItem();
     ~AbstractItem();
-    AbstractItem(const QRectF &rect, QColor fillColor, bool enabled = true, QGraphicsItem *parent = nullptr);
+    AbstractItem(const QRectF &rect, QColor fillColor = Qt::gray, bool enabled = true, QGraphicsItem *parent = nullptr);
 
 
     virtual QRectF boundingRect() const override;
@@ -45,6 +53,8 @@ public:
     virtual void setSelected(bool option);
     virtual void setEnabled(bool enabled);
     virtual void addItem(AbstractItem *item);
+    virtual QVector<AbstractItem*> *getItems();
+    virtual QPolygon* drawTriangle(quint16 x = 0, quint16 y = 0, quint8 scale = 100, quint16 rotation = 0);
 
 
 

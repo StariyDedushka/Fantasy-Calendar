@@ -20,6 +20,7 @@ public slots:
     virtual void slot_windowResized(quint16 wWidth, quint16 wHeight) override;
     virtual void slot_onItemClicked() override;
     virtual void slot_settingsChanged() override;
+    virtual void slot_rebuild(QVector<AbstractItem*> *input = nullptr) override;
 
 
 private:
@@ -28,7 +29,6 @@ private:
     quint16 m_daysPerYear;
 
     virtual void reposition() override;
-    virtual void rebuild() override;
 
 };
 

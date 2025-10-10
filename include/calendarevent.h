@@ -10,8 +10,9 @@ class CalendarEvent : public AbstractItem
     Q_OBJECT
 public:
     CalendarEvent();
-    CalendarEvent(const QRectF &rect,  QColor fillColor, bool enabled = true);
+    CalendarEvent(const QRectF &rect,  QColor fillColor, bool enabled = true, QGraphicsItem *parent = nullptr);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+
 
 private:
     quint16 m_time;

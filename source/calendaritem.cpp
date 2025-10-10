@@ -43,10 +43,18 @@ quint32 CalendarItem::year() const
 
 void CalendarItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    QBrush brush(Qt::lightGray);
-    QBrush brushHover(Qt::darkGray);
-    QPen pen(Qt::black);
-    QPen hoverPen(Qt::white);
+
+    QColor hoverColor(colorDarken(m_fillColor));
+
+    QBrush brush(m_fillColor);
+    QBrush brushHover(hoverColor);
+
+    QColor outlineColor(colorDarken(m_fillColor));
+    QColor hoverOutlineColor(m_fillColor);
+
+    QPen pen(outlineColor);
+    QPen hoverPen(hoverOutlineColor);
+
     if(m_hovered || m_selected) {
         painter->setBrush(brushHover);
         painter->setPen(hoverPen);
@@ -57,5 +65,4 @@ void CalendarItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
         painter->drawRect(m_rect);
     }
     painter->drawText(m_rect, "День " + QString::number(m_day));
-    update();
 }

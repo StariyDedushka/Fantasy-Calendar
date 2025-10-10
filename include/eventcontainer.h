@@ -7,12 +7,14 @@
 class EventContainer : public AbstractItem
 {
     Q_OBJECT
+
+private:
+    QVector<CalendarEvent*> *m_events;
+
 public:
     EventContainer();
     EventContainer(const QRectF &rect, QColor fillColor, bool enabled = true, QGraphicsItem *parent = nullptr);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
-private:
-    // QVector<CalendarEvent*> *m_events;
 };
 
 #endif // EVENTCONTAINER_H

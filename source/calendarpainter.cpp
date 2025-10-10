@@ -20,24 +20,15 @@ void CalendarPainter::initialize()
     m_daysPerYear = 365;
     qDebug() << "Initialized scene!";
 
-    rebuild();
+    slot_rebuild();
 }
 
 
 void CalendarPainter::slot_onItemClicked()
 {
-    AbstractItem *clickedItem = qobject_cast<AbstractItem*>(sender());
-    if(clickedItem) {
-        if(clickedItem->isSelected()) {
-            clickedItem->setSelected(false);
-        } else {
-            clickedItem->setSelected(true);
-            if(previousClickedItem)
-            previousClickedItem->setSelected(false);
-        }
-        // qDebug() << "item №" << clickedItem->day();
-    }
-    previousClickedItem = clickedItem;
+    CalendarItem *clickedItem = qobject_cast<CalendarItem*>(sender());
+    qDebug() << "CalendarPainter onItemClicked() clicked item:" << &clickedItem;
+    toggleClicked(clickedItem);
 }
 
 
@@ -66,21 +57,21 @@ void CalendarPainter::reposition()
         int row = i / columns;
         int column = i % columns;
 
-        activeItems[i]->setRect(column * (m_rectSizeX + 8) + 10, row * (m_rectSizeY + 8) + 10, m_rectSizeX, m_rectSizeY);
+        items[i]->setRect(column * (m_rectSizeX + 8) + 10, row * (m_rectSizeY + 8) + 10, m_rectSizeX, m_rectSizeY);
     }
     update();
 }
 
-void CalendarPainter::rebuild()
+void CalendarPainter::slot_rebuild(QVector<AbstractItem*> *input)
 {
     qDebug() << "Rebuild called!";
-    if(!activeItems.isEmpty())
+    if(!items.isEmpty())
     {
         for(int i = 0; i < m_daysPerMonth; i++)
         {
             // qDebug() << "Removing item №" << i << "...";
-            this->removeItem(activeItems.at(0));
-            activeItems.removeAt(0);
+            this->removeItem(items.at(0));
+            items.removeAt(0);
         }
     }
 
@@ -93,9 +84,9 @@ void CalendarPainter::rebuild()
 
         // временно прописываем позицию отрисовки прямо в иницилизации ячейки календаря
         // TODO: перенести параметры позиции в настройки
-        CalendarItem *item = new CalendarItem(QRectF(column * (m_rectSizeX + 8) + 10, row * (m_rectSizeY + 8), m_rectSizeX, m_rectSizeY), true, i + 1);
+        CalendarItem *item = new CalendarItem(QRectF(column * (m_rectSizeX + 8) + 10, row * (m_rectSizeY + 8), m_rectSizeX, m_rectSizeY), m_itemColor, true, i + 1);
         item->setDay(i + 1); // +1 т.к. нумерация дней идёт с 1, не с 0
-        activeItems.push_back(item);
+        items.push_back(item);
         this->addItem(item);
         connect(item, &AbstractItem::signal_itemClicked, this, &CalendarPainter::slot_onItemClicked);
     }

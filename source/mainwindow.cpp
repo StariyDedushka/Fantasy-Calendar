@@ -25,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent)
     QHBoxLayout *mainLayout = new QHBoxLayout();
 
     ui->groupBox_events->setMinimumWidth(400);
-    ui->groupBox_events->setMaximumWidth(600);
+    ui->groupBox_events->setMaximumWidth(800);
     eventsLayout->addWidget(eventsWindow);
     rightSideLayout->addWidget(ui->groupBox_events);
     rightSideLayout->addWidget(ui->groupBox_timeControl);

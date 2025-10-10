@@ -1,47 +1,64 @@
 #include "include/abstractpainter.h"
 
-AbstractPainter::AbstractPainter() {
-    // connect(this, &AbstractPainter::signal_rebuild, this, &AbstractPainter::slot_rebuild);
-    previousClickedItem = nullptr;
-    // activeItems = new QVector<AbstractItem*>();
+AbstractPainter::AbstractPainter(QColor itemColor) {
+    m_previousClickedItem = nullptr;
+    m_itemColor = itemColor;
 }
 
 AbstractPainter::~AbstractPainter()
 {
 }
-
-
-void AbstractPainter::slot_callRebuild()
+void AbstractPainter::toggleClicked(AbstractItem *clickedItem)
 {
-    rebuild();
-}
 
-void AbstractPainter::slot_onItemClicked()
-{
-    AbstractItem *clickedItem = qobject_cast<AbstractItem*>(sender());
-    if(clickedItem) {
-        if(clickedItem->isSelected()) {
-            clickedItem->setSelected(false);
-        } else {
-            clickedItem->setSelected(true);
-            if(previousClickedItem)
-            previousClickedItem->setSelected(false);
-        }
-        // qDebug() << "item №" << clickedItem->day();
+    qDebug() << "AbstractPainter toggleClicked() clicked item:" << static_cast<void*>(clickedItem);
+
+    if (!clickedItem) {
+        qDebug() << "Clicked item is null!";
+        return;
     }
-    previousClickedItem = clickedItem;
+
+    // Если кликнули по уже выделенному элементу - снимаем выделение
+    if (clickedItem->isSelected()) {
+        qDebug() << "Deselecting current item";
+        clickedItem->setSelected(false);
+        m_previousClickedItem = nullptr;
+    }
+    // Если кликнули по другому элементу
+    else {
+        // Снимаем выделение с предыдущего элемента
+        if (m_previousClickedItem && m_previousClickedItem != clickedItem) {
+            qDebug() << "Deselecting previous item";
+
+
+            m_previousClickedItem->setSelected(false);
+        }
+
+        // Выделяем новый элемент
+        qDebug() << "Selecting new item";
+        clickedItem->setSelected(true);
+        m_previousClickedItem = clickedItem;
+    }
+    update();
+
 }
 
-// void AbstractPainter::slot_windowResized(quint16 wWidth, quint16 wHeight)
-// {
-//     m_wWidth = wWidth;
-//     m_wHeight = wHeight;
-//     this->setSceneRect(0, 0, m_wWidth, m_wHeight);
-
-//     reposition();
-// }
 
 void AbstractPainter::addItem(AbstractItem *item)
 {
+    qDebug() << "Adding item to scene:" << &item;
+    qDebug() << "Item type:" << typeid(*item).name();
+    qDebug() << "Is QGraphicsItem?" << (dynamic_cast<QGraphicsItem*>(item) != nullptr);
+
+    if (item == nullptr) {
+        qDebug() << "ERROR: Attempt to add null item!";
+        return;
+    }
+
+    if (!dynamic_cast<QGraphicsItem*>(item)) {
+        qDebug() << "ERROR: Item is not a QGraphicsItem!";
+        return;
+    }
+
     QGraphicsScene::addItem(item);
 }

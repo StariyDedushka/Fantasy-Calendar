@@ -1,23 +1,20 @@
 #include "include/calendarevent.h"
 
-CalendarEvent::CalendarEvent(const QRectF &rect,  QColor fillColor, bool enabled) :
-    AbstractItem(rect, fillColor, enabled)
+CalendarEvent::CalendarEvent(const QRectF &rect,  QColor fillColor, bool enabled, QGraphicsItem *parent) :
+    AbstractItem(rect, fillColor, enabled, parent)
 {
-
+    m_text = "lorem ipsum skibidi toilet";
 }
 
 void CalendarEvent::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    int red = m_fillColor.red();
-    int green = m_fillColor.green();
-    int blue = m_fillColor.blue();
-    int alpha = m_fillColor.alpha();
+    QColor hoverColor(colorDarken(m_fillColor));
 
     QBrush brush(m_fillColor);
-    QBrush brushHover(alpha - 55);
+    QBrush brushHover(hoverColor);
 
-    QColor outlineColor(red + 15, green + 15, blue + 15);
-    QColor hoverOutlineColor(red - 10, green - 10, blue - 10);
+    QColor outlineColor(colorDarken(m_fillColor));
+    QColor hoverOutlineColor(colorLighten(m_fillColor));
 
     QPen pen(outlineColor);
     QPen hoverPen(hoverOutlineColor);
@@ -32,5 +29,4 @@ void CalendarEvent::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
         painter->drawRect(m_rect);
     }
     painter->drawText(m_rect, m_text);
-    update();
 }
