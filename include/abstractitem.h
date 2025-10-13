@@ -4,6 +4,7 @@
 #include <QDate>
 #include <QWidget>
 #include <QRectF>
+#include <QVector>
 #include <QGraphicsItem>
 #include <QEvent>
 #include <QGraphicsSceneMouseEvent>
@@ -30,8 +31,17 @@ protected:
     bool m_selected;
     bool m_hovered;
     QVector<AbstractItem*> *items;
-    QColor m_fillColor;
     QRectF m_rect;
+    bool m_expanded;
+    bool m_expandable;
+
+    QColor colorPrimary;
+    QColor colorSecondary;
+    QColor colorTertiary;
+
+    static inline AbstractItem *m_selectedItem = nullptr;
+
+    virtual void toggleClicked();
 
 
 private slots:
@@ -39,8 +49,9 @@ private slots:
 
 public:
     AbstractItem();
-    ~AbstractItem();
-    AbstractItem(const QRectF &rect, QColor fillColor = Qt::gray, bool enabled = true, QGraphicsItem *parent = nullptr);
+    virtual ~AbstractItem();
+    AbstractItem(const QRectF &rect, QColor colorPrimary = Qt::green, QColor colorSecondary = Qt::darkGreen, QColor colorTertiary = Qt::yellow,
+                 bool enabled = true, QGraphicsItem *parent = nullptr);
 
 
     virtual QRectF boundingRect() const override;
@@ -50,12 +61,14 @@ public:
     virtual bool isSelected();
     virtual bool isEnabled();
 
-    virtual void setSelected(bool option);
+    static void setSelected(AbstractItem *item);
     virtual void setEnabled(bool enabled);
     virtual void addItem(AbstractItem *item);
     virtual QVector<AbstractItem*> *getItems();
-    virtual QPolygon* drawTriangle(quint16 x = 0, quint16 y = 0, quint8 scale = 100, quint16 rotation = 0);
+    virtual QSharedPointer<QPolygon> buildTriangle(const QRectF &parentRect, quint8 scale, qint16 rotation);
 
+    virtual void collapse();
+    virtual void expand();
 
 
 };

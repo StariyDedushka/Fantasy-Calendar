@@ -1,12 +1,14 @@
 #include "include/calendaritem.h"
 
-CalendarItem::CalendarItem(const QRectF &rect, QColor fillColor, bool enabled, quint16 day, quint16 month, quint32 year) :
+CalendarItem::CalendarItem(const QRectF &rect, QColor colorPrimary, QColor colorSecondary, QColor colorTertiary,
+                 bool enabled, quint16 day, quint16 month, quint32 year) :
 
-    AbstractItem(rect, fillColor, enabled)
+    AbstractItem(rect, colorPrimary, colorSecondary, colorTertiary, enabled)
     , m_day(day)
     , m_month(month)
     , m_year(year)
 {
+    m_expandable = false;
 }
 
 
@@ -44,16 +46,13 @@ quint32 CalendarItem::year() const
 void CalendarItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
 
-    QColor hoverColor(colorDarken(m_fillColor));
+    QBrush brush(colorPrimary);
+    QBrush brushHover(colorSecondary);
 
-    QBrush brush(m_fillColor);
-    QBrush brushHover(hoverColor);
 
-    QColor outlineColor(colorDarken(m_fillColor));
-    QColor hoverOutlineColor(m_fillColor);
+    QPen pen(colorSecondary);
+    QPen hoverPen(colorTertiary);
 
-    QPen pen(outlineColor);
-    QPen hoverPen(hoverOutlineColor);
 
     if(m_hovered || m_selected) {
         painter->setBrush(brushHover);

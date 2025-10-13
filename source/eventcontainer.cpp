@@ -1,31 +1,67 @@
 #include "include/eventcontainer.h"
 
-EventContainer::EventContainer(const QRectF &rect,  QColor fillColor, bool enabled, QGraphicsItem *parent ) :
-    AbstractItem(rect, fillColor, enabled, parent)
+EventContainer::EventContainer(const QRectF &rect,  QColor colorPrimary, QColor colorSecondary, QColor colorTertiary, bool enabled, QGraphicsItem *parent ) :
+    AbstractItem(rect, colorPrimary, colorSecondary, colorTertiary, enabled, parent)
 {
     items = new QVector<AbstractItem*>();
-    QColor eventColor(150, 150, 150, 90);
-    CalendarEvent *testEvent = new CalendarEvent(QRectF(20, 40, 50, 30), eventColor, true, this);
+    CalendarEvent *testEvent = new CalendarEvent(QRectF(20, 40, 50, 30), Qt::darkGreen, Qt::darkGreen, Qt::yellow, true, this);
     addItem(testEvent);
-    CalendarEvent *testEvent2 = new CalendarEvent(QRectF(20, 100, 50, 30), eventColor, true, this);
+    CalendarEvent *testEvent2 = new CalendarEvent(QRectF(50, 80, 100, 60), Qt::darkGreen, Qt::darkGreen, Qt::yellow, true, this);
     addItem(testEvent2);
-    CalendarEvent *testEvent3 = new CalendarEvent(QRectF(20, 160, 50, 30), eventColor, true, this);
+    CalendarEvent *testEvent3 = new CalendarEvent(QRectF(20, 40, 50, 30), Qt::darkGreen, Qt::darkGreen, Qt::yellow, true, this);
     addItem(testEvent3);
 
 }
 
+// void EventContainer::mousePressEvent(QGraphicsSceneMouseEvent *event)
+// {
+
+//     if(m_selected) collapse();
+//     else expand();
+
+
+//     if (!m_enabled) {
+//         qDebug() << "Item disabled, ignoring";
+//         event->ignore();
+//         return;
+//     }
+//     if (items)
+//     {
+//         if(!items->empty()) {
+//             QPointF scenePos = event->scenePos();
+
+//             for (AbstractItem *child : *items) {
+//                 if (child->isEnabled() && child->isVisible()) {
+//                     // Преобразуем позицию в координаты дочернего элемента
+//                     QPointF childPos = child->mapFromScene(scenePos);
+//                     if (child->contains(childPos)) {
+//                         qDebug() << "Event should go to child:" << static_cast<void*>(child);
+//                         event->ignore(); // Позволяем событию пройти к дочернему элементу
+//                         return;
+//                     }
+//                 }
+//             }
+//         }
+//     }
+//     // Если дочерних элементов нет или событие не над ними - обрабатываем сами
+//     qDebug() << "Handling event in parent";
+//     toggleClicked();
+//     emit signal_itemClicked(this);
+//     event->accept();
+//     update();
+
+// }
+
 void EventContainer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    QColor hoverColor(colorDarken(m_fillColor));
 
-    QBrush brush(m_fillColor);
-    QBrush brushHover(hoverColor);
+    QBrush brush(colorPrimary);
+    QBrush brushHover(colorDarken(colorPrimary));
+    QBrush brushTriangle(colorTertiary);
 
-    QColor outlineColor(colorDarken(m_fillColor));
-    QColor hoverOutlineColor(m_fillColor);
 
-    QPen pen(outlineColor);
-    QPen hoverPen(hoverOutlineColor);
+    QPen pen(colorSecondary);
+    QPen hoverPen(colorTertiary);
 
     if(m_hovered || m_selected) {
         painter->setBrush(brushHover);
@@ -36,6 +72,7 @@ void EventContainer::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
         painter->setPen(pen);
         painter->drawRect(m_rect);
     }
-    QPolygon *triangle = drawTriangle(30, 50, 100, 0);
+    QSharedPointer<QPolygon> triangle = buildTriangle(m_rect, 100, static_cast<qint16>(m_selected * 90));
+    painter->setBrush(brushTriangle);
     painter->drawPolygon(*triangle);
 }

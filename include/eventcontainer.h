@@ -9,11 +9,12 @@ class EventContainer : public AbstractItem
     Q_OBJECT
 
 private:
-    QVector<CalendarEvent*> *m_events;
+    // virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+
 
 public:
     EventContainer();
-    EventContainer(const QRectF &rect, QColor fillColor, bool enabled = true, QGraphicsItem *parent = nullptr);
+    EventContainer(const QRectF &rect, QColor colorPrimary = Qt::green, QColor colorSecondary = Qt::darkGreen, QColor colorTertiary = Qt::yellow, bool enabled = true, QGraphicsItem *parent = nullptr);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 };
 

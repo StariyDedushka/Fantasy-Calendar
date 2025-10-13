@@ -12,7 +12,7 @@ class AbstractPainter : public QGraphicsScene
 {
     Q_OBJECT
 public:
-    AbstractPainter(QColor itemColor = Qt::gray);
+    AbstractPainter();
     ~AbstractPainter();
     virtual void initialize() = 0;
 
@@ -23,7 +23,7 @@ public slots:
     virtual void slot_rebuild(QVector<AbstractItem*> *input = nullptr) = 0;
     virtual void slot_settingsChanged() = 0;
     virtual void slot_windowResized(quint16 wWidth, quint16 wHeight) = 0;
-    virtual void slot_onItemClicked(AbstractItem *clickedItem) = 0;
+    virtual void slot_onItemClicked();
 
 protected:
     virtual void addItem(AbstractItem *item);
@@ -34,11 +34,12 @@ protected:
 
     quint16 m_wWidth;
     quint16 m_wHeight;
-    QColor m_itemColor;
+
+    QColor m_colorPrimary;
+    QColor m_colorSecondary;
+    QColor m_colorTertiary;
 
     QVector<AbstractItem*> items;
-    AbstractItem *m_previousClickedItem;
-    virtual void toggleClicked(AbstractItem *clickedItem);
 
 };
 

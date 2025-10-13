@@ -18,7 +18,6 @@ signals:
     virtual void signal_rebuild(AbstractPainter *scene) override;
 public slots:
     virtual void slot_windowResized(quint16 wWidth, quint16 wHeight) override;
-    virtual void slot_onItemClicked(AbstractItem *clickedItem) override;
     virtual void slot_settingsChanged() override;
     virtual void slot_rebuild(QVector<AbstractItem*> *input = nullptr) override;
 

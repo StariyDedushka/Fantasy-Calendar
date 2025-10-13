@@ -22,17 +22,6 @@ void EventPainter::initialize()
 }
 
 
-void EventPainter::slot_onItemClicked(AbstractItem *clickedItem)
-{
-    qDebug() << "EventPainter::slot_onItemClicked() from:" << static_cast<void*>(sender())
-             << "clicked item:" << static_cast<void*>(clickedItem);
-
-    if (clickedItem) {
-        toggleClicked(clickedItem);
-    }
-}
-
-
 
 void EventPainter::slot_windowResized(quint16 wWidth, quint16 wHeight)
 {
@@ -99,7 +88,7 @@ void EventPainter::slot_rebuild(QVector<AbstractItem*> *input)
         for(int i = 0; i < input->size(); ++i) {
             AbstractItem *container = new EventContainer(
                 QRectF(row * (m_rectSizeX + 8) + 10, row * (m_rectSizeY + 8), m_rectSizeX, m_rectSizeY),
-                Qt::green,
+                Qt::green, Qt::darkGreen, Qt::yellow,
                 true);
             // (*input)[i] = container; // Обновляем указатель в исходном векторе
             items.push_back(container);

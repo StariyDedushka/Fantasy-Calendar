@@ -1,13 +1,16 @@
 #include "include/abstractitem.h"
 
-AbstractItem::AbstractItem(const QRectF &rect,  QColor fillColor, bool enabled, QGraphicsItem *parent ) :
+AbstractItem::AbstractItem(const QRectF &rect,  QColor colorPrimary, QColor colorSecondary, QColor colorTertiary, bool enabled, QGraphicsItem *parent ) :
     QGraphicsItem(parent)
     , m_enabled(enabled)
-    , m_fillColor(fillColor)
+    , colorPrimary(colorPrimary)
+    , colorSecondary(colorSecondary)
+    , colorTertiary(colorTertiary)
     , m_rect(rect)
 {
     m_hovered = false;
     m_selected = false;
+    m_selectedItem = nullptr;
     items = new QVector<AbstractItem*>();
     AbstractItem::setAcceptHoverEvents(true);
     setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -17,7 +20,13 @@ AbstractItem::AbstractItem(const QRectF &rect,  QColor fillColor, bool enabled, 
 
 AbstractItem::~AbstractItem()
 {
-    delete items;
+    if(items) {
+        for(AbstractItem* item : *items)
+        {
+            delete item;
+        }
+        items->clear();
+    }
 }
 
 QVector<AbstractItem*> *AbstractItem::getItems()
@@ -25,31 +34,36 @@ QVector<AbstractItem*> *AbstractItem::getItems()
     return items;
 }
 
-QPolygon* AbstractItem::drawTriangle(quint16 x, quint16 y, quint8 scale, quint16 rotation)
+QSharedPointer<QPolygon> AbstractItem::buildTriangle(const QRectF &parentRect, quint8 scale, qint16 rotation)
 {
-    QPolygon *triangle = new QPolygon();
-    double modifier = scale / 100;
-    QPoint point1(x, y + 22 * static_cast<int>(modifier) );
-    QPoint point2((x - 15) * static_cast<int>(modifier), y * static_cast<int>(modifier) );
-    QPoint point3((x + 15) * static_cast<int>(modifier), y * static_cast<int>(modifier) );
+    QSharedPointer<QPolygon> triangle(new QPolygon);
+    double modifier = scale / 100.0;
+    quint8 width = 15, height = 15;
+    QPoint center(parentRect.x() + width, parentRect.y() + parentRect.height() / 2);
+    // qDebug() << "ParentPos x:" << parentRect.x() << "ParentPos y:" << parentRect.y();
+    QPoint point1(center.x() - width/2, center.y() + height/2);
+    QPoint point2(center.x() - width/2, center.y() - height/2);
+    QPoint point3(center.x() + width/2, center.y());
     *triangle << point1 << point2 << point3;
+    *triangle = QTransform().translate(center.x(), center.y()).rotate(rotation).translate(-center.x(), -center.y()).map(*triangle);
     return triangle;
 }
 
 QColor AbstractItem::colorDarken(QColor baseColor)
 {
-    int red = std::min(std::max(baseColor.red() - 40, 0), 255);
-    int green = std::min(std::max(baseColor.green() - 40, 0), 255);
-    int blue = std::min(std::max(baseColor.blue() - 40, 0), 255);
+    int red = std::min(std::max(baseColor.red() - 20, 0), 255);
+    int green = std::min(std::max(baseColor.green() - 20, 0), 255);
+    int blue = std::min(std::max(baseColor.blue() - 20, 0), 255);
     QColor hoverColor(red, green, blue);
     return hoverColor;
 }
 
 QColor AbstractItem::colorLighten(QColor baseColor)
 {
-    int red = (baseColor.red() + 60) % 255;
-    int green = (baseColor.green() + 60) % 255;
-    int blue = (baseColor.blue() + 60) % 255;
+    double mod = 1.3;
+    int red = std::max(static_cast<int>(baseColor.red() * mod), 255);
+    int green = std::max(static_cast<int>(baseColor.green() * mod), 255);
+    int blue = std::max(static_cast<int>(baseColor.blue() * mod), 255);
     QColor hoverColor(red, green, blue);
     return hoverColor;
 
@@ -71,9 +85,35 @@ bool AbstractItem::isSelected()
     return m_selected;
 }
 
-void AbstractItem::setSelected(bool option)
+void AbstractItem::toggleClicked()
 {
-    m_selected = option;
+    // Если кликнули по уже выделенному элементу - снимаем выделение
+    if (m_selected) {
+        qDebug() << "Deselecting current item";
+        m_selected = false;
+        setSelected(nullptr);
+    }
+    // Если кликнули по другому элементу
+    else {
+        // Снимаем выделение с предыдущего элемента
+        if (m_selectedItem && m_selectedItem != this) {
+            qDebug() << "Deselecting previous item";
+
+            m_selectedItem->m_selected = false;
+            setSelected(nullptr);
+        }
+
+        // Выделяем новый элемент
+        qDebug() << "Selecting new item";
+        m_selected = true;
+        setSelected(this);
+    }
+
+}
+
+void AbstractItem::setSelected(AbstractItem *item)
+{
+    m_selectedItem = item;
 }
 
 bool AbstractItem::isEnabled()
@@ -95,10 +135,30 @@ void AbstractItem::setRect(quint16 posX, quint16 posY, quint16 sizeX, quint16 si
     m_rect.setTopLeft(point);
 }
 
+void AbstractItem::expand()
+{
+    m_expanded = true;
+    qreal height = items->size() * 60 + 10;
+    m_rect.setHeight(height);
+    update();
+}
+
+void AbstractItem::collapse()
+{
+    m_expanded = false;
+    qreal height = 50;
+    m_rect.setHeight(height);
+    update();
+}
 
 void AbstractItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
 
+    if(m_expandable)
+    {
+        if(m_selected) collapse();
+        else expand();
+    }
 
     if (!m_enabled) {
         qDebug() << "Item disabled, ignoring";
@@ -125,8 +185,10 @@ void AbstractItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
     }
     // Если дочерних элементов нет или событие не над ними - обрабатываем сами
     qDebug() << "Handling event in parent";
-    emit signal_itemClicked(this);
+    toggleClicked();
+    // emit signal_itemClicked(this);
     event->accept();
+    update();
 
 }
 
