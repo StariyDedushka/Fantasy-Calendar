@@ -4,12 +4,10 @@ AbstractPainter::AbstractPainter()
 {
 
 }
+
 AbstractPainter::~AbstractPainter()
 {
-    for(AbstractItem* item : items)
-    {
-        delete item;
-    }
+
 }
 
 
@@ -20,14 +18,10 @@ void AbstractPainter::addItem(AbstractItem *item)
     // qDebug() << "Is QGraphicsItem?" << (dynamic_cast<QGraphicsItem*>(item) != nullptr);
 
     if (item == nullptr) {
-        // qDebug() << "ERROR: Attempt to add null item!";
+        qDebug() << "ERROR: Attempt to add null item!";
         return;
     }
 
-    if (!dynamic_cast<QGraphicsItem*>(item)) {
-        // qDebug() << "ERROR: Item is not a QGraphicsItem!";
-        return;
-    }
 
     QGraphicsScene::addItem(item);
 }

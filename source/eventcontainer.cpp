@@ -3,7 +3,7 @@
 EventContainer::EventContainer(const QRectF &rect,  QColor colorPrimary, QColor colorSecondary, QColor colorTertiary, bool enabled, QGraphicsItem *parent ) :
     AbstractItem(rect, colorPrimary, colorSecondary, colorTertiary, enabled, parent)
 {
-    items = new QVector<AbstractItem*>();
+    m_expandable = true;
     CalendarEvent *testEvent = new CalendarEvent(QRectF(20, 40, 50, 30), Qt::darkGreen, Qt::darkGreen, Qt::yellow, true, this);
     addItem(testEvent);
     CalendarEvent *testEvent2 = new CalendarEvent(QRectF(50, 80, 100, 60), Qt::darkGreen, Qt::darkGreen, Qt::yellow, true, this);
@@ -27,7 +27,7 @@ EventContainer::EventContainer(const QRectF &rect,  QColor colorPrimary, QColor 
 //     }
 //     if (items)
 //     {
-//         if(!items->empty()) {
+//         if(!items.empty()) {
 //             QPointF scenePos = event->scenePos();
 
 //             for (AbstractItem *child : *items) {

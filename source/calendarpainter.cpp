@@ -76,8 +76,8 @@ void CalendarPainter::slot_rebuild(QVector<AbstractItem*> *input)
 
         // временно прописываем позицию отрисовки прямо в иницилизации ячейки календаря
         // TODO: перенести параметры позиции в настройки
-        CalendarItem *item = new CalendarItem(QRectF(column * (m_rectSizeX + 8) + 10, row * (m_rectSizeY + 8), m_rectSizeX, m_rectSizeY),
-                                              m_colorPrimary, m_colorSecondary, m_colorTertiary, true, i + 1);
+        CalendarItem *item (new CalendarItem(QRectF(column * (m_rectSizeX + 8) + 10, row * (m_rectSizeY + 8), m_rectSizeX, m_rectSizeY),
+                                                           m_colorPrimary, m_colorSecondary, m_colorTertiary, true, i + 1));
         item->setDay(i + 1); // +1 т.к. нумерация дней идёт с 1, не с 0
         items.push_back(item);
         this->addItem(item);

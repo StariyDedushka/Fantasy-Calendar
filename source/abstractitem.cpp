@@ -11,7 +11,6 @@ AbstractItem::AbstractItem(const QRectF &rect,  QColor colorPrimary, QColor colo
     m_hovered = false;
     m_selected = false;
     m_selectedItem = nullptr;
-    items = new QVector<AbstractItem*>();
     AbstractItem::setAcceptHoverEvents(true);
     setFlag(QGraphicsItem::ItemIsSelectable, true);
     setFlag(QGraphicsItem::ItemIsFocusable, true);
@@ -20,16 +19,14 @@ AbstractItem::AbstractItem(const QRectF &rect,  QColor colorPrimary, QColor colo
 
 AbstractItem::~AbstractItem()
 {
-    if(items) {
-        for(AbstractItem* item : *items)
-        {
-            delete item;
-        }
-        items->clear();
+    for(AbstractItem *item : items)
+    {
+        delete item;
     }
+    items.clear();
 }
 
-QVector<AbstractItem*> *AbstractItem::getItems()
+QVector<AbstractItem*>& AbstractItem::getItems()
 {
     return items;
 }
@@ -41,9 +38,9 @@ QSharedPointer<QPolygon> AbstractItem::buildTriangle(const QRectF &parentRect, q
     quint8 width = 15, height = 15;
     QPoint center(parentRect.x() + width, parentRect.y() + parentRect.height() / 2);
     // qDebug() << "ParentPos x:" << parentRect.x() << "ParentPos y:" << parentRect.y();
-    QPoint point1(center.x() - width/2, center.y() + height/2);
-    QPoint point2(center.x() - width/2, center.y() - height/2);
-    QPoint point3(center.x() + width/2, center.y());
+    QPoint point1(center.x() - (width/2) * modifier, center.y() + (height/2) * modifier);
+    QPoint point2(center.x() - (width/2) * modifier, center.y() - (height/2) * modifier);
+    QPoint point3(center.x() + (width/2) * modifier, center.y());
     *triangle << point1 << point2 << point3;
     *triangle = QTransform().translate(center.x(), center.y()).rotate(rotation).translate(-center.x(), -center.y()).map(*triangle);
     return triangle;
@@ -76,7 +73,7 @@ void AbstractItem::slot_onItemClicked(AbstractItem *item)
 
 void AbstractItem::addItem(AbstractItem *item)
 {
-    items->append(item);
+    items.append(item);
     connect(item, &AbstractItem::signal_itemClicked, this, &AbstractItem::slot_onItemClicked);
 }
 
@@ -138,7 +135,7 @@ void AbstractItem::setRect(quint16 posX, quint16 posY, quint16 sizeX, quint16 si
 void AbstractItem::expand()
 {
     m_expanded = true;
-    qreal height = items->size() * 60 + 10;
+    qreal height = items.size() * 60 + 10;
     m_rect.setHeight(height);
     update();
 }
@@ -165,20 +162,17 @@ void AbstractItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
         event->ignore();
         return;
     }
-    if (items)
-    {
-        if(!items->empty()) {
-            QPointF scenePos = event->scenePos();
+    if(!items.empty()) {
+        QPointF scenePos = event->scenePos();
 
-            for (AbstractItem *child : *items) {
-                if (child->isEnabled() && child->isVisible()) {
-                    // Преобразуем позицию в координаты дочернего элемента
-                    QPointF childPos = child->mapFromScene(scenePos);
-                    if (child->contains(childPos)) {
-                        qDebug() << "Event should go to child:" << static_cast<void*>(child);
-                        event->ignore(); // Позволяем событию пройти к дочернему элементу
-                        return;
-                    }
+        for (AbstractItem *child : items) {
+            if (child->isEnabled() && child->isVisible()) {
+                // Преобразуем позицию в координаты дочернего элемента
+                QPointF childPos = child->mapFromScene(scenePos);
+                if (child->contains(childPos)) {
+                    qDebug() << "Event should go to child:" << static_cast<void*>(child);
+                    event->ignore(); // Позволяем событию пройти к дочернему элементу
+                    return;
                 }
             }
         }
@@ -186,7 +180,7 @@ void AbstractItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
     // Если дочерних элементов нет или событие не над ними - обрабатываем сами
     qDebug() << "Handling event in parent";
     toggleClicked();
-    // emit signal_itemClicked(this);
+    emit signal_itemClicked(this);
     event->accept();
     update();
 

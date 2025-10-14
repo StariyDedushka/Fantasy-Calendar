@@ -16,6 +16,7 @@ public:
     EventContainer();
     EventContainer(const QRectF &rect, QColor colorPrimary = Qt::green, QColor colorSecondary = Qt::darkGreen, QColor colorTertiary = Qt::yellow, bool enabled = true, QGraphicsItem *parent = nullptr);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    virtual void addEvent(QString text, QTime time);
 };
 
 #endif // EVENTCONTAINER_H

@@ -30,10 +30,10 @@ protected:
     bool m_enabled;
     bool m_selected;
     bool m_hovered;
-    QVector<AbstractItem*> *items;
-    QRectF m_rect;
     bool m_expanded;
     bool m_expandable;
+    QVector<AbstractItem*> items;
+    QRectF m_rect;
 
     QColor colorPrimary;
     QColor colorSecondary;
@@ -64,7 +64,7 @@ public:
     static void setSelected(AbstractItem *item);
     virtual void setEnabled(bool enabled);
     virtual void addItem(AbstractItem *item);
-    virtual QVector<AbstractItem*> *getItems();
+    virtual QVector<AbstractItem*>& getItems();
     virtual QSharedPointer<QPolygon> buildTriangle(const QRectF &parentRect, quint8 scale, qint16 rotation);
 
     virtual void collapse();

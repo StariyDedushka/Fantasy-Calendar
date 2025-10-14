@@ -44,7 +44,7 @@ void EventPainter::reposition()
     uint row = 0;
     foreach(AbstractItem *container, items)
     {
-        uint size = container->getItems()->size();
+        uint size = container->getItems().size();
         m_rectSizeY = 30 * size;
         container->setRect(10, row * (m_rectSizeY + 8) + 10, m_rectSizeX, m_rectSizeY);
         row++;
@@ -77,20 +77,12 @@ void EventPainter::slot_rebuild(QVector<AbstractItem*> *input)
         }
         items.clear();
 
-        // // 2. Очищаем переданные элементы (если нужно)
-        // if(input) {
-        //     for(AbstractItem *item : *input) {
-        //         delete item;  // Освобождаем старые объекты
-        //     }
-        //     input->clear();   // Очищаем вектор
-
         // Создаем новые элементы
         for(int i = 0; i < input->size(); ++i) {
             AbstractItem *container = new EventContainer(
                 QRectF(row * (m_rectSizeX + 8) + 10, row * (m_rectSizeY + 8), m_rectSizeX, m_rectSizeY),
                 Qt::green, Qt::darkGreen, Qt::yellow,
                 true);
-            // (*input)[i] = container; // Обновляем указатель в исходном векторе
             items.push_back(container);
             this->addItem(container);
             connect(container, &AbstractItem::signal_itemClicked, this, &EventPainter::slot_onItemClicked);
