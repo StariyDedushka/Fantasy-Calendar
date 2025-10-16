@@ -1,7 +1,7 @@
 #ifndef CALENDARVIEW_H
 #define CALENDARVIEW_H
 
-#include "calendarpainter.h"
+#include "CalendarScene.h"
 #include <QObject>
 #include <QWidget>
 #include <QGraphicsView>
@@ -26,7 +26,7 @@ signals:
 
 protected:
     void mousePressEvent(QMouseEvent *event);
-    CalendarPainter *scene;
+    CalendarScene *scene;
     quint16 m_calendarWidth;
     quint16 m_calendarHeight;
     void resizeEvent(QResizeEvent *event);

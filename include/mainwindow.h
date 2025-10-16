@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QDebug>
 #include <QTimer>
-#include "abstractpainter.h"
+#include "AbstractScene.h"
 #include "abstractitem.h"
 #include "calendarview.h"
 #include "eventview.h"

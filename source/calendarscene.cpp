@@ -1,16 +1,16 @@
-#include "include/calendarpainter.h"
+#include "include/CalendarScene.h"
 
-CalendarPainter::CalendarPainter() :
-    AbstractPainter()
+CalendarScene::CalendarScene() :
+    AbstractScene()
 {
 }
 
-CalendarPainter::~CalendarPainter()
+CalendarScene::~CalendarScene()
 {
 }
 
 
-void CalendarPainter::initialize()
+void CalendarScene::initialize()
 {
     this->setSceneRect(0, 0, m_wWidth, m_wHeight);
     m_rectSizeX = 120;
@@ -25,7 +25,7 @@ void CalendarPainter::initialize()
 
 
 
-void CalendarPainter::slot_windowResized(quint16 wWidth, quint16 wHeight)
+void CalendarScene::slot_windowResized(quint16 wWidth, quint16 wHeight)
 {
     m_wWidth = wWidth;
     m_wHeight = wHeight;
@@ -36,11 +36,11 @@ void CalendarPainter::slot_windowResized(quint16 wWidth, quint16 wHeight)
     reposition();
 }
 
-void CalendarPainter::slot_settingsChanged()
+void CalendarScene::slot_settingsChanged()
 {
 
 }
-void CalendarPainter::reposition()
+void CalendarScene::reposition()
 {
     int columns = m_daysPerWeek;
 
@@ -54,7 +54,7 @@ void CalendarPainter::reposition()
     update();
 }
 
-void CalendarPainter::slot_rebuild(QVector<AbstractItem*> *input)
+void CalendarScene::slot_rebuild(QVector<AbstractItem*> *input)
 {
     qDebug() << "Rebuild called!";
     if(!items.isEmpty())
@@ -81,7 +81,7 @@ void CalendarPainter::slot_rebuild(QVector<AbstractItem*> *input)
         item->setDay(i + 1); // +1 т.к. нумерация дней идёт с 1, не с 0
         items.push_back(item);
         this->addItem(item);
-        connect(item, &AbstractItem::signal_itemClicked, this, &CalendarPainter::slot_onItemClicked);
+        connect(item, &AbstractItem::signal_itemClicked, this, &CalendarScene::slot_onItemClicked);
     }
     update();
     // emit signal_rebuild(this);

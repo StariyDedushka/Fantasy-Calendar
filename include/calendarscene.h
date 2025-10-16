@@ -2,20 +2,20 @@
 #define CalendarPainter_H
 
 
-#include "abstractpainter.h"
+#include "AbstractScene.h"
 #include "calendaritem.h"
 
-class CalendarPainter : public AbstractPainter
+class CalendarScene : public AbstractScene
 {
-    // Q_INTERFACES(AbstractPainter)
+    // Q_INTERFACES(AbstractScene)
     Q_OBJECT
 public:
-    CalendarPainter();
-    ~CalendarPainter();
+    CalendarScene();
+    ~CalendarScene();
     virtual void initialize() override;
 
 signals:
-    virtual void signal_rebuild(AbstractPainter *scene) override;
+    virtual void signal_rebuild(AbstractScene *scene) override;
 public slots:
     virtual void slot_windowResized(quint16 wWidth, quint16 wHeight) override;
     virtual void slot_settingsChanged() override;
@@ -23,10 +23,6 @@ public slots:
 
 
 private:
-    quint16 m_daysPerWeek;
-    quint16 m_daysPerMonth;
-    quint16 m_daysPerYear;
-
     virtual void reposition() override;
 
 };

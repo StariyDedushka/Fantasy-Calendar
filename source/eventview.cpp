@@ -3,13 +3,13 @@
 EventView::EventView() {
 
     setDragMode(QGraphicsView::NoDrag);
-    painter = new EventPainter();
+    painter = new EventScene();
     emit signal_windowResized(this->width(), this->height());
 
     if (painter)
     {
-        connect(this, &EventView::signal_windowResized, painter, &EventPainter::slot_windowResized);
-        connect(this, &EventView::signal_rebuild, painter, &EventPainter::slot_rebuild);
+        connect(this, &EventView::signal_windowResized, painter, &EventScene::slot_windowResized);
+        connect(this, &EventView::signal_rebuild, painter, &EventScene::slot_rebuild);
     }
     emit signal_windowResized(this->width(), this->height());
 

@@ -2,9 +2,9 @@
 
 CalendarView::CalendarView() {
     setDragMode(QGraphicsView::NoDrag);
-    scene = new CalendarPainter();
+    scene = new CalendarScene();
     if (scene)
-        connect(this, &CalendarView::signal_windowResized, scene, &CalendarPainter::slot_windowResized);
+        connect(this, &CalendarView::signal_windowResized, scene, &CalendarScene::slot_windowResized);
 
     scene->initialize();
     setScene(scene);

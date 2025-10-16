@@ -70,6 +70,5 @@ public:
     virtual void collapse();
     virtual void expand();
 
-
 };
 #endif

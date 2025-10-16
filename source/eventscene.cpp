@@ -1,17 +1,17 @@
-#include "include/eventpainter.h"
+#include "include/EventScene.h"
 
 
-EventPainter::EventPainter() :
-    AbstractPainter()
+EventScene::EventScene() :
+    AbstractScene()
 {
 }
 
-EventPainter::~EventPainter()
+EventScene::~EventScene()
 {
 }
 
 
-void EventPainter::initialize()
+void EventScene::initialize()
 {
     this->setSceneRect(0, 0, m_wWidth, m_wHeight);
     m_rectSizeX = 120;
@@ -23,7 +23,7 @@ void EventPainter::initialize()
 
 
 
-void EventPainter::slot_windowResized(quint16 wWidth, quint16 wHeight)
+void EventScene::slot_windowResized(quint16 wWidth, quint16 wHeight)
 {
     m_wWidth = wWidth;
     m_wHeight = wHeight;
@@ -34,13 +34,13 @@ void EventPainter::slot_windowResized(quint16 wWidth, quint16 wHeight)
     reposition();
 }
 
-void EventPainter::slot_settingsChanged()
+void EventScene::slot_settingsChanged()
 {
 
 }
-void EventPainter::reposition()
+void EventScene::reposition()
 {
-    qDebug() << "EventPainter: repositioning!";
+    qDebug() << "EventScene: repositioning!";
     uint row = 0;
     foreach(AbstractItem *container, items)
     {
@@ -52,9 +52,9 @@ void EventPainter::reposition()
     update();
 }
 
-void EventPainter::slot_rebuild(QVector<AbstractItem*> *input)
+void EventScene::slot_rebuild(QVector<AbstractItem*> *input)
 {
-    qDebug() << "EventPainter: rebuild called!";
+    qDebug() << "EventScene: rebuild called!";
     while(!items.empty())
     {
         this->removeItem(items.at(0));
@@ -85,8 +85,8 @@ void EventPainter::slot_rebuild(QVector<AbstractItem*> *input)
                 true);
             items.push_back(container);
             this->addItem(container);
-            connect(container, &AbstractItem::signal_itemClicked, this, &EventPainter::slot_onItemClicked);
-            qDebug() << "EventPainter: container entry added! Container address:" << &container;
+            connect(container, &AbstractItem::signal_itemClicked, this, &EventScene::slot_onItemClicked);
+            qDebug() << "EventScene: container entry added! Container address:" << &container;
         }
         update();
     }

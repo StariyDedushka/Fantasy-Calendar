@@ -65,3 +65,11 @@ void CalendarItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
     }
     painter->drawText(m_rect, "День " + QString::number(m_day));
 }
+
+void CalendarItem::operator==(const CalendarItem& other)
+{
+    if(other.m_day == this->m_day && other.m_month == this->m_month
+       && other.m_year == this->m_yea && this->items == other.items)
+        return true;
+    else return false;
+}

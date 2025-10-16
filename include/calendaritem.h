@@ -31,6 +31,9 @@ public:
     // virtual void addItem(AbstractItem &item) override;
 
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    bool operator==(const CalendarItem& other);
+    bool operator<(const CalendarItem& other);
+    bool operator>(const CalendarItem& other);
 
 };
 

@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QGraphicsView>
-#include "eventpainter.h"
+#include "EventScene.h"
 
 class EventView : public QGraphicsView
 {
@@ -17,7 +17,7 @@ protected:
     void resizeEvent(QResizeEvent *event);
     quint16 m_windowWidth;
     quint16 m_windowHeight;
-    EventPainter *painter;
+    EventScene *painter;
 
 public:
     EventView();

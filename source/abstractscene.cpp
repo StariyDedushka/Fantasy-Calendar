@@ -1,17 +1,17 @@
-#include "include/abstractpainter.h"
+#include "include/AbstractScene.h"
 
-AbstractPainter::AbstractPainter()
+AbstractScene::AbstractScene()
 {
 
 }
 
-AbstractPainter::~AbstractPainter()
+AbstractScene::~AbstractScene()
 {
 
 }
 
 
-void AbstractPainter::addItem(AbstractItem *item)
+void AbstractScene::addItem(AbstractItem *item)
 {
     // qDebug() << "Adding item to scene:" << &item;
     // qDebug() << "Item type:" << typeid(*item).name();
@@ -26,7 +26,7 @@ void AbstractPainter::addItem(AbstractItem *item)
     QGraphicsScene::addItem(item);
 }
 
-void AbstractPainter::slot_onItemClicked()
+void AbstractScene::slot_onItemClicked()
 {
     update();
 }

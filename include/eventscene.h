@@ -2,19 +2,19 @@
 #define EVENTPAINTER_H
 
 #include <QObject>
-#include <include/abstractpainter.h>
+#include <include/AbstractScene.h>
 #include "eventcontainer.h"
 
-class EventPainter : public AbstractPainter
+class EventScene : public AbstractScene
 {
     Q_OBJECT
 public:
-    EventPainter();
-    ~EventPainter();
+    EventScene();
+    ~EventScene();
     virtual void initialize() override;
 
 signals:
-    virtual void signal_rebuild(AbstractPainter *scene) override;
+    virtual void signal_rebuild(AbstractScene *scene) override;
 public slots:
     virtual void slot_windowResized(quint16 wWidth, quint16 wHeight) override;
     virtual void slot_settingsChanged() override;

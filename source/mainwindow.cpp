@@ -18,6 +18,9 @@ MainWindow::MainWindow(QWidget *parent)
     calendar->show();
 
     eventsWindow = new EventView();
+    eventsWindow->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    eventsWindow->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
     QVBoxLayout *eventsLayout = new QVBoxLayout();
     QVBoxLayout *rightSideLayout = new QVBoxLayout();
     QVBoxLayout *leftSideLayout = new QVBoxLayout();
@@ -29,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent)
     eventsLayout->addWidget(eventsWindow);
     rightSideLayout->addWidget(ui->groupBox_events);
     rightSideLayout->addWidget(ui->groupBox_timeControl);
+    rightSideLayout->addLayout(eventsLayout);
     leftSideLayout->addWidget(ui->groupBox_calendar);
 
     mainLayout->addLayout(leftSideLayout);

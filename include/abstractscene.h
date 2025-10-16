@@ -8,16 +8,16 @@
 #include <QGraphicsSceneMouseEvent>
 #include "include/abstractitem.h"
 
-class AbstractPainter : public QGraphicsScene
+class AbstractScene : public QGraphicsScene
 {
     Q_OBJECT
 public:
-    AbstractPainter();
-    ~AbstractPainter();
+    AbstractScene();
+    ~AbstractScene();
     virtual void initialize() = 0;
 
 signals:
-    virtual void signal_rebuild(AbstractPainter *scene);
+    virtual void signal_rebuild(AbstractScene *scene);
 
 public slots:
     virtual void slot_rebuild(QVector<AbstractItem*> *input = nullptr) = 0;
