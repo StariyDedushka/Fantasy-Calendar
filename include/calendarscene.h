@@ -2,7 +2,7 @@
 #define CalendarPainter_H
 
 
-#include "AbstractScene.h"
+#include "abstractscene.h"
 #include "calendaritem.h"
 
 class CalendarScene : public AbstractScene
@@ -24,6 +24,8 @@ public slots:
 
 private:
     virtual void reposition() override;
+    quint16 m_daysPerWeek;
+    quint16 m_daysPerMonth;
 
 };
 

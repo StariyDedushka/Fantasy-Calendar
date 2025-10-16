@@ -15,7 +15,7 @@ SOURCES += \
     source/customdatetime.cpp \
     source/eventcontainer.cpp \
     source/calendaritem.cpp \
-    source/eventscene \
+    source/eventscene.cpp \
     source/eventview.cpp \
     source/calendarview.cpp \
     source/abstractitem.cpp \

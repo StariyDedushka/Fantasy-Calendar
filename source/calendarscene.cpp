@@ -1,4 +1,4 @@
-#include "include/CalendarScene.h"
+#include "include/calendarscene.h"
 
 CalendarScene::CalendarScene() :
     AbstractScene()
@@ -15,9 +15,6 @@ void CalendarScene::initialize()
     this->setSceneRect(0, 0, m_wWidth, m_wHeight);
     m_rectSizeX = 120;
     m_rectSizeY = 70;
-    m_daysPerMonth = 30;
-    m_daysPerWeek = 7;
-    m_daysPerYear = 365;
     qDebug() << "Initialized scene!";
 
     slot_rebuild();
@@ -30,8 +27,11 @@ void CalendarScene::slot_windowResized(quint16 wWidth, quint16 wHeight)
     m_wWidth = wWidth;
     m_wHeight = wHeight;
     this->setSceneRect(0, 0, m_wWidth, m_wHeight);
-    m_rectSizeX = wWidth / m_daysPerWeek - 10;
-    m_rectSizeY = wHeight / ((m_daysPerMonth / m_daysPerWeek) + 1);
+    if(m_daysPerWeek != 0)
+    {
+        m_rectSizeX = wWidth / m_daysPerWeek - 10;
+        m_rectSizeY = wHeight / ((m_daysPerMonth / m_daysPerWeek) + 1);
+    }
 
     reposition();
 }

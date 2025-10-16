@@ -1,7 +1,7 @@
 #ifndef CALENDARVIEW_H
 #define CALENDARVIEW_H
 
-#include "CalendarScene.h"
+#include "calendarscene.h"
 #include <QObject>
 #include <QWidget>
 #include <QGraphicsView>

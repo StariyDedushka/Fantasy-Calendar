@@ -4,44 +4,137 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+
 {
     ui->setupUi(this);
     timer = new QTimer(this);
 
-    calendar = new CalendarView();
-    // connect(timer, &QTimer::timeout, this, &MainWindow::slot_rebuild);
-    // connect(this, &MainWindow::signal_windowResized, calendar, &CalendarView::slot_windowResized);
+    // 1. Настраиваем правильную компоновку
+    setupLayouts();
 
+    // 2. Инициализация календаря
+    calendar = new CalendarView();
     calendar->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     calendar->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    ui->verticalLayout_3->addWidget(calendar);
-    calendar->show();
 
+    // Добавляем календарь в layout groupBox_calendar
+    if (ui->groupBox_calendar->layout()) {
+        ui->groupBox_calendar->layout()->addWidget(calendar);
+    }
+
+    // 3. Инициализация events window
     eventsWindow = new EventView();
     eventsWindow->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     eventsWindow->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    QVBoxLayout *eventsLayout = new QVBoxLayout();
-    QVBoxLayout *rightSideLayout = new QVBoxLayout();
-    QVBoxLayout *leftSideLayout = new QVBoxLayout();
+    // Добавляем eventsWindow в layout groupBox_events
+    if (ui->groupBox_events->layout()) {
+        ui->groupBox_events->layout()->addWidget(eventsWindow);
+    }
 
-    QHBoxLayout *mainLayout = new QHBoxLayout();
-
+    // 4. Настраиваем размеры
     ui->groupBox_events->setMinimumWidth(400);
     ui->groupBox_events->setMaximumWidth(800);
-    eventsLayout->addWidget(eventsWindow);
-    rightSideLayout->addWidget(ui->groupBox_events);
-    rightSideLayout->addWidget(ui->groupBox_timeControl);
-    rightSideLayout->addLayout(eventsLayout);
-    leftSideLayout->addWidget(ui->groupBox_calendar);
+    ui->groupBox_events->setMinimumHeight(300);
 
-    mainLayout->addLayout(leftSideLayout);
-    mainLayout->addLayout(rightSideLayout);
-
-    ui->groupBox_events->setLayout(eventsLayout);
-    ui->centralwidget->setLayout(mainLayout);
-
+    calendar->show();
     eventsWindow->show();
+}
+
+void MainWindow::setupLayouts()
+{
+    // Убираем абсолютное позиционирование из centralwidget
+    QLayout* centralLayout = ui->centralwidget->layout();
+    if (!centralLayout) {
+        // Создаем основной layout для centralwidget
+        QHBoxLayout* mainLayout = new QHBoxLayout(ui->centralwidget);
+
+        // Левая часть - календарь
+        mainLayout->addWidget(ui->groupBox_calendar);
+
+        // Правая часть - вертикальный layout для событий и управления временем
+        QVBoxLayout* rightLayout = new QVBoxLayout();
+        rightLayout->addWidget(ui->groupBox_events);
+        rightLayout->addWidget(ui->groupBox_timeControl);
+
+        mainLayout->addLayout(rightLayout);
+
+        // Настраиваем пропорции
+        mainLayout->setStretchFactor(ui->groupBox_calendar, 2);    // Календарь занимает 2/3
+        mainLayout->setStretchFactor(rightLayout, 1);              // Правая часть 1/3
+    }
+
+    // Правильно настраиваем layout для groupBox_calendar
+    setupCalendarLayout();
+
+    // Убеждаемся, что у groupBox_events есть layout
+    if (!ui->groupBox_events->layout()) {
+        QVBoxLayout* eventsLayout = new QVBoxLayout(ui->groupBox_events);
+        eventsLayout->setContentsMargins(2, 2, 2, 2);
+    }
+}
+
+void MainWindow::setupCalendarLayout()
+{
+    // Если layout уже существует, не трогаем его структуру
+    if (!ui->groupBox_calendar->layout()) {
+        // Создаем вертикальный layout для календаря
+        QVBoxLayout* calendarLayout = new QVBoxLayout(ui->groupBox_calendar);
+
+        // Создаем горизонтальный layout для кнопок навигации
+        QHBoxLayout* navLayout = new QHBoxLayout();
+
+        // Добавляем кнопки в правильном порядке
+        if (ui->btn_monthPrev) {
+            navLayout->addWidget(ui->btn_monthPrev);
+        }
+        if (ui->btn_monthNow) {
+            navLayout->addWidget(ui->btn_monthNow);
+        }
+        if (ui->btn_monthNext) {
+            navLayout->addWidget(ui->btn_monthNext);
+        }
+
+        // Добавляем растяжку чтобы кнопки были слева
+        navLayout->addStretch();
+
+        // Добавляем навигацию сверху, а потом будет календарь
+        calendarLayout->addLayout(navLayout);
+
+        // Календарь добавится позже в конструкторе
+    } else {
+        // Если layout уже существует, проверяем его структуру
+        QVBoxLayout* calendarLayout = qobject_cast<QVBoxLayout*>(ui->groupBox_calendar->layout());
+        if (calendarLayout) {
+            // Проверяем, есть ли уже кнопки в layout
+            bool hasButtons = false;
+            for (int i = 0; i < calendarLayout->count(); ++i) {
+                QLayoutItem* item = calendarLayout->itemAt(i);
+                if (item && item->layout() && item->layout()->count() > 0) {
+                    hasButtons = true;
+                    break;
+                }
+            }
+
+            // Если кнопок нет, добавляем их
+            if (!hasButtons) {
+                QHBoxLayout* navLayout = new QHBoxLayout();
+
+                if (ui->btn_monthPrev) {
+                    navLayout->addWidget(ui->btn_monthPrev);
+                }
+                if (ui->btn_monthNow) {
+                    navLayout->addWidget(ui->btn_monthNow);
+                }
+                if (ui->btn_monthNext) {
+                    navLayout->addWidget(ui->btn_monthNext);
+                }
+
+                navLayout->addStretch();
+                calendarLayout->insertLayout(0, navLayout); // Добавляем навигацию в начало
+            }
+        }
+    }
 }
 
 MainWindow::~MainWindow()

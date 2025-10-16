@@ -6,7 +6,9 @@
 #include <QtDebug>
 #include <QEvent>
 #include <QGraphicsSceneMouseEvent>
-#include "include/abstractitem.h"
+
+#include "abstractitem.h"
+#include "calendarsystem.h"
 
 class AbstractScene : public QGraphicsScene
 {
@@ -40,6 +42,7 @@ protected:
     QColor m_colorTertiary;
 
     QVector<AbstractItem*> items;
+    CalendarSystem* system;
 
 };
 

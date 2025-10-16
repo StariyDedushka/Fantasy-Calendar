@@ -63,3 +63,22 @@ quint16 CustomDateTime::dayOfWeek() const
     return m_calendarSystem->dayOfWeek(m_day, m_month, m_year);
 }
 
+bool CustomDateTime::operator==(const CustomDateTime& other) const
+{
+    if(this->m_second == other.m_second && this->m_minute == other.m_minute && this->m_hour == other.m_hour
+        && this->m_day == other.m_day && this->m_month == other.m_month && this->m_year == other.m_year
+        && this->m_calendarSystem == other.m_calendarSystem)
+        return true;
+    else return false;
+}
+
+bool CustomDateTime::operator<(const CustomDateTime& other) const
+{
+    if(m_year < other.m_year) return true;
+    if(m_month < other.m_month) return true;
+    if(m_day < other.m_day) return true;
+    if(m_hour < other.m_hour) return true;
+    if(m_minute < other.m_minute) return true;
+    if(m_second < other.m_second) return true;
+    return false;
+}

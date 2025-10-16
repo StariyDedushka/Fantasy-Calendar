@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QGraphicsView>
-#include "EventScene.h"
+#include "eventscene.h"
 
 class EventView : public QGraphicsView
 {

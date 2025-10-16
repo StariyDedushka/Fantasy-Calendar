@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QDebug>
 #include <QTimer>
-#include "AbstractScene.h"
+#include "abstractscene.h"
 #include "abstractitem.h"
 #include "calendarview.h"
 #include "eventview.h"
@@ -35,6 +35,9 @@ private:
     CalendarView *calendar;
     EventView *eventsWindow;
     QTimer *timer;
+
+    void setupLayouts();
+    void setupCalendarLayout();
 
 
     // void resizeEvent(QResizeEvent *event);

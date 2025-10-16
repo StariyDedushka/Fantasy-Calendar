@@ -8,7 +8,7 @@ CalendarEvent::CalendarEvent(CustomDateTime startTime, CustomDateTime endTime,
     , m_startTime(startTime)
     , m_endTime(endTime)
     , m_text("New Event")
-    // , m_isAllDay(false)
+    , m_isAllDay(false)
 {
 }
 

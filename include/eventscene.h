@@ -2,7 +2,7 @@
 #define EVENTPAINTER_H
 
 #include <QObject>
-#include <include/AbstractScene.h>
+#include <include/abstractscene.h>
 #include "eventcontainer.h"
 
 class EventScene : public AbstractScene
@@ -12,6 +12,7 @@ public:
     EventScene();
     ~EventScene();
     virtual void initialize() override;
+    // virtual void addEvent();
 
 signals:
     virtual void signal_rebuild(AbstractScene *scene) override;

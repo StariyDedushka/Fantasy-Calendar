@@ -7,7 +7,6 @@
 class CustomDateTime
 {
 private:
-    CalendarSystem *m_calendarSystem;
     quint16 m_day;
     quint16 m_month;
     quint32 m_year;
@@ -16,9 +15,11 @@ private:
     quint16 m_second;
 
 public:
+    CustomDateTime() : m_calendarSystem(nullptr) {}
     CustomDateTime(CalendarSystem* system);
     CustomDateTime(CalendarSystem* system, quint16 day, quint16 month, quint32 year,
                    quint16 hour = 0, quint16 minute = 0, quint16 second = 0);
+    CalendarSystem *m_calendarSystem;
 
     // Геттеры
     quint16 day() const { return m_day; }

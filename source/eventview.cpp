@@ -15,10 +15,7 @@ EventView::EventView() {
 
     painter->initialize();
     setScene(painter);
-    CalendarEvent *event = new CalendarEvent(QRectF(20, 10, 120, 40), Qt::red, true);
-    QVector<AbstractItem*> *testVector = new QVector<AbstractItem*>();
-    testVector->append(event);
-    emit signal_rebuild(testVector);
+    emit signal_rebuild(nullptr);
 }
 
 void EventView::resizeEvent(QResizeEvent *event)

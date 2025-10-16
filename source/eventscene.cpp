@@ -1,4 +1,4 @@
-#include "include/EventScene.h"
+#include "include/eventscene.h"
 
 
 EventScene::EventScene() :

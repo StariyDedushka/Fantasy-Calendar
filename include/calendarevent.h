@@ -11,9 +11,16 @@ class CalendarEvent : public AbstractItem
     Q_OBJECT
 public:
     CalendarEvent();
-    CalendarEvent(const QRectF &rect, CustomDateTime startTime, CustomDateTime endTime, bool m_isAllDay = false,
-                  QColor colorPrimary = Qt::green, QColor colorSecondary = Qt::darkGreen, QColor colorTertiary = Qt::yellow,
+    CalendarEvent(CustomDateTime startTime, CustomDateTime endTime,
+                  const QRectF &rect, QColor colorPrimary = Qt::green,
+                  QColor colorSecondary = Qt::darkGreen, QColor colorTertiary = Qt::yellow,
                   bool enabled = true, QGraphicsItem *parent = nullptr);
+
+    CalendarEvent(CustomDateTime startTime, const QString &text,
+                  const QRectF &rect, QColor colorPrimary = Qt::green,
+                  QColor colorSecondary = Qt::darkGreen, QColor colorTertiary = Qt::yellow,
+                  bool enabled = true, QGraphicsItem *parent = nullptr);
+
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
     CustomDateTime startTime() const { return m_startTime; }
