@@ -75,23 +75,7 @@ quint32 CalendarEvent::durationInMinutes() const
 
 void CalendarEvent::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    QColor hoverColor(colorDarken(colorPrimary));
-    QBrush brush(colorPrimary);
-    QBrush brushHover(hoverColor);
-    QColor outlineColor(colorDarken(colorPrimary));
-    QColor hoverOutlineColor(colorLighten(colorPrimary));
-    QPen pen(outlineColor);
-    QPen hoverPen(hoverOutlineColor);
-
-    if(m_hovered || m_selected) {
-        painter->setBrush(brushHover);
-        painter->setPen(hoverPen);
-        painter->drawRect(m_rect);
-    } else {
-        painter->setBrush(brush);
-        painter->setPen(pen);
-        painter->drawRect(m_rect);
-    }
+    setupPainter(painter);
 
     // Отображаем время и текст события
     QString displayText = QString("%1:%2 - %3")

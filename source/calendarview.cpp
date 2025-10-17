@@ -1,8 +1,10 @@
 #include "include/calendarview.h"
 
-CalendarView::CalendarView() {
+CalendarView::CalendarView(CalendarSystem *system) :
+    m_system(system)
+{
     setDragMode(QGraphicsView::NoDrag);
-    scene = new CalendarScene();
+    scene = new CalendarScene(system);
     if (scene)
         connect(this, &CalendarView::signal_windowResized, scene, &CalendarScene::slot_windowResized);
 

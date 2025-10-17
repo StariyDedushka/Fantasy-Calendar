@@ -1,8 +1,8 @@
 #include "include/eventscene.h"
 
 
-EventScene::EventScene() :
-    AbstractScene()
+EventScene::EventScene(CalendarSystem *system) :
+    AbstractScene(system)
 {
 }
 

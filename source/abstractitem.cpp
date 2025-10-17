@@ -3,9 +3,9 @@
 AbstractItem::AbstractItem(const QRectF &rect,  QColor colorPrimary, QColor colorSecondary, QColor colorTertiary, bool enabled, QGraphicsItem *parent ) :
     QGraphicsItem(parent)
     , m_enabled(enabled)
-    , colorPrimary(colorPrimary)
-    , colorSecondary(colorSecondary)
-    , colorTertiary(colorTertiary)
+    , m_colorPrimary(colorPrimary)
+    , m_colorSecondary(colorSecondary)
+    , m_colorTertiary(colorTertiary)
     , m_rect(rect)
 {
     m_hovered = false;
@@ -31,6 +31,28 @@ QVector<AbstractItem*>& AbstractItem::getItems()
     return items;
 }
 
+void AbstractItem::setupPainter(QPainter *painter)
+{
+
+    QBrush brush(m_colorPrimary);
+    QBrush brushHover(m_colorPrimary.darker(30));
+
+
+    QPen pen(m_colorPrimary.darker(50));
+    QPen hoverPen(m_colorPrimary.lighter(60));
+
+
+    if(m_hovered || m_selected) {
+        painter->setBrush(brushHover);
+        painter->setPen(hoverPen);
+        painter->drawRect(m_rect);
+    } else {
+        painter->setBrush(brush);
+        painter->setPen(pen);
+        painter->drawRect(m_rect);
+    }
+}
+
 QSharedPointer<QPolygon> AbstractItem::buildTriangle(const QRectF &parentRect, quint8 scale, qint16 rotation)
 {
     QSharedPointer<QPolygon> triangle(new QPolygon);
@@ -46,25 +68,6 @@ QSharedPointer<QPolygon> AbstractItem::buildTriangle(const QRectF &parentRect, q
     return triangle;
 }
 
-QColor AbstractItem::colorDarken(QColor baseColor)
-{
-    int red = std::min(std::max(baseColor.red() - 20, 0), 255);
-    int green = std::min(std::max(baseColor.green() - 20, 0), 255);
-    int blue = std::min(std::max(baseColor.blue() - 20, 0), 255);
-    QColor hoverColor(red, green, blue);
-    return hoverColor;
-}
-
-QColor AbstractItem::colorLighten(QColor baseColor)
-{
-    double mod = 1.3;
-    int red = std::max(static_cast<int>(baseColor.red() * mod), 255);
-    int green = std::max(static_cast<int>(baseColor.green() * mod), 255);
-    int blue = std::max(static_cast<int>(baseColor.blue() * mod), 255);
-    QColor hoverColor(red, green, blue);
-    return hoverColor;
-
-}
 
 void AbstractItem::slot_onItemClicked(AbstractItem *item)
 {
@@ -77,10 +80,6 @@ void AbstractItem::addItem(AbstractItem *item)
     connect(item, &AbstractItem::signal_itemClicked, this, &AbstractItem::slot_onItemClicked);
 }
 
-bool AbstractItem::isSelected()
-{
-    return m_selected;
-}
 
 void AbstractItem::toggleClicked()
 {
@@ -108,20 +107,25 @@ void AbstractItem::toggleClicked()
 
 }
 
+void AbstractItem::setEnabled(bool option)
+{
+    m_enabled = option;
+    update();
+}
+
 void AbstractItem::setSelected(AbstractItem *item)
 {
     m_selectedItem = item;
 }
 
-bool AbstractItem::isEnabled()
+bool AbstractItem::isSelected() const
 {
-    return m_enabled;
+    return m_selected;
 }
 
-void AbstractItem::setEnabled(bool option)
+bool AbstractItem::isEnabled() const
 {
-    m_enabled = option;
-    update();
+    return m_enabled;
 }
 
 void AbstractItem::setRect(quint16 posX, quint16 posY, quint16 sizeX, quint16 sizeY)

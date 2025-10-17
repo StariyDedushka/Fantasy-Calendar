@@ -26,7 +26,7 @@ private slots:
     void slot_rebuild();
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    MainWindow(CalendarSystem *system, QWidget *parent = nullptr);
     ~MainWindow();
     void initialize();
 
@@ -34,6 +34,7 @@ private:
     Ui::MainWindow *ui;
     CalendarView *calendar;
     EventView *eventsWindow;
+    CalendarSystem *m_system;
     QTimer *timer;
 
     void setupLayouts();

@@ -10,12 +10,12 @@ class CalendarScene : public AbstractScene
     // Q_INTERFACES(AbstractScene)
     Q_OBJECT
 public:
-    CalendarScene();
+    CalendarScene(CalendarSystem *system);
     ~CalendarScene();
     virtual void initialize() override;
 
 signals:
-    virtual void signal_rebuild(AbstractScene *scene) override;
+    void signal_rebuild(AbstractScene *scene);
 public slots:
     virtual void slot_windowResized(quint16 wWidth, quint16 wHeight) override;
     virtual void slot_settingsChanged() override;

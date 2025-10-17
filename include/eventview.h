@@ -17,10 +17,11 @@ protected:
     void resizeEvent(QResizeEvent *event);
     quint16 m_windowWidth;
     quint16 m_windowHeight;
-    EventScene *painter;
+    EventScene *scene;
+    CalendarSystem *m_system;
 
 public:
-    EventView();
+    EventView(CalendarSystem *system);
 };
 
 #endif // EVENTVIEW_H

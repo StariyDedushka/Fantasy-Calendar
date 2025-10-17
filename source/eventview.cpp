@@ -1,20 +1,21 @@
 #include "include/eventview.h"
 
-EventView::EventView() {
-
+EventView::EventView(CalendarSystem *system) :
+    m_system(system)
+{
     setDragMode(QGraphicsView::NoDrag);
-    painter = new EventScene();
+    scene = new EventScene(system);
     emit signal_windowResized(this->width(), this->height());
 
-    if (painter)
+    if (scene)
     {
-        connect(this, &EventView::signal_windowResized, painter, &EventScene::slot_windowResized);
-        connect(this, &EventView::signal_rebuild, painter, &EventScene::slot_rebuild);
+        connect(this, &EventView::signal_windowResized, scene, &EventScene::slot_windowResized);
+        connect(this, &EventView::signal_rebuild, scene, &EventScene::slot_rebuild);
     }
     emit signal_windowResized(this->width(), this->height());
 
-    painter->initialize();
-    setScene(painter);
+    scene->initialize();
+    setScene(scene);
     emit signal_rebuild(nullptr);
 }
 

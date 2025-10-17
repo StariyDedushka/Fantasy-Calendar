@@ -1,17 +1,23 @@
 #include "include/abstractscene.h"
 
-AbstractScene::AbstractScene()
+AbstractScene::AbstractScene(CalendarSystem *system) :
+    m_system(system)
 {
 
 }
 
 AbstractScene::~AbstractScene()
 {
-
+    for(AbstractItem *item : items)
+    {
+        delete item;
+    }
+    items.clear();
+    m_system = nullptr;
 }
 
 
-void AbstractScene::addItem(AbstractItem *item)
+bool AbstractScene::addItem(AbstractItem *item)
 {
     // qDebug() << "Adding item to scene:" << &item;
     // qDebug() << "Item type:" << typeid(*item).name();
@@ -19,11 +25,11 @@ void AbstractScene::addItem(AbstractItem *item)
 
     if (item == nullptr) {
         qDebug() << "ERROR: Attempt to add null item!";
-        return;
+        return false;
     }
 
-
     QGraphicsScene::addItem(item);
+    return true;
 }
 
 void AbstractScene::slot_onItemClicked()

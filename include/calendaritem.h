@@ -12,7 +12,6 @@ private:
     quint16 m_day;
     quint16 m_month;
     quint32 m_year;
-    // QVector<EventContainer*> *containers;
 
 
 public:

@@ -55,24 +55,7 @@ EventContainer::EventContainer(const QRectF &rect,  QColor colorPrimary, QColor 
 void EventContainer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
 
-    QBrush brush(colorPrimary);
-    QBrush brushHover(colorDarken(colorPrimary));
-    QBrush brushTriangle(colorTertiary);
-
-
-    QPen pen(colorSecondary);
-    QPen hoverPen(colorTertiary);
-
-    if(m_hovered || m_selected) {
-        painter->setBrush(brushHover);
-        painter->setPen(hoverPen);
-        painter->drawRect(m_rect);
-    } else {
-        painter->setBrush(brush);
-        painter->setPen(pen);
-        painter->drawRect(m_rect);
-    }
+    setupPainter(painter);
     QSharedPointer<QPolygon> triangle = buildTriangle(m_rect, 100, static_cast<qint16>(m_selected * 90));
-    painter->setBrush(brushTriangle);
     painter->drawPolygon(*triangle);
 }
