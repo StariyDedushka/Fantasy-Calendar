@@ -15,8 +15,8 @@ private:
 
 
 public:
-    CalendarItem(const QRectF &rect, QColor colorPrimary = Qt::green, QColor colorSecondary = Qt::darkGreen, QColor colorTertiary = Qt::yellow,
-                 bool enabled = true, quint16 day = 1, quint16 month = 1, quint32 year = 2000);
+    CalendarItem(const QRectF &rect, QString text = "", QColor colorPrimary = Qt::green, QColor colorSecondary = Qt::darkGreen, QColor colorTertiary = Qt::yellow,
+                 bool enabled = true, quint16 day = 1, quint16 month = 1, quint32 year = 2000, QObject *parent = nullptr);
 
     quint16 day() const;
     quint16 month() const;

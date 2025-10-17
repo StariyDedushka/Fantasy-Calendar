@@ -76,9 +76,8 @@ void CalendarScene::slot_rebuild(QVector<AbstractItem*> *input)
 
         // временно прописываем позицию отрисовки прямо в иницилизации ячейки календаря
         // TODO: перенести параметры позиции в настройки
-        itemPalette palette;
-        CalendarItem *item (new CalendarItem(QRectF(column * (m_rectSizeX + 8) + 10, row * (m_rectSizeY + 8), m_rectSizeX, m_rectSizeY),
-                            palette.colorPrimary, palette.colorSecondary, palette.colorTertiary, true, i + 1));
+        CalendarItem *item (new CalendarItem(QRectF(column * (m_rectSizeX + 8) + 10, row * (m_rectSizeY + 8), m_rectSizeX, m_rectSizeY), " ",
+                                            Qt::green, Qt::gray, Qt::yellow/*palette.colorPrimary, palette.colorSecondary, palette.colorTertiary*/, true, i + 1, 2000, 2000, this));
         item->setDay(i + 1); // +1 т.к. нумерация дней идёт с 1, не с 0
         items.push_back(item);
         this->addItem(item);

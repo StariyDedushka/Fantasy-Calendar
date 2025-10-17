@@ -1,13 +1,19 @@
 #include "include/abstractitem.h"
 
-AbstractItem::AbstractItem(const QRectF &rect,  QColor colorPrimary, QColor colorSecondary, QColor colorTertiary, bool enabled, QGraphicsItem *parent ) :
-    QGraphicsItem(parent)
+AbstractItem::AbstractItem(const QRectF &rect, QString text,  QColor colorPrimary, QColor colorSecondary, QColor colorTertiary,
+                           bool enabled, QObject *parent) :
+    QGraphicsItem()
     , m_enabled(enabled)
     , m_colorPrimary(colorPrimary)
     , m_colorSecondary(colorSecondary)
     , m_colorTertiary(colorTertiary)
     , m_rect(rect)
+    , m_text(text)
 {
+    if(parent->metaObject()->className() == "AbstractScene")
+    {
+
+    }
     m_hovered = false;
     m_selected = false;
     m_selectedItem = nullptr;
@@ -140,7 +146,15 @@ void AbstractItem::expand()
 {
     m_expanded = true;
     qreal height = items.size() * 60 + 10;
+    for(AbstractItem *item : items)
+    {
+        height += item->text().size();
+    }
     m_rect.setHeight(height);
+    for(AbstractItem *item : items)
+    {
+        item->show();
+    }
     update();
 }
 
@@ -149,6 +163,10 @@ void AbstractItem::collapse()
     m_expanded = false;
     qreal height = 50;
     m_rect.setHeight(height);
+    for(AbstractItem *item : items)
+    {
+        item->hide();
+    }
     update();
 }
 

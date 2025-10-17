@@ -14,7 +14,7 @@ public:
     virtual void initialize() override;
     // virtual void addEvent();
     bool addContainer(const QRectF &rect, QColor colorPrimary = Qt::green, QColor colorSecondary = Qt::darkGreen,
-                      QColor colorTertiary = Qt::yellow, bool enabled = true, QGraphicsItem *parent = nullptr);
+                      QColor colorTertiary = Qt::yellow, bool enabled = true, QObject *parent = nullptr);
 
 signals:
     void signal_rebuild(AbstractScene *scene);

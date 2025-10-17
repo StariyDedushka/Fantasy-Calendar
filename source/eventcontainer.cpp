@@ -1,7 +1,7 @@
 #include "include/eventcontainer.h"
 
-EventContainer::EventContainer(const QRectF &rect,  QColor colorPrimary, QColor colorSecondary, QColor colorTertiary, bool enabled, QGraphicsItem *parent ) :
-    AbstractItem(rect, colorPrimary, colorSecondary, colorTertiary, enabled, parent)
+EventContainer::EventContainer(const QRectF &rect, QString text,  QColor colorPrimary, QColor colorSecondary, QColor colorTertiary, bool enabled, QObject *parent ) :
+    AbstractItem(rect, text, colorPrimary, colorSecondary, colorTertiary, enabled, parent)
 {
     m_expandable = true;
     // CalendarEvent *testEvent = new CalendarEvent(QRectF(20, 40, 50, 30), Qt::darkGreen, Qt::darkGreen, Qt::yellow, true, this);

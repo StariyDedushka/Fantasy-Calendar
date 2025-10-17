@@ -29,6 +29,9 @@ protected:
     bool m_hovered;
     bool m_expanded;
     bool m_expandable;
+    quint16 groupId;
+    QString m_text;
+    QGraphicsScene *m_parentScene = nullptr;
 
     QColor m_colorPrimary;
     QColor m_colorSecondary;
@@ -42,6 +45,9 @@ protected:
     virtual void toggleClicked();
     virtual void setupPainter(QPainter *painter);
 
+    void setText(const QString &text);
+    QString text() const { return m_text; }
+
 
 private slots:
     virtual void slot_onItemClicked(AbstractItem *item);
@@ -49,8 +55,8 @@ private slots:
 public:
     AbstractItem();
     virtual ~AbstractItem();
-    AbstractItem(const QRectF &rect, QColor colorPrimary = Qt::green, QColor colorSecondary = Qt::darkGreen,
-                 QColor colorTertiary = Qt::yellow, bool enabled = true, QGraphicsItem *parent = nullptr);
+    AbstractItem(const QRectF &rect, QString text = "", QColor colorPrimary = Qt::green, QColor colorSecondary = Qt::darkGreen,
+                 QColor colorTertiary = Qt::yellow, bool enabled = true, QObject *parent = nullptr);
 
 
     virtual QRectF boundingRect() const override;

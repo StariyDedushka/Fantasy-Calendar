@@ -14,8 +14,8 @@ private:
 
 public:
     EventContainer();
-    EventContainer(const QRectF &rect, QColor colorPrimary = Qt::green, QColor colorSecondary = Qt::darkGreen,
-                   QColor colorTertiary = Qt::yellow, bool enabled = true, QGraphicsItem *parent = nullptr);
+    EventContainer(const QRectF &rect, QString text = "", QColor colorPrimary = Qt::green, QColor colorSecondary = Qt::darkGreen,
+                   QColor colorTertiary = Qt::yellow, bool enabled = true, QObject *parent = nullptr);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 };
 

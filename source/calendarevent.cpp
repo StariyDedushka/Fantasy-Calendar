@@ -1,24 +1,21 @@
 #include "include/calendarevent.h"
 
 CalendarEvent::CalendarEvent(CustomDateTime startTime, CustomDateTime endTime,
-                             const QRectF &rect, QColor colorPrimary,
+                             const QRectF &rect, QString text, QColor colorPrimary,
                              QColor colorSecondary, QColor colorTertiary,
-                             bool enabled, QGraphicsItem *parent)
-    : AbstractItem(rect, colorPrimary, colorSecondary, colorTertiary, enabled, parent)
+                             bool enabled, QObject *parent)
+    : AbstractItem(rect, text, colorPrimary, colorSecondary, colorTertiary, enabled, parent)
     , m_startTime(startTime)
     , m_endTime(endTime)
-    , m_text("New Event")
     , m_isAllDay(false)
 {
 }
 
-CalendarEvent::CalendarEvent(CustomDateTime startTime, const QString &text,
-                             const QRectF &rect, QColor colorPrimary,
-                             QColor colorSecondary, QColor colorTertiary,
-                             bool enabled, QGraphicsItem *parent)
-    : AbstractItem(rect, colorPrimary, colorSecondary, colorTertiary, enabled, parent)
+CalendarEvent::CalendarEvent(CustomDateTime startTime, const QRectF &rect, QString text,
+                             QColor colorPrimary, QColor colorSecondary, QColor colorTertiary,
+                             bool enabled, QObject *parent)
+    : AbstractItem(rect, text, colorPrimary, colorSecondary, colorTertiary, enabled, parent)
     , m_startTime(startTime)
-    , m_text(text)
     , m_isAllDay(true)
 {
     calculateAutoEndTime();
