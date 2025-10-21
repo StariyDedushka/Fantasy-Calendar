@@ -46,7 +46,7 @@ protected:
 
     QVector<itemPalette*> palette;
 
-    QVector<AbstractItem*> items;
+    QVector<AbstractItem*> m_items;
     CalendarSystem* m_system;
 
 };

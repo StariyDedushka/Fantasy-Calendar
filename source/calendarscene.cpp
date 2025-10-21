@@ -49,7 +49,7 @@ void CalendarScene::reposition()
         int row = i / columns;
         int column = i % columns;
 
-        items[i]->setRect(column * (m_rectSizeX + 8) + 10, row * (m_rectSizeY + 8) + 10, m_rectSizeX, m_rectSizeY);
+        m_items[i]->setRect(column * (m_rectSizeX + 8) + 10, row * (m_rectSizeY + 8) + 10, m_rectSizeX, m_rectSizeY);
     }
     update();
 }
@@ -57,13 +57,13 @@ void CalendarScene::reposition()
 void CalendarScene::slot_rebuild(QVector<AbstractItem*> *input)
 {
     qDebug() << "Rebuild called!";
-    if(!items.isEmpty())
+    if(!m_items.isEmpty())
     {
         for(int i = 0; i < m_daysPerMonth; i++)
         {
             // qDebug() << "Removing item №" << i << "...";
-            this->removeItem(items.at(0));
-            items.removeAt(0);
+            this->removeItem(m_items.at(0));
+            m_items.removeAt(0);
         }
     }
 
@@ -79,7 +79,7 @@ void CalendarScene::slot_rebuild(QVector<AbstractItem*> *input)
         CalendarItem *item (new CalendarItem(QRectF(column * (m_rectSizeX + 8) + 10, row * (m_rectSizeY + 8), m_rectSizeX, m_rectSizeY), " ",
                                             Qt::green, Qt::gray, Qt::yellow/*palette.colorPrimary, palette.colorSecondary, palette.colorTertiary*/, true, i + 1, 2000, 2000, this));
         item->setDay(i + 1); // +1 т.к. нумерация дней идёт с 1, не с 0
-        items.push_back(item);
+        m_items.push_back(item);
         this->addItem(item);
         connect(item, &AbstractItem::signal_itemClicked, this, &CalendarScene::slot_onItemClicked);
     }

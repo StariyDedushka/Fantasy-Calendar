@@ -11,7 +11,7 @@ class EventView : public QGraphicsView
 
 signals:
     void signal_windowResized(quint16 wWidth, quint16 wHeight);
-    void signal_rebuild(QVector<AbstractItem*> *items = nullptr);
+    void signal_rebuild(QVector<AbstractItem*> *m_items = nullptr);
 
 protected:
     void resizeEvent(QResizeEvent *event);

@@ -1,4 +1,4 @@
-QT       += core gui sql
+QT       += core gui sql xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -9,6 +9,7 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    source/settings.cpp \
     source/abstractscene.cpp \
     source/calendarscene.cpp \
     source/calendarsystem.cpp \
@@ -35,10 +36,12 @@ HEADERS += \
     include/eventscene.h \
     include/eventview.h \
     include/mainwindow.h \
-    include/calendarview.h
+    include/calendarview.h \
+    include/settings.h
 
 FORMS += \
-    ui/mainwindow.ui
+    ui/mainwindow.ui \
+    ui/settings.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

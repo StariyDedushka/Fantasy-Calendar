@@ -29,7 +29,7 @@ protected:
     bool m_hovered;
     bool m_expanded;
     bool m_expandable;
-    quint16 groupId;
+    quint16 m_groupId;
     QString m_text;
     QGraphicsScene *m_parentScene = nullptr;
 
@@ -37,7 +37,7 @@ protected:
     QColor m_colorSecondary;
     QColor m_colorTertiary;
 
-    QVector<AbstractItem*> items;
+    QVector<AbstractItem*> m_items;
     QRectF m_rect;
 
     static inline AbstractItem *m_selectedItem = nullptr;
@@ -53,7 +53,6 @@ private slots:
     virtual void slot_onItemClicked(AbstractItem *item);
 
 public:
-    AbstractItem();
     virtual ~AbstractItem();
     AbstractItem(const QRectF &rect, QString text = "", QColor colorPrimary = Qt::green, QColor colorSecondary = Qt::darkGreen,
                  QColor colorTertiary = Qt::yellow, bool enabled = true, QObject *parent = nullptr);
@@ -74,6 +73,9 @@ public:
 
     virtual void collapse();
     virtual void expand();
+
+    AbstractItem& operator=(AbstractItem&& other);
+    bool operator==(AbstractItem& other);
 
 };
 #endif

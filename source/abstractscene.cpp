@@ -8,11 +8,11 @@ AbstractScene::AbstractScene(CalendarSystem *system) :
 
 AbstractScene::~AbstractScene()
 {
-    for(AbstractItem *item : items)
+    for(AbstractItem *item : m_items)
     {
         delete item;
     }
-    items.clear();
+    m_items.clear();
     m_system = nullptr;
 }
 

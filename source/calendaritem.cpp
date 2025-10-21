@@ -52,8 +52,13 @@ void CalendarItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
 
 bool CalendarItem::operator==(const CalendarItem& other)
 {
-    if(other.m_day == this->m_day && other.m_month == this->m_month
-       && other.m_year == this->m_year && this->items == other.items)
-        return true;
-    else return false;
+    return AbstractItem::operator==(other) && m_day == other.m_day && m_month == other.m_month && m_year == other.m_year;
+}
+
+CalendarItem& CalendarItem::operator=(CalendarItem&& other)
+{
+    AbstractItem::operator=(std::move(other));
+    m_day = other.m_day;
+    m_month = other.m_month;
+    m_year = other.m_year;
 }

@@ -15,41 +15,6 @@ EventContainer::EventContainer(const QRectF &rect, QString text,  QColor colorPr
 
 // void EventContainer::mousePressEvent(QGraphicsSceneMouseEvent *event)
 // {
-
-//     if(m_selected) collapse();
-//     else expand();
-
-
-//     if (!m_enabled) {
-//         qDebug() << "Item disabled, ignoring";
-//         event->ignore();
-//         return;
-//     }
-//     if (items)
-//     {
-//         if(!items.empty()) {
-//             QPointF scenePos = event->scenePos();
-
-//             for (AbstractItem *child : *items) {
-//                 if (child->isEnabled() && child->isVisible()) {
-//                     // Преобразуем позицию в координаты дочернего элемента
-//                     QPointF childPos = child->mapFromScene(scenePos);
-//                     if (child->contains(childPos)) {
-//                         qDebug() << "Event should go to child:" << static_cast<void*>(child);
-//                         event->ignore(); // Позволяем событию пройти к дочернему элементу
-//                         return;
-//                     }
-//                 }
-//             }
-//         }
-//     }
-//     // Если дочерних элементов нет или событие не над ними - обрабатываем сами
-//     qDebug() << "Handling event in parent";
-//     toggleClicked();
-//     emit signal_itemClicked(this);
-//     event->accept();
-//     update();
-
 // }
 
 void EventContainer::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -58,4 +23,9 @@ void EventContainer::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     setupPainter(painter);
     QSharedPointer<QPolygon> triangle = buildTriangle(m_rect, 100, static_cast<qint16>(m_selected * 90));
     painter->drawPolygon(*triangle);
+}
+
+void EventContainer::addItem(AbstractItem *item)
+{
+    AbstractItem::addItem(item);
 }

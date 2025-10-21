@@ -25,16 +25,16 @@ AbstractItem::AbstractItem(const QRectF &rect, QString text,  QColor colorPrimar
 
 AbstractItem::~AbstractItem()
 {
-    for(AbstractItem *item : items)
+    for(AbstractItem *item : m_items)
     {
         delete item;
     }
-    items.clear();
+    m_items.clear();
 }
 
 QVector<AbstractItem*>& AbstractItem::getItems()
 {
-    return items;
+    return m_items;
 }
 
 void AbstractItem::setupPainter(QPainter *painter)
@@ -82,7 +82,7 @@ void AbstractItem::slot_onItemClicked(AbstractItem *item)
 
 void AbstractItem::addItem(AbstractItem *item)
 {
-    items.append(item);
+    m_items.append(item);
     connect(item, &AbstractItem::signal_itemClicked, this, &AbstractItem::slot_onItemClicked);
 }
 
@@ -145,13 +145,13 @@ void AbstractItem::setRect(quint16 posX, quint16 posY, quint16 sizeX, quint16 si
 void AbstractItem::expand()
 {
     m_expanded = true;
-    qreal height = items.size() * 60 + 10;
-    for(AbstractItem *item : items)
+    qreal height = m_items.size() * 60 + 10;
+    for(AbstractItem *item : m_items)
     {
         height += item->text().size();
     }
     m_rect.setHeight(height);
-    for(AbstractItem *item : items)
+    for(AbstractItem *item : m_items)
     {
         item->show();
     }
@@ -163,7 +163,7 @@ void AbstractItem::collapse()
     m_expanded = false;
     qreal height = 50;
     m_rect.setHeight(height);
-    for(AbstractItem *item : items)
+    for(AbstractItem *item : m_items)
     {
         item->hide();
     }
@@ -184,10 +184,10 @@ void AbstractItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
         event->ignore();
         return;
     }
-    if(!items.empty()) {
+    if(!m_items.empty()) {
         QPointF scenePos = event->scenePos();
 
-        for (AbstractItem *child : items) {
+        for (AbstractItem *child : m_items) {
             if (child->isEnabled() && child->isVisible()) {
                 // Преобразуем позицию в координаты дочернего элемента
                 QPointF childPos = child->mapFromScene(scenePos);
@@ -226,4 +226,35 @@ void AbstractItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 QRectF AbstractItem::boundingRect() const
 {
     return m_rect;
+}
+
+
+AbstractItem& AbstractItem::operator=(AbstractItem&& other)
+{
+    m_enabled = std::move(other.m_enabled);
+    m_selected = std::move(other.m_selected);
+    m_hovered = std::move(other.m_hovered);
+    m_expanded = std::move(other.m_expanded);
+    m_expandable = std::move(other.m_expandable);
+    m_groupId = std::move(other.m_groupId);
+    m_text = std::move(other.m_text);
+    m_parentScene = std::move(other.m_parentScene);
+
+    m_colorPrimary = std::move(other.m_colorPrimary);
+    m_colorSecondary = std::move(other.m_colorSecondary);
+    m_colorTertiary = std::move(other.m_colorTertiary);
+
+
+    m_rect = std::move(other.m_rect);
+
+    m_selectedItem = std::move(other.m_selectedItem);
+
+}
+
+
+bool AbstractItem::operator==(AbstractItem& other)
+{
+    return m_enabled == other.m_enabled && m_selected == other.m_selected && m_expandable == other.m_expandable && m_groupId == other.m_groupId
+           && m_text == other.m_text && m_parentScene == other.m_parentScene && m_colorPrimary == other.m_colorPrimary
+           && m_colorSecondary == other.m_colorSecondary && m_colorTertiary == other.m_colorTertiary && m_rect == other.m_rect;
 }
