@@ -4,24 +4,36 @@
 #include <QObject>
 #include <QFile>
 #include <QtXml>
-#include "customdatetime.h"
+#include "calendarsystem.h"
 
-class Settings
+
+class Settings : public QObject
 {
-    // Q_OBJECT
+    Q_OBJECT
+
+signals:
+    void appliedChanges();
+public slots:
 
 private:
-    CustomDateTime *system;
-    QVector<quint16> groupIds;
+    static Settings *instance_ptr;
+    // Settings();
+    CalendarSystem *system;
+    QMap<quint32, QString*> groups;
     QVector<QColor*> groupColors;
     QVector<QString*> days;
     QVector<QString*> months;
-    QFile config;
+    // QVector<QFile*> configs;
     QXmlStreamReader reader;
     QXmlStreamWriter writer;
+    bool loadSettings();
+    bool writeSettings();
+    // quint16 countFiles();
+    QVector<QString*> configs;
+    QString currentConfig;
 
 public:
-    Settings();
+    Settings* getInstance();
 };
 
 #endif // SETTINGS_H

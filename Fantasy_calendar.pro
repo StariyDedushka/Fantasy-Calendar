@@ -9,6 +9,7 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    source/settingswindow.cpp \
     source/settings.cpp \
     source/abstractscene.cpp \
     source/calendarscene.cpp \
@@ -38,7 +39,8 @@ HEADERS += \
     include/mainwindow.h \
     include/calendarview.h \
     include/settings.h  \
-    include/common/calendarStructures.h
+    include/common/calendarStructures.h \
+    include/settingswindow.h
 
 FORMS += \
     ui/mainwindow.ui \
