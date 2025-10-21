@@ -37,7 +37,8 @@ HEADERS += \
     include/eventview.h \
     include/mainwindow.h \
     include/calendarview.h \
-    include/settings.h
+    include/settings.h  \
+    include/common/calendarStructures.h
 
 FORMS += \
     ui/mainwindow.ui \

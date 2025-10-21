@@ -9,10 +9,11 @@ AbstractItem::AbstractItem(const QRectF &rect, QString text,  QColor colorPrimar
     , m_colorTertiary(colorTertiary)
     , m_rect(rect)
     , m_text(text)
+    , m_parentScene(parent)
 {
     if(parent->metaObject()->className() == "AbstractScene")
     {
-
+        m_parentScene = parent;
     }
     m_hovered = false;
     m_selected = false;
@@ -41,11 +42,11 @@ void AbstractItem::setupPainter(QPainter *painter)
 {
 
     QBrush brush(m_colorPrimary);
-    QBrush brushHover(m_colorPrimary.darker(30));
+    QBrush brushHover(m_colorPrimary.darker(120));
 
 
-    QPen pen(m_colorPrimary.darker(50));
-    QPen hoverPen(m_colorPrimary.lighter(60));
+    QPen pen(m_colorPrimary.darker(150));
+    QPen hoverPen(m_colorPrimary.lighter(150));
 
 
     if(m_hovered || m_selected) {
@@ -59,7 +60,7 @@ void AbstractItem::setupPainter(QPainter *painter)
     }
 }
 
-QSharedPointer<QPolygon> AbstractItem::buildTriangle(const QRectF &parentRect, quint8 scale, qint16 rotation)
+QSharedPointer<QPolygon> AbstractItem::buildTriangle(const QRectF &parentRect, double scale, qint16 rotation)
 {
     QSharedPointer<QPolygon> triangle(new QPolygon);
     double modifier = scale / 100.0;
@@ -145,12 +146,16 @@ void AbstractItem::setRect(quint16 posX, quint16 posY, quint16 sizeX, quint16 si
 void AbstractItem::expand()
 {
     m_expanded = true;
-    qreal height = m_items.size() * 60 + 10;
+    quint32 height = 0;
     for(AbstractItem *item : m_items)
     {
-        height += item->text().size();
+        height += item->m_rect.height();
+        height += 10;
     }
+
+    height *= m_items.size();
     m_rect.setHeight(height);
+
     for(AbstractItem *item : m_items)
     {
         item->show();
@@ -252,7 +257,7 @@ AbstractItem& AbstractItem::operator=(AbstractItem&& other)
 }
 
 
-bool AbstractItem::operator==(AbstractItem& other)
+bool AbstractItem::operator==(const AbstractItem& other)
 {
     return m_enabled == other.m_enabled && m_selected == other.m_selected && m_expandable == other.m_expandable && m_groupId == other.m_groupId
            && m_text == other.m_text && m_parentScene == other.m_parentScene && m_colorPrimary == other.m_colorPrimary

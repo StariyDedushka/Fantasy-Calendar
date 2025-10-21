@@ -59,7 +59,7 @@ void CalendarScene::slot_rebuild(QVector<AbstractItem*> *input)
     qDebug() << "Rebuild called!";
     if(!m_items.isEmpty())
     {
-        for(int i = 0; i < m_daysPerMonth; i++)
+        for(int i = 0; i < m_system->daysPerMonth(); i++)
         {
             // qDebug() << "Removing item №" << i << "...";
             this->removeItem(m_items.at(0));
@@ -67,9 +67,9 @@ void CalendarScene::slot_rebuild(QVector<AbstractItem*> *input)
         }
     }
 
-    int columns = m_daysPerWeek;
+    int columns = m_system->daysPerWeek();
 
-    for(int i = 0; i < m_daysPerMonth; i++)
+    for(int i = 0; i < m_system->daysPerMonth(); i++)
     {
         int row = i / columns;
         int column = i % columns;

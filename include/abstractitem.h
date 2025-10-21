@@ -31,7 +31,7 @@ protected:
     bool m_expandable;
     quint16 m_groupId;
     QString m_text;
-    QGraphicsScene *m_parentScene = nullptr;
+    QObject *m_parentScene = nullptr;
 
     QColor m_colorPrimary;
     QColor m_colorSecondary;
@@ -69,13 +69,13 @@ public:
     virtual void setEnabled(bool enabled);
     virtual void addItem(AbstractItem *item);
     virtual QVector<AbstractItem*>& getItems();
-    virtual QSharedPointer<QPolygon> buildTriangle(const QRectF &parentRect, quint8 scale, qint16 rotation);
+    virtual QSharedPointer<QPolygon> buildTriangle(const QRectF &parentRect, double scale, qint16 rotation);
 
     virtual void collapse();
     virtual void expand();
 
     AbstractItem& operator=(AbstractItem&& other);
-    bool operator==(AbstractItem& other);
+    bool operator==(const AbstractItem& other);
 
 };
 #endif

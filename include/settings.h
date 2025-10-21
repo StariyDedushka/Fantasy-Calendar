@@ -8,10 +8,17 @@
 
 class Settings
 {
-    Q_OBJECT
+    // Q_OBJECT
 
 private:
     CustomDateTime *system;
+    QVector<quint16> groupIds;
+    QVector<QColor*> groupColors;
+    QVector<QString*> days;
+    QVector<QString*> months;
+    QFile config;
+    QXmlStreamReader reader;
+    QXmlStreamWriter writer;
 
 public:
     Settings();

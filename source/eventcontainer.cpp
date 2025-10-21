@@ -21,7 +21,7 @@ void EventContainer::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
 {
 
     setupPainter(painter);
-    QSharedPointer<QPolygon> triangle = buildTriangle(m_rect, 100, static_cast<qint16>(m_selected * 90));
+    QSharedPointer<QPolygon> triangle = buildTriangle(m_rect, 1.0, static_cast<qint16>(m_selected * 90));
     painter->drawPolygon(*triangle);
 }
 
