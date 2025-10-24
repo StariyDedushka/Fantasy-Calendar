@@ -32,7 +32,7 @@ bool AbstractScene::addItem(AbstractItem *item)
     return true;
 }
 
-void AbstractScene::slot_onItemClicked()
+void AbstractScene::/*slot_*/onItemClicked()
 {
     update();
 }

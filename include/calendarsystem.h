@@ -2,27 +2,27 @@
 #define TimeSystem_H
 
 #include <QObject>
+#include "common/calendarStructures.h"
 
 class CalendarSystem
 {
     // Q_OBJECT
-private:
-    quint16 h, m, s, ms;
-    quint16 day, month, year;
-    
 
 signals:
     void systemChanged();
 
 private:
+    static quint16 h, m, s, ms;
+    static quint16 m_day, m_month, m_year;
+    QVector<Month*> *m_months;
+    QVector<Day*> *m_days;
+
     quint16 m_secondsPerMinute = 60;
     quint16 m_minutesPerHour = 60;
     quint16 m_hoursPerDay = 24;
 
-    quint16 m_daysPerWeek = 7;
-    quint16 m_daysPerMonth = 30;
-    quint16 m_monthsPerYear = 12;
-    quint16 m_daysPerYear = 365;
+    quint16 m_daysInWeek = 7;
+    quint16 m_monthsInYear = 12;
 
     static CalendarSystem* instance_ptr;
     CalendarSystem() { }
@@ -41,21 +41,21 @@ public:
     quint16 hoursPerDay() const { return m_hoursPerDay; }
 
     // Настройки календаря
-    quint16 daysPerWeek() const { return m_daysPerWeek; }
-    quint16 daysPerMonth() const { return m_daysPerMonth; }
-    quint16 monthsPerYear() const { return m_monthsPerYear; }
-    quint16 daysPerYear() const { return m_daysPerYear; }
+    quint16 daysInWeek() const { return m_daysInWeek; }
+    quint16 monthsInYear() const { return m_monthsInYear; }
 
     void setTimeSystem(quint16 secPerMin, quint16 minPerHour, quint16 hoursPerDay);
-    void setCalendarSystem(quint16 daysPerWeek, quint16 daysPerMonth,
-                           quint16 monthsPerYear, quint16 daysPerYear);
 
     // Валидация даты
     bool isValidDate(quint16 day, quint16 month, quint32 year) const;
 
     // Утилиты
-    quint16 dayOfWeek(quint16 day, quint16 month, quint32 year) const;
-    quint16 daysInMonth(quint16 month, quint32 year) const;
+    Day* dayOfWeek(quint16 day = m_day, quint16 month = m_month, quint32 year = m_year) const;
+    quint16 daysInMonth(quint16 month = m_month, quint32 year = m_year) const;
+    quint32 daysInYear(quint16 year = 0) const;
+
+    bool addMonth(const QString &name, quint16 days);
+    bool addDayOfWeek(const QString &name, quint16 place = 0);
 };
 
 #endif // TimeSystem_H

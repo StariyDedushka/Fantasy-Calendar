@@ -76,7 +76,7 @@ QSharedPointer<QPolygon> AbstractItem::buildTriangle(const QRectF &parentRect, d
 }
 
 
-void AbstractItem::slot_onItemClicked(AbstractItem *item)
+void AbstractItem::/*slot_*/onItemClicked(AbstractItem *item)
 {
     emit signal_itemClicked(item);
 }
@@ -84,7 +84,7 @@ void AbstractItem::slot_onItemClicked(AbstractItem *item)
 void AbstractItem::addItem(AbstractItem *item)
 {
     m_items.append(item);
-    connect(item, &AbstractItem::signal_itemClicked, this, &AbstractItem::slot_onItemClicked);
+    connect(item, &AbstractItem::signal_itemClicked, this, &AbstractItem::/*slot_*/onItemClicked);
 }
 
 

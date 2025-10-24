@@ -148,7 +148,7 @@ void MainWindow::initialize()
     // emit signal_windowResized(calendarWidth, calendarHeight);
 }
 
-void MainWindow::slot_rebuild()
+void MainWindow::/*slot_*/rebuild()
 {
 }
 

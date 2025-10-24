@@ -18,12 +18,12 @@ void EventScene::initialize()
     m_rectSizeY = 70;
     qDebug() << "Event Painter: initialized scene!";
 
-    slot_rebuild();
+    /*slot_*/rebuild();
 }
 
 
 
-void EventScene::slot_windowResized(quint16 wWidth, quint16 wHeight)
+void EventScene::/*slot_*/windowResized(quint16 wWidth, quint16 wHeight)
 {
     m_wWidth = wWidth;
     m_wHeight = wHeight;
@@ -34,7 +34,7 @@ void EventScene::slot_windowResized(quint16 wWidth, quint16 wHeight)
     reposition();
 }
 
-void EventScene::slot_settingsChanged()
+void EventScene::/*slot_*/settingsChanged()
 {
 
 }
@@ -52,7 +52,7 @@ void EventScene::reposition()
     update();
 }
 
-void EventScene::slot_rebuild(QVector<AbstractItem*> *input)
+void EventScene::/*slot_*/rebuild(QVector<AbstractItem*> *input)
 {
     qDebug() << "EventScene: rebuild called!";
     while(!m_items.empty())
@@ -85,7 +85,7 @@ void EventScene::slot_rebuild(QVector<AbstractItem*> *input)
                 true);
             m_items.push_back(container);
             this->addItem(container);
-            connect(container, &AbstractItem::signal_itemClicked, this, &EventScene::slot_onItemClicked);
+            connect(container, &AbstractItem::signal_itemClicked, this, &EventScene::/*slot_*/onItemClicked);
             qDebug() << "EventScene: container entry added! Container address:" << &container;
         }
         update();

@@ -9,8 +9,8 @@ EventView::EventView(CalendarSystem *system) :
 
     if (scene)
     {
-        connect(this, &EventView::signal_windowResized, scene, &EventScene::slot_windowResized);
-        connect(this, &EventView::signal_rebuild, scene, &EventScene::slot_rebuild);
+        connect(this, &EventView::signal_windowResized, scene, &EventScene::/*slot_*/windowResized);
+        connect(this, &EventView::signal_rebuild, scene, &EventScene::/*slot_*/rebuild);
     }
     emit signal_windowResized(this->width(), this->height());
 

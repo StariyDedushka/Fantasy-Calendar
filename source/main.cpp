@@ -2,13 +2,14 @@
 
 #include <QApplication>
 #include "include/calendarsystem.h"
+#include "include/settingswindow.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
     CalendarSystem *system = CalendarSystem::getInstance();
-    system->setCalendarSystem(7, 30, 12, 365); // Стандартный календарь
+    SettingsWindow settings;
     system->setTimeSystem(60, 60, 24); // Стандартное время
 
     MainWindow w(system);

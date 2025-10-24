@@ -58,7 +58,7 @@ QString CustomDateTime::toString() const
         .arg(m_hour).arg(m_minute).arg(m_second);
 }
 
-quint16 CustomDateTime::dayOfWeek() const
+Day* CustomDateTime::dayOfWeek() const
 {
     return m_calendarSystem->dayOfWeek(m_day, m_month, m_year);
 }

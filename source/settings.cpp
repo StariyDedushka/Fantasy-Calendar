@@ -25,23 +25,23 @@ bool Settings::writeSettings()
     writer.writeStartElement("settings");
 
     writer.writeStartElement("time system");
-    writer.writeTextElement("days per week", QString::number(system->daysPerWeek()));
-    writer.writeTextElement("days per month", QString::number(system->daysPerMonth()));
-    writer.writeTextElement("days per year", QString(system->daysPerYear()));
-    writer.writeTextElement("months per year", QString::number(system->monthsPerYear()));
+    writer.writeTextElement("days per week", QString::number(system->daysInWeek()));
+    writer.writeTextElement("days per month", QString::number(system->daysInMonth()));
+    writer.writeTextElement("days per year", QString(system->daysInYear()));
+    writer.writeTextElement("months per year", QString::number(system->monthsInYear()));
 
     writer.writeTextElement("seconds per minute", QString::number(system->secondsPerMinute()));
     writer.writeTextElement("minutes per hour", QString::number(system->minutesPerHour()));
     writer.writeTextElement("hours per day", QString::number(system->hoursPerDay()));
 
-    for(QString *day : days)
+    for(Day *day : days)
     {
-        writer.writeTextElement("day name", *day);
+        writer.writeTextElement("day name", day->name);
     }
 
-    for(QString *month : months)
+    for(Month *month : months)
     {
-        writer.writeTextElement("month name", *month);
+        writer.writeTextElement("month name", month->name);
     }
 
     writer.writeEndElement();

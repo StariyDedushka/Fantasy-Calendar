@@ -23,7 +23,7 @@ class MainWindow : public QMainWindow
 //     void signal_windowResized(quint16 wWidth, quint16 wHeight);
 
 private slots:
-    void slot_rebuild();
+    void /*slot_*/rebuild();
 
 public:
     MainWindow(CalendarSystem *system, QWidget *parent = nullptr);

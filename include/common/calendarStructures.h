@@ -1,12 +1,16 @@
 #ifndef CALENDARSTRUCTURES_H
 #define CALENDARSTRUCTURES_H
 #include <QObject>
-#include "include/calendaritem.h"
 
 struct Month {
     quint32 id;
-    QString *name;
-    QVector<CalendarItem*> days;
+    quint16 days;
+    QString name;
+};
+
+struct Day {
+    quint16 id;
+    QString name;
 };
 
 #endif
