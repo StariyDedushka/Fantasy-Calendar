@@ -46,7 +46,9 @@ void CalendarScene::reposition()
 
     for(int i = 0; i < m_daysPerMonth; i++)
     {
-        int row = i / columns;
+        int row = 0;
+        if(columns != 0)
+            row = i / columns;
         int column = i % columns;
 
         m_items[i]->setRect(column * (m_rectSizeX + 8) + 10, row * (m_rectSizeY + 8) + 10, m_rectSizeX, m_rectSizeY);
