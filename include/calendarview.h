@@ -16,10 +16,10 @@ public:
     CalendarView(CalendarSystem *system);
 
 // public slots:
-//     void slot_windowResized(quint16 wWidth, quint16 wHeight);
+//     void /*slot_*/windowResized(quint16 wWidth, quint16 wHeight);
 
 private slots:
-    void slot_redraw();
+    void /*slot_*/redraw();
 
 signals:
     void signal_windowResized(quint16 wWidth, quint16 wHeight);

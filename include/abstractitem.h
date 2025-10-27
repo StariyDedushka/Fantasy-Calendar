@@ -50,7 +50,7 @@ protected:
 
 
 private slots:
-    virtual void slot_onItemClicked(AbstractItem *item);
+    virtual void /*slot_*/onItemClicked(AbstractItem *item);
 
 public:
     virtual ~AbstractItem();

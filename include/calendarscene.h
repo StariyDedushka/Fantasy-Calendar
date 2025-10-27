@@ -4,6 +4,7 @@
 
 #include "abstractscene.h"
 #include "calendaritem.h"
+#include "common/calendarStructures.h"
 
 class CalendarScene : public AbstractScene
 {
@@ -17,15 +18,14 @@ public:
 signals:
     void signal_rebuild(AbstractScene *scene);
 public slots:
-    virtual void slot_windowResized(quint16 wWidth, quint16 wHeight) override;
-    virtual void slot_settingsChanged() override;
-    virtual void slot_rebuild(QVector<AbstractItem*> *input = nullptr) override;
+    virtual void /*slot_*/windowResized(quint16 wWidth, quint16 wHeight) override;
+    virtual void /*slot_*/settingsChanged() override;
+    virtual void /*slot_*/rebuild(QVector<AbstractItem*> *input = nullptr) override;
 
 
 private:
     virtual void reposition() override;
-    quint16 m_daysPerWeek;
-    quint16 m_daysPerMonth;
+    QVector<Month*> *m_months;
 
 };
 

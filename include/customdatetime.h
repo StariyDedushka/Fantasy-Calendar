@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "calendarsystem.h"
+class CalendarSystem;
 
 class CustomDateTime
 {
@@ -15,11 +16,11 @@ private:
     quint16 m_second;
 
 public:
+    CalendarSystem *m_calendarSystem;
     CustomDateTime() : m_calendarSystem(nullptr) {}
     CustomDateTime(CalendarSystem* system);
     CustomDateTime(CalendarSystem* system, quint16 day, quint16 month, quint32 year,
                    quint16 hour = 0, quint16 minute = 0, quint16 second = 0);
-    CalendarSystem *m_calendarSystem;
 
     // Геттеры
     quint16 day() const { return m_day; }
@@ -42,7 +43,7 @@ public:
 
     // Утилиты
     QString toString() const;
-    quint16 dayOfWeek() const;
+    Day* dayOfWeek() const;
 
     // Операции с датой/временем
     CustomDateTime addDays(qint32 days) const;

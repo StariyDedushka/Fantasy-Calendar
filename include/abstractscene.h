@@ -29,10 +29,10 @@ signals:
     void signal_rebuild(AbstractScene *scene);
 
 public slots:
-    virtual void slot_rebuild(QVector<AbstractItem*> *input = nullptr) = 0;
-    virtual void slot_settingsChanged() = 0;
-    virtual void slot_windowResized(quint16 wWidth, quint16 wHeight) = 0;
-    virtual void slot_onItemClicked();
+    virtual void /*slot_*/rebuild(QVector<AbstractItem*> *input = nullptr) = 0;
+    virtual void /*slot_*/settingsChanged() = 0;
+    virtual void /*slot_*/windowResized(quint16 wWidth, quint16 wHeight) = 0;
+    virtual void /*slot_*/onItemClicked();
 
 protected:
     virtual bool addItem(AbstractItem *item);

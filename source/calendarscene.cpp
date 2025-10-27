@@ -17,34 +17,31 @@ void CalendarScene::initialize()
     m_rectSizeY = 70;
     qDebug() << "Initialized scene!";
 
-    slot_rebuild();
+    /*slot_*/rebuild();
 }
 
 
 
-void CalendarScene::slot_windowResized(quint16 wWidth, quint16 wHeight)
+void CalendarScene::/*slot_*/windowResized(quint16 wWidth, quint16 wHeight)
 {
     m_wWidth = wWidth;
     m_wHeight = wHeight;
     this->setSceneRect(0, 0, m_wWidth, m_wHeight);
-    if(m_daysPerWeek != 0)
-    {
-        m_rectSizeX = wWidth / m_daysPerWeek - 10;
-        m_rectSizeY = wHeight / ((m_daysPerMonth / m_daysPerWeek) + 1);
-    }
+    m_rectSizeX = wWidth / m_system->daysInWeek() - 10;
+    m_rectSizeY = wHeight / ((m_system->daysInMonth() / m_system->daysInWeek()) + 1);
 
     reposition();
 }
 
-void CalendarScene::slot_settingsChanged()
+void CalendarScene::/*slot_*/settingsChanged()
 {
 
 }
 void CalendarScene::reposition()
 {
-    int columns = m_daysPerWeek;
+    int columns = m_system->daysInMonth();
 
-    for(int i = 0; i < m_daysPerMonth; i++)
+    for(int i = 0; i < m_system->daysInMonth(); i++)
     {
         int row = 0;
         if(columns != 0)
@@ -56,12 +53,12 @@ void CalendarScene::reposition()
     update();
 }
 
-void CalendarScene::slot_rebuild(QVector<AbstractItem*> *input)
+void CalendarScene::/*slot_*/rebuild(QVector<AbstractItem*> *input)
 {
     qDebug() << "Rebuild called!";
     if(!m_items.isEmpty())
     {
-        for(int i = 0; i < m_system->daysPerMonth(); i++)
+        for(int i = 0; i < m_system->daysInMonth(); i++)
         {
             // qDebug() << "Removing item №" << i << "...";
             this->removeItem(m_items.at(0));
@@ -69,9 +66,9 @@ void CalendarScene::slot_rebuild(QVector<AbstractItem*> *input)
         }
     }
 
-    int columns = m_system->daysPerWeek();
+    int columns = m_system->daysInWeek();
 
-    for(int i = 0; i < m_system->daysPerMonth(); i++)
+    for(int i = 0; i < m_system->daysInMonth(); i++)
     {
         int row = i / columns;
         int column = i % columns;
@@ -83,7 +80,7 @@ void CalendarScene::slot_rebuild(QVector<AbstractItem*> *input)
         item->setDay(i + 1); // +1 т.к. нумерация дней идёт с 1, не с 0
         m_items.push_back(item);
         this->addItem(item);
-        connect(item, &AbstractItem::signal_itemClicked, this, &CalendarScene::slot_onItemClicked);
+        connect(item, &AbstractItem::signal_itemClicked, this, &CalendarScene::/*slot_*/onItemClicked);
     }
     update();
     // emit signal_rebuild(this);
