@@ -9,15 +9,13 @@ class EventScene : public AbstractScene
 {
     Q_OBJECT
 public:
-    EventScene(CalendarSystem *system);
+    EventScene();
     ~EventScene();
     virtual void initialize() override;
     // virtual void addEvent();
     bool addContainer(const QRectF &rect, QColor colorPrimary = Qt::green, QColor colorSecondary = Qt::darkGreen,
                       QColor colorTertiary = Qt::yellow, bool enabled = true, QObject *parent = nullptr);
 
-signals:
-    void signal_rebuild(AbstractScene *scene);
 public slots:
     virtual void /*slot_*/windowResized(quint16 wWidth, quint16 wHeight) override;
     virtual void /*slot_*/settingsChanged() override;

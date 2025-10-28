@@ -1,7 +1,9 @@
 #include "include/calendarscene.h"
 
-CalendarScene::CalendarScene(CalendarSystem *system) :
-    AbstractScene(system)
+CalendarScene::CalendarScene(CalendarSystem *system, CustomDateTime *globalTime) :
+    AbstractScene()
+    , m_system(system)
+    , m_globalTime(globalTime)
 {
 }
 
@@ -28,7 +30,7 @@ void CalendarScene::/*slot_*/windowResized(quint16 wWidth, quint16 wHeight)
     m_wHeight = wHeight;
     this->setSceneRect(0, 0, m_wWidth, m_wHeight);
     m_rectSizeX = wWidth / m_system->daysInWeek() - 10;
-    m_rectSizeY = wHeight / ((m_system->daysInMonth() / m_system->daysInWeek()) + 1);
+    m_rectSizeY = wHeight / ((m_system->daysInMonth(m_globalTime->month()) / m_system->daysInWeek()) + 1);
 
     reposition();
 }
@@ -39,9 +41,9 @@ void CalendarScene::/*slot_*/settingsChanged()
 }
 void CalendarScene::reposition()
 {
-    int columns = m_system->daysInMonth();
+    int columns = m_system->daysInMonth(m_globalTime->month());
 
-    for(int i = 0; i < m_system->daysInMonth(); i++)
+    for(int i = 0; i < m_system->daysInMonth(m_globalTime->month()); i++)
     {
         int row = 0;
         if(columns != 0)
@@ -58,7 +60,7 @@ void CalendarScene::/*slot_*/rebuild(QVector<AbstractItem*> *input)
     qDebug() << "Rebuild called!";
     if(!m_items.isEmpty())
     {
-        for(int i = 0; i < m_system->daysInMonth(); i++)
+        for(int i = 0; i < m_system->daysInMonth(m_globalTime->month()); i++)
         {
             // qDebug() << "Removing item №" << i << "...";
             this->removeItem(m_items.at(0));
@@ -68,7 +70,7 @@ void CalendarScene::/*slot_*/rebuild(QVector<AbstractItem*> *input)
 
     int columns = m_system->daysInWeek();
 
-    for(int i = 0; i < m_system->daysInMonth(); i++)
+    for(int i = 0; i < m_system->daysInMonth(m_globalTime->month()); i++)
     {
         int row = i / columns;
         int column = i % columns;

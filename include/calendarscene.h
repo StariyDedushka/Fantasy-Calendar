@@ -11,7 +11,7 @@ class CalendarScene : public AbstractScene
     // Q_INTERFACES(AbstractScene)
     Q_OBJECT
 public:
-    CalendarScene(CalendarSystem *system);
+    CalendarScene(CalendarSystem *system, CustomDateTime *globalTime);
     ~CalendarScene();
     virtual void initialize() override;
 
@@ -26,6 +26,8 @@ public slots:
 private:
     virtual void reposition() override;
     QVector<Month*> *m_months;
+    CustomDateTime* m_globalTime;
+    CalendarSystem* m_system;
 
 };
 

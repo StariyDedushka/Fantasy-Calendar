@@ -1,11 +1,5 @@
 #include "include/abstractscene.h"
 
-AbstractScene::AbstractScene(CalendarSystem *system) :
-    m_system(system)
-{
-
-}
-
 AbstractScene::~AbstractScene()
 {
     for(AbstractItem *item : m_items)
@@ -13,7 +7,6 @@ AbstractScene::~AbstractScene()
         delete item;
     }
     m_items.clear();
-    m_system = nullptr;
 }
 
 

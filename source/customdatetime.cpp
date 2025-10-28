@@ -34,6 +34,26 @@ bool CustomDateTime::setTime(quint16 hour, quint16 minute, quint16 second)
     return true;
 }
 
+bool CustomDateTime::setDateTime(quint16 day, quint16 month, quint32 year, quint16 hour, quint16 minute, quint16 second)
+{
+    if (!m_calendarSystem->isValidDate(day, month, year))
+        return false;
+
+    m_day = day;
+    m_month = month;
+    m_year = year;
+
+    if (hour >= m_calendarSystem->hoursPerDay() ||
+        minute >= m_calendarSystem->minutesPerHour() ||
+        second >= m_calendarSystem->secondsPerMinute())
+        return false;
+
+    m_hour = hour;
+    m_minute = minute;
+    m_second = second;
+    return true;
+}
+
 bool CustomDateTime::isValid() const
 {
     return isValidDate() && isValidTime();
@@ -60,7 +80,7 @@ QString CustomDateTime::toString() const
 
 Day* CustomDateTime::dayOfWeek() const
 {
-    return m_calendarSystem->dayOfWeek(m_day, m_month, m_year);
+    return m_calendarSystem->dayOfWeek(m_day);
 }
 
 bool CustomDateTime::operator==(const CustomDateTime& other) const

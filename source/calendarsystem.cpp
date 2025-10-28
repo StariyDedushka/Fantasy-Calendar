@@ -2,18 +2,37 @@
 
 CalendarSystem* CalendarSystem::instance_ptr = nullptr;
 
+CalendarSystem::CalendarSystem() :
+    m_months(new QVector<Month*>())
+    , m_days(new QVector<Day*>())
+    , m_monthsInYear(0)
+    , m_daysInWeek(0)
+    , m_secondsPerMinute(0)
+    , m_minutesPerHour(0)
+    , m_hoursPerDay(0)
+{
+}
 CalendarSystem* CalendarSystem::getInstance()
 {
     if(instance_ptr == nullptr)
+    {
         instance_ptr = new CalendarSystem();
-    return instance_ptr;
+        return instance_ptr;
+    }
+    else throw std::runtime_error("Singleton CalendarSystem instance already exists!");
 }
 
-void CalendarSystem::setTimeSystem(quint16 secPerMin, quint16 minPerHour, quint16 hoursPerDay)
+bool CalendarSystem::setTimeSystem(quint16 secPerMin, quint16 minPerHour, quint16 hoursPerDay)
 {
-    m_secondsPerMinute = secPerMin;
-    m_minutesPerHour = minPerHour;
-    m_hoursPerDay = hoursPerDay;
+    if(secPerMin < UINT16_MAX && minPerHour < UINT16_MAX && hoursPerDay < UINT16_MAX
+       && (secPerMin > 0 && minPerHour > 0 && hoursPerDay > 0))
+    {
+        m_secondsPerMinute = secPerMin;
+        m_minutesPerHour = minPerHour;
+        m_hoursPerDay = hoursPerDay;
+        return true;
+    }
+    return false;
 }
 
 
@@ -24,27 +43,59 @@ bool CalendarSystem::isValidDate(quint16 day, quint16 month, quint32 year) const
            (year >= 1);
 }
 
-Day* CalendarSystem::dayOfWeek(quint16 day, quint16 month, quint32 year) const
+Day* CalendarSystem::dayOfWeek(quint16 day) const
 {
-    quint32 totalDays = (year - 1) * daysInYear() +
-                        (month - 1) * daysInMonth(month, year) +
-                        (day - 1);
-    return m_days->at(totalDays % m_daysInWeek + 1);
+    if(day > 0)
+        return m_days->at(day - 1);
+    else return new Day();
 }
 
 quint16 CalendarSystem::daysInMonth(quint16 month, quint32 year) const
 {
     Q_UNUSED(year)
+    if(!m_months->empty())
     return m_months->at(month - 1)->days;
+    else return 0;
 }
 
 
 quint32 CalendarSystem::daysInYear(quint16 year) const
 {
     quint32 daysInYear = 0;
-    for(int i = 0; i < m_months->size(); i++)
-    {
-        daysInYear += m_months->at(i)->days;
-    }
+    for(Month *month : *m_months)
+        daysInYear += month->days;
+
     return daysInYear;
 }
+
+bool CalendarSystem::addDayOfWeek(const QString &name, quint16 place)
+{
+    if(place > m_daysInWeek)
+        place = m_daysInWeek - 1;
+    Day *day = new Day();
+    day->name = name;
+    m_days->insert(place, day);
+    m_daysInWeek++;
+    return true;
+}
+
+bool CalendarSystem::addMonth(const QString &name, quint16 days, quint16 place)
+{
+    if(place > m_months->size())
+        place = m_months->size() - 1;
+    Month *month = new Month();
+    month->name = name;
+    month->days = days;
+    m_months->insert(place, month);
+    m_monthsInYear++;
+    return true;
+}
+// bool CalendarSystem::setDaysPerWeek(quint16 daysPerWeek)
+// {
+//     if(daysPerWeek < UINT16_MAX && (daysPerWeek > 0))
+//     {
+//         m_daysInWeek = daysPerWeek;
+//         return true;
+//     }
+//     return false;
+// }

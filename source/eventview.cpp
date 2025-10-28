@@ -4,7 +4,7 @@ EventView::EventView(CalendarSystem *system) :
     m_system(system)
 {
     setDragMode(QGraphicsView::NoDrag);
-    scene = new EventScene(system);
+    scene = new EventScene();
     emit signal_windowResized(this->width(), this->height());
 
     if (scene)

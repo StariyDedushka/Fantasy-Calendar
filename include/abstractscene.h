@@ -9,6 +9,7 @@
 
 #include "abstractitem.h"
 #include "calendarsystem.h"
+#include "customdatetime.h"
 
 struct itemPalette {
     quint16 itemGroup;
@@ -21,12 +22,9 @@ class AbstractScene : public QGraphicsScene
 {
     Q_OBJECT
 public:
-    AbstractScene(CalendarSystem *system);
+    AbstractScene() = default;
     ~AbstractScene();
     virtual void initialize() = 0;
-
-signals:
-    void signal_rebuild(AbstractScene *scene);
 
 public slots:
     virtual void /*slot_*/rebuild(QVector<AbstractItem*> *input = nullptr) = 0;
@@ -47,7 +45,6 @@ protected:
     QVector<itemPalette*> palette;
 
     QVector<AbstractItem*> m_items;
-    CalendarSystem* m_system;
 
 };
 

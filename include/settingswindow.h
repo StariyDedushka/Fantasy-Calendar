@@ -38,6 +38,7 @@ private:
     Settings *settings;
 public:
     SettingsWindow(QWidget *parent = nullptr);
+    void setGlobalTime(CustomDateTime *globalTime);
 private slots:
     void on_sb_dpw_valueChanged(int arg1);
     void on_cb_months_currentIndexChanged(int index);
@@ -51,8 +52,6 @@ private slots:
     void on_cb_eventGroups_currentIndexChanged(int index);
     void on_cb_eventGroups_editTextChanged(const QString &arg1);
     void on_btn_setColor_clicked();
-    void on_comboBox_currentIndexChanged(int index);
-    void on_pushButton_clicked();
     void on_cb_configs_currentIndexChanged(int index);
     void on_cb_configs_editTextChanged(const QString &arg1);
     void on_btn_loadConfig_clicked();

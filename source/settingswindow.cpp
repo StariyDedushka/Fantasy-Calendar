@@ -104,3 +104,7 @@ void SettingsWindow::on_btn_saveConfig_clicked()
 
 }
 
+void SettingsWindow::setGlobalTime(CustomDateTime *globalTime)
+{
+    settings->setGlobalTime(globalTime);
+}

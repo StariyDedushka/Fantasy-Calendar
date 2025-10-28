@@ -42,6 +42,11 @@ MainWindow::MainWindow(CalendarSystem *system, CustomDateTime *globalTime, QWidg
     eventsWindow->show();
 }
 
+void MainWindow::setupMenu()
+{
+    ui->menu->ac
+}
+
 void MainWindow::setupLayouts()
 {
     // Убираем абсолютное позиционирование из centralwidget

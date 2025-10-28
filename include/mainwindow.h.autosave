@@ -18,9 +18,8 @@ QT_END_NAMESPACE
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
-// signals:
-//     void signal_windowResized(quint16 wWidth, quint16 wHeight);
+    
+    public slots"
 
 public:
     MainWindow(CalendarSystem *system, CustomDateTime *globalTime, QWidget *parent = nullptr);
@@ -36,6 +35,8 @@ private:
 
     void setupLayouts();
     void setupCalendarLayout();
+    void setupMenu();
+    void setupActions();
 
 
     // void resizeEvent(QResizeEvent *event);

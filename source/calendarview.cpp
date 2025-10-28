@@ -1,10 +1,10 @@
 #include "include/calendarview.h"
 
-CalendarView::CalendarView(CalendarSystem *system) :
+CalendarView::CalendarView(CalendarSystem *system, CustomDateTime *globalTime) :
     m_system(system)
+    , scene(new CalendarScene(system, globalTime))
 {
     setDragMode(QGraphicsView::NoDrag);
-    scene = new CalendarScene(system);
     if (scene)
         connect(this, &CalendarView::signal_windowResized, scene, &CalendarScene::/*slot_*/windowResized);
 
