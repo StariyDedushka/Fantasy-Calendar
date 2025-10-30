@@ -4,6 +4,7 @@
 #include <QWidget>
 #include "ui_settings.h"
 #include "settings.h"
+#include <QColorDialog>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -26,12 +27,14 @@ signals:
     void sb_hourPerDay_valueChanged(int hpd);
     void cb_eventGroups_currentIndexChanged(const QString &group);
     void cb_eventGroups_editTextChanged(const QString &newGroup);
-    void btn_setColor_clicked();
+    void colorSelected(QColor color);
     void pushButton_clicked();
     void cb_configs_currentIndexChanged(QString &config);
     void cb_configs_editTextChanged(const QString &newConfig);
-    void btn_loadConfig_clicked();
-    void btn_saveConfig_clicked();
+    void btn_loadConfig_clicked(const QString& config);
+    void btn_saveConfig_clicked(const QString& config);
+    void btn_apply_clicked();
+    void btn_cancel_clicked();
 
 private:
     Ui::SettingsWindow *ui;
@@ -56,6 +59,8 @@ private slots:
     void on_cb_configs_editTextChanged(const QString &arg1);
     void on_btn_loadConfig_clicked();
     void on_btn_saveConfig_clicked();
+    void on_btn_apply_clicked();
+    void on_btn_cancel_clicked();
 };
 
 #endif // SETTINGSWINDOW_H
