@@ -46,10 +46,10 @@ public:
     Day* dayOfWeek() const;
 
     // Операции с датой/временем
-    CustomDateTime addDays(qint32 days) const;
-    CustomDateTime addHours(qint32 hours) const;
-
-    // Сравнение
+    bool addDays(qint32 days);
+    bool addHours(qint32 hours);
+    bool addMonths(qint32 months);
+   // Сравнение
     bool operator==(const CustomDateTime& other) const;
     bool operator<(const CustomDateTime& other) const;
 };

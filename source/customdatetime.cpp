@@ -21,6 +21,25 @@ bool CustomDateTime::setDate(quint16 day, quint16 month, quint32 year)
     return true;
 }
 
+bool CustomDateTime::addDays(qint32 days)
+{
+    m_day += days;
+    m_day %= m_calendarSystem->daysInWeek();
+    if(m_day > 0)
+        return true;
+    else return false;
+}
+
+
+bool CustomDateTime::addMonths(qint32 months)
+{
+    m_month += months;
+    m_month %= m_calendarSystem->monthsInYear();
+    if(m_month > 0)
+        return true;
+    else return false;
+}
+
 bool CustomDateTime::setTime(quint16 hour, quint16 minute, quint16 second)
 {
     if (hour >= m_calendarSystem->hoursPerDay() ||

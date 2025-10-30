@@ -86,14 +86,14 @@ void MainWindow::setupCalendarLayout()
         QHBoxLayout* navLayout = new QHBoxLayout();
 
         // Добавляем кнопки в правильном порядке
-        if (ui->btn_monthPrev) {
-            navLayout->addWidget(ui->btn_monthPrev);
+        if (ui->btn_dayPrev_top) {
+            navLayout->addWidget(ui->btn_dayPrev_top);
         }
-        if (ui->btn_monthNow) {
-            navLayout->addWidget(ui->btn_monthNow);
+        if (ui->btn_day_now) {
+            navLayout->addWidget(ui->btn_day_now);
         }
-        if (ui->btn_monthNext) {
-            navLayout->addWidget(ui->btn_monthNext);
+        if (ui->btn_dayNext_top) {
+            navLayout->addWidget(ui->btn_dayNext_top);
         }
 
         // Добавляем растяжку чтобы кнопки были слева
@@ -121,14 +121,14 @@ void MainWindow::setupCalendarLayout()
             if (!hasButtons) {
                 QHBoxLayout* navLayout = new QHBoxLayout();
 
-                if (ui->btn_monthPrev) {
-                    navLayout->addWidget(ui->btn_monthPrev);
+                if (ui->btn_dayPrev_top) {
+                    navLayout->addWidget(ui->btn_dayPrev_top);
                 }
-                if (ui->btn_monthNow) {
-                    navLayout->addWidget(ui->btn_monthNow);
+                if (ui->btn_day_now) {
+                    navLayout->addWidget(ui->btn_day_now);
                 }
-                if (ui->btn_monthNext) {
-                    navLayout->addWidget(ui->btn_monthNext);
+                if (ui->btn_dayNext_top) {
+                    navLayout->addWidget(ui->btn_dayNext_top);
                 }
 
                 navLayout->addStretch();
@@ -159,3 +159,63 @@ void MainWindow::initialize()
 //     // qDebug() << "Current QGraphicsView width:" << m_calendarWidth;;
 //     // qDebug() << "Current QGraphicsView height:" << m_calendarHeight;
 // }
+
+void MainWindow::on_btn_monthPrev_top_clicked()
+{
+
+}
+
+
+void MainWindow::on_btn_monthNext_top_clicked()
+{
+
+}
+
+
+void MainWindow::on_btn_dayPrev_top_clicked()
+{
+
+}
+
+
+void MainWindow::on_btn_dayNext_top_clicked()
+{
+
+}
+
+
+void MainWindow::on_btn_day_now_clicked()
+{
+
+}
+
+
+void MainWindow::on_dateEdit_editingFinished()
+{
+
+}
+
+
+void MainWindow::on_timeEdit_hours_valueChanged(int arg1)
+{
+
+}
+
+
+void MainWindow::on_timeEdit_minutes_valueChanged(int arg1)
+{
+
+}
+
+
+void MainWindow::on_btn_dayPrev_clicked()
+{
+
+}
+
+
+void MainWindow::on_btn_dayNext_clicked()
+{
+
+}
+
