@@ -12,7 +12,7 @@
 class Settings : public QObject
 {
     Q_OBJECT
-
+// signal
 signals:
     void appliedChanges();
 public slots:
