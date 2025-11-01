@@ -102,7 +102,7 @@ bool CalendarSystem::addMonth(const QString &name, quint16 days, quint16 place)
 
 bool CalendarSystem::editMonth(quint16 month_id, const QString& monthName, quint16 newDays, const QString &newName)
 {
-    auto searchMonth = [](Month *month) -> bool
+    auto searchMonth = [=](Month *month) -> bool
     {
         month->days = newDays;
         if(!newName.isEmpty())

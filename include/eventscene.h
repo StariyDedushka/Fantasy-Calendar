@@ -12,7 +12,6 @@ public:
     EventScene();
     ~EventScene();
     virtual void initialize() override;
-    // virtual void addEvent();
     bool addContainer(const QRectF &rect, QColor colorPrimary = Qt::green, QColor colorSecondary = Qt::darkGreen,
                       QColor colorTertiary = Qt::yellow, bool enabled = true, QObject *parent = nullptr);
 

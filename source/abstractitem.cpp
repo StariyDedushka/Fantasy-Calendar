@@ -11,10 +11,10 @@ AbstractItem::AbstractItem(const QRectF &rect, QString text,  QColor colorPrimar
     , m_text(text)
     , m_parentScene(parent)
 {
-    if(parent->metaObject()->className() == "AbstractScene")
-    {
-        m_parentScene = parent;
-    }
+    // if(parent->metaObject()->className() == "AbstractScene")
+    // {
+    //     m_parentScene = parent;
+    // }
     m_hovered = false;
     m_selected = false;
     m_selectedItem = nullptr;

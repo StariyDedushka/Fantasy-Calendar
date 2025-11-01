@@ -5,6 +5,7 @@ CalendarScene::CalendarScene(CalendarSystem *system, CustomDateTime *globalTime)
     , m_system(system)
     , m_globalTime(globalTime)
 {
+    EventContainer container(QRectF(20, 20, 60, 60), "text");
 }
 
 CalendarScene::~CalendarScene()
