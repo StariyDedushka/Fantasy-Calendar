@@ -82,7 +82,7 @@ bool CalendarSystem::addDayOfWeek(const QString &name, quint16 place)
 bool CalendarSystem::addMonth(const QString &name, quint16 days, quint16 place)
 {
     if(place > m_months->size())
-        place = m_months->size() - 1;
+        place = m_months->size();
     Month *month = new Month();
     month->name = name;
     month->days = days;
@@ -99,3 +99,34 @@ bool CalendarSystem::addMonth(const QString &name, quint16 days, quint16 place)
 //     }
 //     return false;
 // }
+
+bool CalendarSystem::editMonth(quint16 month_id, const QString& monthName, quint16 newDays, const QString &newName)
+{
+    auto searchMonth = [](Month *month) -> bool
+    {
+        month->days = newDays;
+        if(!newName.isEmpty())
+            month->name = newName;
+        return true;
+    };
+    if((newDays < UINT16_MAX) && newDays > 0)
+    {
+        for(Month* month : *m_months)
+        {
+            if(month_id != 0)
+            {
+                if(month->id == month_id)
+                {
+                    searchMonth(month);
+                }
+            } else if(!monthName.isEmpty())
+            {
+                if(month->name == monthName)
+                {
+                    searchMonth(month);
+                }
+            }
+        }
+    }
+    return false;
+}

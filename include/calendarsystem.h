@@ -56,6 +56,7 @@ public:
 
     bool addMonth(const QString &name, quint16 days, quint16 place = 0);
     bool addDayOfWeek(const QString &name, quint16 place = 0);
+    bool editMonth(quint16 month_id = 0, const QString& monthName = "", quint16 newDays, const QString& newName = "");
 };
 
 #endif // TimeSystem_H
