@@ -154,3 +154,79 @@ void Settings::setGlobalTime(CustomDateTime *globalTime)
 
 //     }
 // }
+
+
+void Settings::dpm_valueChanged(int days, const QString &month)
+{
+
+}
+
+void Settings::days_editTextChanged(quint16 id, const QString &newName)
+{
+
+}
+
+void Settings::months_editTextChanged(quint16 id, const QString &newName)
+{
+
+}
+
+void Settings::secPerMin_valueChanged(int spm)
+{
+
+}
+
+void Settings::minPerHour_valueChanged(int mph)
+{
+
+}
+
+void Settings::hourPerDay_valueChanged(int hpd)
+{
+
+}
+
+void Settings::eventGroups_currentIndexChanged(quint16 id, const QString &group)
+{
+
+}
+
+void Settings::eventGroups_editTextChanged(quint16 id, const QString &newGroup)
+{
+
+}
+
+void Settings::colorSelected(QColor color)
+{
+
+}
+
+void Settings::configs_currentIndexChanged(QString &config)
+{
+
+}
+
+void Settings::configs_editTextChanged(quint16 id, const QString &newConfig)
+{
+
+}
+
+void Settings::loadConfig_clicked(const QString& config)
+{
+
+}
+
+void Settings::saveConfig_clicked(const QString& config)
+{
+
+}
+
+void Settings::apply_clicked()
+{
+
+}
+
+void Settings::cancel_clicked()
+{
+
+}
