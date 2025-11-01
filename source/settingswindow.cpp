@@ -8,15 +8,10 @@ SettingsWindow::SettingsWindow(QWidget *parent) :
     settings = Settings::getInstance();
 }
 
-void SettingsWindow::on_sb_dpw_valueChanged(int arg1)
-{
-    emit sb_dpw_valueChanged(arg1);
-}
-
 
 void SettingsWindow::on_cb_months_currentIndexChanged(int index)
 {
-    emit cb_months_currentIndexChanged(index);
+    emit cb_months_currentIndexChanged(ui->cb_months->currentText());
 }
 
 
@@ -28,7 +23,7 @@ void SettingsWindow::on_sb_dpm_valueChanged(int arg1)
 
 void SettingsWindow::on_cb_days_currentIndexChanged(int index)
 {
-    emit cb_days_currentIndexChanged(index);
+    emit cb_days_currentIndexChanged(ui->cb_days->currentText());
 }
 
 
@@ -64,7 +59,7 @@ void SettingsWindow::on_sb_hourPerDay_valueChanged(int arg1)
 
 void SettingsWindow::on_cb_eventGroups_currentIndexChanged(int index)
 {
-    emit cb_eventGroups_currentIndexChanged(index);
+    emit cb_eventGroups_currentIndexChanged(ui->cb_eventGroups->currentText());
 }
 
 
@@ -84,7 +79,7 @@ void SettingsWindow::on_btn_setColor_clicked()
 
 void SettingsWindow::on_cb_configs_currentIndexChanged(int index)
 {
-    emit cb_configs_currentIndexChanged(index);
+    emit cb_configs_currentIndexChanged(ui->cb_configs->currentText());
 }
 
 

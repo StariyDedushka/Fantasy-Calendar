@@ -29,5 +29,6 @@ int main(int argc, char *argv[])
     MainWindow w(system, globalTime);
     w.initialize();
     w.show();
+    settings.show();
     return a.exec();
 }

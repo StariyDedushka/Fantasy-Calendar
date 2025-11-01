@@ -19,17 +19,16 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
     
-    public slots"
 
 public:
     MainWindow(CalendarSystem *system, CustomDateTime *globalTime, QWidget *parent = nullptr);
     ~MainWindow();
     void initialize();
 
-private:
 private slots:
     void on_btn_monthPrev_top_clicked();
 
+private:
     Ui::MainWindow *ui;
     CalendarView *calendar;
     EventView *eventsWindow;

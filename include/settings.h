@@ -12,13 +12,12 @@
 class Settings : public QObject
 {
     Q_OBJECT
-// signal
+
 signals:
     void appliedChanges();
 public slots:
     bool loadSettings();
     bool writeSettings();
-    void dpw_valueChanged(int days);
     void months_currentIndexChanged(const QString &month);
     void dpm_valueChanged(int days);
     void days_currentIndexChanged(const QString &day);
@@ -47,18 +46,21 @@ private:
     virtual ~Settings() override;
     CalendarSystem *system;
     CustomDateTime *globalTime;
-    QMap<quint32, QString*> groups;
+    QMap<quint32, EventGroup*> groups;
     QVector<QColor*> groupColors;
     QVector<Day*> *days;
     QVector<Month*> *months;
-    QXmlStreamReader reader;
-    QXmlStreamWriter writer;
     QVector<QString*> configs;
     QString currentConfig;
 
+    quint16 daysPerMonth;
+    quint16 secondsPerMinute;
+    quint16 minutesPerHour;
+    quint16 hoursPerDay;
+
 public:
     static Settings* getInstance();
-    static void setGlobalTime(CustomDateTime *globalTime);
+    void setGlobalTime(CustomDateTime *globalTime);
 };
 
 #endif // SETTINGS_H
