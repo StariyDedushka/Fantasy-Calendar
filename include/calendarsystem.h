@@ -23,28 +23,21 @@ private:
     quint16 m_daysInWeek = 7;
     quint16 m_monthsInYear = 12;
 
-    static CalendarSystem* instance_ptr;
-    CalendarSystem();
 public:
+    CalendarSystem();
     CalendarSystem(const CalendarSystem&) = delete;
-    ~CalendarSystem() { instance_ptr = nullptr; }
-    static CalendarSystem* getInstance();
-
-    // bool setHMS(quint16 h, quint16 m, quint16 s, quint16 ms = 0);
-    // bool setDMY(quint16 day, quint16 month, quint16 year);
+    ~CalendarSystem() {}
 
     // Настройки времени
     quint16 secondsPerMinute() const { return m_secondsPerMinute; }
     quint16 minutesPerHour() const { return m_minutesPerHour; }
     quint16 hoursPerDay() const { return m_hoursPerDay; }
 
-
     // Настройки календаря
     quint16 daysInWeek() const { return m_daysInWeek; }
     quint16 monthsInYear() const { return m_monthsInYear; }
 
     bool setTimeSystem(quint16 secPerMin, quint16 minPerHour, quint16 hoursPerDay);
-    // bool setDaysPerWeek(quint16 daysPerWeek);
 
     // Валидация даты
     bool isValidDate(quint16 day, quint16 month, quint32 year) const;
@@ -55,8 +48,23 @@ public:
     quint32 daysInYear(quint16 year = 0) const;
 
     bool addMonth(const QString &name, quint16 days, quint16 place = 0);
+    bool removeMonth(const QString &name);
+    bool removeMonth(quint16 id);
+
+    bool editMonth(const QString& monthName, quint16 newDays = 0, const QString& newName = "");
+    bool editMonth(quint16 month_id, quint16 newDays = 0, const QString& newName = "");
+    bool moveMonth(const QString& monthName, quint16 newPlace);
+    bool moveMonth(quint16 month_id, quint16 newPlace);
+
     bool addDayOfWeek(const QString &name, quint16 place = 0);
-    bool editMonth(quint16 month_id = 0, const QString& monthName = "", quint16 newDays = 0, const QString& newName = "");
+    bool removeDayOfWeek(const QString &name);
+    bool removeDayOfWeek(quint16 id);
+
+    bool editDayOfWeek(const QString& dayName, const QString& newName);
+    bool editDayOfWeek(quint16 day_id, const QString& newName);
+    bool moveDayOfWeek(quint16 day_id, quint16 newPlace);
+    bool moveDayOfWeek(const QString& dayName, quint16 newPlace);
+
 };
 
 #endif // TimeSystem_H

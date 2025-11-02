@@ -18,7 +18,7 @@ signals:
 public slots:
     bool loadSettings();
     bool writeSettings();
-    void dpm_valueChanged(int days, const QString& month);
+    void dpm_valueChanged(int m_days, const QString& month);
     void days_editTextChanged(quint16 id, const QString &newName);
     void months_editTextChanged(quint16 id, const QString &newName);
     void secPerMin_valueChanged(int spm);
@@ -39,26 +39,28 @@ signals:
 
 private:
 
-    static Settings *instance_ptr;
-    Settings();
-    virtual ~Settings() override;
-    CalendarSystem *system;
-    CustomDateTime *globalTime;
-    QVector<EventGroup*> groups;
+    CalendarSystem *m_system;
+    CustomDateTime *m_globalTime;
+    QVector<EventGroup*> m_groups;
     QMap<quint16, QColor*> groupColors;
-    QVector<Day*> *days;
-    QVector<Month*> *months;
-    QVector<QString*> configs;
-    QString currentConfig;
+    QVector<Day*> *m_days;
+    QVector<Month*> *m_months;
+    QVector<QString*> m_configs;
+    QString m_currentConfig;
 
-    quint16 daysPerMonth;
-    quint16 secondsPerMinute;
-    quint16 minutesPerHour;
-    quint16 hoursPerDay;
+    quint16 m_daysPerMonth;
+    quint16 m_secondsPerMinute;
+    quint16 m_minutesPerHour;
+    quint16 m_hoursPerDay;
 
 public:
-    static Settings* getInstance();
-    void setGlobalTime(CustomDateTime *globalTime);
+    // Удаляем конструктор копирования и оператор присваивания
+    Settings(const Settings&) = delete;
+    Settings& operator=(const Settings&) = delete;
+    Settings() = delete;
+
+    Settings(CalendarSystem *system, CustomDateTime *globalTime, QObject *parent = nullptr);
+    virtual ~Settings() override;
 };
 
 #endif // SETTINGS_H

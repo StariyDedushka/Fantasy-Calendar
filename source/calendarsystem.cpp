@@ -1,6 +1,5 @@
 #include "include/calendarsystem.h"
 
-CalendarSystem* CalendarSystem::instance_ptr = nullptr;
 
 CalendarSystem::CalendarSystem() :
     m_months(new QVector<Month*>())
@@ -12,14 +11,13 @@ CalendarSystem::CalendarSystem() :
     , m_hoursPerDay(0)
 {
 }
-CalendarSystem* CalendarSystem::getInstance()
+
+CalendarSystem::~CalendarSystem()
 {
-    if(instance_ptr == nullptr)
-    {
-        instance_ptr = new CalendarSystem();
-        return instance_ptr;
-    }
-    else throw std::runtime_error("Singleton CalendarSystem instance already exists!");
+    for(Month *month : *m_months) delete month;
+    for(Day *day : *m_days) delete day;
+    delete m_months;
+    delete m_days;
 }
 
 bool CalendarSystem::setTimeSystem(quint16 secPerMin, quint16 minPerHour, quint16 hoursPerDay)
@@ -47,7 +45,7 @@ Day* CalendarSystem::dayOfWeek(quint16 day) const
 {
     if(day > 0)
         return m_days->at(day - 1);
-    else return new Day();
+    else return nullptr;
 }
 
 quint16 CalendarSystem::daysInMonth(quint16 month, quint32 year) const
@@ -61,6 +59,7 @@ quint16 CalendarSystem::daysInMonth(quint16 month, quint32 year) const
 
 quint32 CalendarSystem::daysInYear(quint16 year) const
 {
+    Q_UNUSED(year);
     quint32 daysInYear = 0;
     for(Month *month : *m_months)
         daysInYear += month->days;
@@ -72,8 +71,11 @@ bool CalendarSystem::addDayOfWeek(const QString &name, quint16 place)
 {
     if(place > m_daysInWeek)
         place = m_daysInWeek - 1;
+
     Day *day = new Day();
     day->name = name;
+    day->id = m_days->size() + 1;
+
     m_days->insert(place, day);
     m_daysInWeek++;
     return true;
@@ -83,50 +85,108 @@ bool CalendarSystem::addMonth(const QString &name, quint16 days, quint16 place)
 {
     if(place > m_months->size())
         place = m_months->size();
+
     Month *month = new Month();
     month->name = name;
     month->days = days;
+    month->id = m_months->size() + 1;
+
     m_months->insert(place, month);
     m_monthsInYear++;
     return true;
 }
-// bool CalendarSystem::setDaysPerWeek(quint16 daysPerWeek)
-// {
-//     if(daysPerWeek < UINT16_MAX && (daysPerWeek > 0))
-//     {
-//         m_daysInWeek = daysPerWeek;
-//         return true;
-//     }
-//     return false;
-// }
 
-bool CalendarSystem::editMonth(quint16 month_id, const QString& monthName, quint16 newDays, const QString &newName)
+
+bool CalendarSystem::removeMonth(const QString &name)
 {
-    auto searchMonth = [=](Month *month) -> bool
+    for(Month *month : *m_months)
     {
-        month->days = newDays;
-        if(!newName.isEmpty())
-            month->name = newName;
-        return true;
-    };
-    if((newDays < UINT16_MAX) && newDays > 0)
-    {
-        for(Month* month : *m_months)
+        if(month->name == name)
         {
-            if(month_id != 0)
-            {
-                if(month->id == month_id)
-                {
-                    searchMonth(month);
-                }
-            } else if(!monthName.isEmpty())
-            {
-                if(month->name == monthName)
-                {
-                    searchMonth(month);
-                }
-            }
+            delete month;
+            return true;
         }
     }
     return false;
 }
+
+bool CalendarSystem::removeMonth(quint16 id)
+{
+    for(Month *month : *m_months)
+    {
+        if(month->id == id)
+        {
+            delete month;
+            return true;
+        }
+    }
+    return false;
+}
+
+bool CalendarSystem::editMonth(const QString& monthName, quint16 newDays, const QString& newName)
+{
+    for(Month *month : *m_months)
+    {
+        if(month->name == monthName)
+        {
+            if(newDays == 0 && newName.isEmpty())
+                return false;
+            if(newDays != 0)
+                month->days = newDays;
+            if(newName != 0)
+                month->name = newName;
+            return true;
+        }
+    }
+    return false;
+}
+bool CalendarSystem::editMonth(quint16 month_id, quint16 newDays, const QString& newName)
+{
+    for(Month *month : *m_months)
+    {
+        if(month->id == month_id)
+        {
+            if(newDays == 0 && newName.isEmpty())
+                return false;
+            if(newDays != 0)
+                month->days = newDays;
+            if(newName != 0)
+                month->name = newName;
+            return true;
+        }
+    }
+    return false;
+}
+
+bool CalendarSystem::moveMonth(const QString& monthName, quint16 newPlace)
+{
+    for(Month *month : *m_months)
+    {
+        if(month->name == monthName)
+        {
+            m_months->insert(newPlace, std::move(month));
+        }
+    }
+    return false;
+}
+
+bool CalendarSystem::moveMonth(quint16 month_id, quint16 newPlace)
+{
+    for(Month *month : *m_months)
+    {
+        if(month->id == month_id)
+        {
+            m_months->insert(newPlace, std::move(month));
+        }
+    }
+    return false;
+
+}
+
+bool CalendarSystem::removeDayOfWeek(const QString &name);
+bool CalendarSystem::removeDayOfWeek(quint16 id);
+
+bool CalendarSystem::editDayOfWeek(const QString& dayName, const QString& newName);
+bool CalendarSystem::editDayOfWeek(quint16 day_id, const QString& newName);
+bool CalendarSystem::moveDayOfWeek(quint16 day_id, quint16 newPlace);
+bool CalendarSystem::moveDayOfWeek(const QString& dayName, quint16 newPlace);

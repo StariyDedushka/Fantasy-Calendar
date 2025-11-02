@@ -1,21 +1,21 @@
 #include "include/settings.h"
 
-Settings* Settings::instance_ptr = nullptr;
 
-Settings* Settings::getInstance()
-{
-    if(instance_ptr == nullptr)
-        instance_ptr = new Settings();
-    return instance_ptr;
-}
-
-Settings::Settings()
+Settings::Settings(CalendarSystem *system, CustomDateTime *globalTime, QObject *parent) :
+    QObject(parent)
+    , m_system(system)
+    , m_globalTime(globalTime)
+    , m_days(new QVector<Day*>())
+    , m_months(new QVector<Month*>())
 {
     loadSettings();
 }
 
+
 Settings::~Settings()
 {
+    delete m_days;
+    delete m_months;
     // writeSettings();
 }
 
@@ -23,7 +23,7 @@ bool Settings::loadSettings()
 {
     quint16 spm = 0, mph = 0, hpd = 0;
     QFile file;
-    file.setFileName(QString("../config_%1").arg(currentConfig));
+    file.setFileName(QString("../config_%1").arg(m_currentConfig));
 
     QXmlStreamReader reader(&file);
     while(!reader.atEnd())
@@ -61,7 +61,7 @@ bool Settings::loadSettings()
                 hpd = reader.readElementText().toUInt();
                 break;
             }
-            if(elementName == "days of week")
+            if(elementName == "m_days of week")
             {
                 reader.readNext();
                 while(!reader.isEndElement())
@@ -73,14 +73,14 @@ bool Settings::loadSettings()
                         day->name = reader.readElementText();
                         reader.readNext();
                         day->id = reader.readElementText().toUInt();
-                        days->append(std::move(day));
+                        m_days->append(std::move(day));
                     }
                     reader.readNext();
                 }
             }
         }
 }
-    system->setTimeSystem(spm, mph, hpd);
+    m_system->setTimem_system(spm, mph, hpd);
     file.close();
     return true;
 }
@@ -91,19 +91,19 @@ bool Settings::writeSettings()
 
     QFile file;
     QXmlStreamWriter writer(&file);
-    file.setFileName(QString("../config_%1").arg(currentConfig));
+    file.setFileName(QString("../config_%1").arg(m_currentConfig));
     writer.writeStartDocument();
 //-----------------------------------------------------
     writer.writeStartElement("settings");
 
-    writer.writeStartElement("time system");
+    writer.writeStartElement("time m_system");
 
-    writer.writeTextElement("seconds per minute", QString::number(system->secondsPerMinute()));
-    writer.writeTextElement("minutes per hour", QString::number(system->minutesPerHour()));
-    writer.writeTextElement("hours per day", QString::number(system->hoursPerDay()));
+    writer.writeTextElement("seconds per minute", QString::number(m_system->m_secondsPerMinute()));
+    writer.writeTextElement("minutes per hour", QString::number(m_system->m_minutesPerHour()));
+    writer.writeTextElement("hours per day", QString::number(m_system->m_hoursPerDay()));
 
-    writer.writeStartElement("days of week");
-    for(Day *day : *days)
+    writer.writeStartElement("m_days of week");
+    for(Day *day : *m_days)
     {
         writer.writeStartElement("day");
         writer.writeTextElement("day name", day->name);
@@ -112,8 +112,8 @@ bool Settings::writeSettings()
     }
     writer.writeEndElement();
 
-    writer.writeStartElement("months");
-    for(Month *month : *months)
+    writer.writeStartElement("m_months");
+    for(Month *month : *m_months)
     {
         writer.writeStartElement("month");
         writer.writeTextElement("month name", month->name);
@@ -124,9 +124,9 @@ bool Settings::writeSettings()
 
     writer.writeEndElement();
 //-----------------------------------------------
-    writer.writeStartElement("event groups");
+    writer.writeStartElement("event m_groups");
 
-    for(EventGroup *group : groups)
+    for(EventGroup *group : m_groups)
     {
         writer.writeTextElement("group", group->name);
         writer.writeAttribute("id", QString::number(group->id));
@@ -147,16 +147,16 @@ void Settings::setGlobalTime(CustomDateTime *globalTime)
 }
 // quint16 Settings::countFiles()
 // {
-//     QDir saveDir("../configs");
+//     QDir saveDir("../m_configs");
 //     QFileInfoList list = saveDir.entryInfoList();
-//     for(int i = 0; i < configs.size(); i++)
+//     for(int i = 0; i < m_configs.size(); i++)
 //     {
 
 //     }
 // }
 
 
-void Settings::dpm_valueChanged(int days, const QString &month)
+void Settings::dpm_valueChanged(int m_days, const QString &month)
 {
 
 }
