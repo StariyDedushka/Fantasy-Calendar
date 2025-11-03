@@ -13,14 +13,14 @@ MainWindow::MainWindow(CalendarSystem *system, CustomDateTime *globalTime, QWidg
     // 1. Настраиваем правильную компоновку
     setupLayouts();
 
-    // 2. Инициалиm_items[iзация календаря
-    calendar = new CalendarView(m_system, m_globalTime);
-    calendar->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    calendar->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    // 2. Инициализация календаря
+    calendarWindow = new CalendarView(m_system, m_globalTime);
+    calendarWindow->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    calendarWindow->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     // Добавляем календарь в layout groupBox_calendar
     if (ui->groupBox_calendar->layout()) {
-        ui->groupBox_calendar->layout()->addWidget(calendar);
+        ui->groupBox_calendar->layout()->addWidget(calendarWindow);
     }
 
     // 3. Инициализация events window
@@ -38,7 +38,7 @@ MainWindow::MainWindow(CalendarSystem *system, CustomDateTime *globalTime, QWidg
     ui->groupBox_events->setMaximumWidth(800);
     ui->groupBox_events->setMinimumHeight(300);
 
-    calendar->show();
+    calendarWindow->show();
     eventsWindow->show();
 }
 
@@ -152,8 +152,8 @@ void MainWindow::initialize()
 
 // void MainWindow::resizeEvent(QResizeEvent *event)
 // {
-//     quint16 calendarWidth = calendar->width();
-//     quint16 calendarHeight = calendar->height();
+//     quint16 calendarWidth = calendarWindow->width();
+//     quint16 calendarHeight = calendarWindow->height();
 //     emit signal_windowResized(calendarWidth, calendarHeight);
 
 //     // qDebug() << "Current QGraphicsView width:" << m_calendarWidth;;

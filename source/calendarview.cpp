@@ -1,8 +1,7 @@
 #include "include/calendarview.h"
 
-CalendarView::CalendarView(CalendarSystem *system, CustomDateTime *globalTime) :
-    m_system(system)
-    , scene(new CalendarScene(system, globalTime))
+CalendarView::CalendarView() :
+    scene(new CalendarScene())
 {
     setDragMode(QGraphicsView::NoDrag);
     if (scene)
@@ -12,7 +11,7 @@ CalendarView::CalendarView(CalendarSystem *system, CustomDateTime *globalTime) :
     setScene(scene);
     timer = new QTimer();
     timer->setSingleShot(true);
-    timer->setInterval(50);
+    timer->setInterval(25);
     connect(timer, &QTimer::timeout, this, &CalendarView::/*slot_*/redraw);
 }
 

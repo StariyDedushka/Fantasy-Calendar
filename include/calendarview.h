@@ -13,7 +13,7 @@ class CalendarView : public QGraphicsView
 {
     Q_OBJECT
 public:
-    CalendarView(CalendarSystem *system, CustomDateTime *globalTime);
+    CalendarView();
 
 // public slots:
 //     void /*slot_*/windowResized(quint16 wWidth, quint16 wHeight);
@@ -31,7 +31,6 @@ protected:
     quint16 m_calendarHeight;
     void resizeEvent(QResizeEvent *event);
     QTimer *timer;
-    CalendarSystem *m_system;
 };
 
 #endif // CALENDARVIEW_H

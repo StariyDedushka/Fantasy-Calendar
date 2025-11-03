@@ -1,7 +1,6 @@
 #include "include/eventview.h"
 
-EventView::EventView(CalendarSystem *system) :
-    m_system(system)
+EventView::EventView() :
 {
     setDragMode(QGraphicsView::NoDrag);
     scene = new EventScene();
