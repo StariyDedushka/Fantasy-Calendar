@@ -1,5 +1,6 @@
 #include "include/calendarpresenter.h"
 #include <QDebug>
+#include <QVector>
 
 CalendarPresenter::CalendarPresenter(CalendarSystem* system,
                                      CustomDateTime* globalTime,
@@ -9,25 +10,25 @@ CalendarPresenter::CalendarPresenter(CalendarSystem* system,
     , m_system(system)
     , m_globalTime(globalTime)
     , m_view(view)
-    , m_scene(nullptr)
+    , m_columns(system->daysInWeek())
+    , m_rows(6)
+    , m_zoomLevel(1.0)
 {
-    // Используем текущую дату из globalTime как начальную
+    // Устанавливаем начальную дату
     if (m_globalTime && m_system) {
         m_currentDisplayDate = QDate(m_globalTime->year(),
                                      m_globalTime->month(),
                                      m_globalTime->day());
     } else {
-        m_currentDisplayDate = CustomDateTime(1, 1, 1);    }
+        m_currentDisplayDate = QDate::currentDate();
+    }
 
     initialize();
 }
 
 CalendarPresenter::~CalendarPresenter()
 {
-    // Presenter не владеет моделями и вьюхами, только очищает свои связи
-    if (m_scene) {
-        m_scene->disconnect(this);
-    }
+    // Отключаем все соединения
     if (m_view) {
         m_view->disconnect(this);
     }
@@ -40,10 +41,6 @@ void CalendarPresenter::initialize()
         return;
     }
 
-    // Создаем сцену (View компонент)
-    m_scene = new CalendarScene(); // Без передачи моделей!
-    m_view->setScene(m_scene);
-
     // Настраиваем соединения
     setupConnections();
 
@@ -53,84 +50,146 @@ void CalendarPresenter::initialize()
 
 void CalendarPresenter::setupConnections()
 {
-    if (!m_view || !m_scene) return;
+    if (!m_view) return;
 
     // Подключаем сигналы от View
-    connect(m_view, &CalendarView::dateSelected,
-            this, &CalendarPresenter::onDateSelected);
-    connect(m_view, &CalendarView::navigationRequested,
-            this, [this](int days) {
-                if (days > 0) this->onNextDay();
-                else this->onPrevDay();
-            });
-    connect(m_view, &CalendarView::windowResized,
+    connect(m_view, &CalendarView::dateClicked,
+            this, &CalendarPresenter::handleDateClicked);
+    connect(m_view, &CalendarView::viewResized,
             this, &CalendarPresenter::handleViewResized);
-
-    // Подключаем сигналы от Scene
-    connect(m_scene, &CalendarScene::itemClicked,
+    connect(m_view, &CalendarView::itemClicked,
             this, &CalendarPresenter::handleItemClicked);
+    connect(m_view, &CalendarView::wheelZoomed,
+            this, &CalendarPresenter::handleWheelZoom);
 
-    // Подключаем сигналы от Model (если они есть)
-    if (m_system) {
-        // connect(m_system, &CalendarSystem::systemChanged,
-        //         this, &CalendarPresenter::onSystemTimeChanged);
-    }
+    // Подключаемся к моделям (если они имеют сигналы)
+    // connect(m_system, &CalendarSystem::systemChanged,
+    //         this, &CalendarPresenter::onSystemChanged);
+    // connect(m_globalTime, &CustomDateTime::timeChanged,
+    //         this, &CalendarPresenter::refreshCalendar);
 }
 
 void CalendarPresenter::refreshCalendar()
 {
-    if (!m_system || !m_scene) return;
+    if (!m_system || !m_view) return;
 
-    // Генерируем данные для отображения
-    CalendarDisplayData data = generateCalendarData();
+    // Генерируем визуальные данные
+    CalendarVisualData visualData = generateVisualData();
 
     // Обновляем View
-    updateView(data);
+    updateView(visualData);
 }
 
-CalendarDisplayData CalendarPresenter::generateCalendarData() const
+CalendarVisualData CalendarPresenter::generateVisualData() const
 {
-    CalendarDisplayData data;
-    data.currentDate = m_currentDisplayDate;
-    data.isValid = m_system->isValidDate(m_currentDisplayDate.day(),
-                                         m_currentDisplayDate.month(),
-                                         m_currentDisplayDate.year());
+    CalendarVisualData data;
 
-    // Генерация календарных элементов для текущего месяца
-    quint16 daysInMonth = m_system->daysInMonth(m_currentDisplayDate.month(),
-                                                m_currentDisplayDate.year());
+    // Генерируем данные дней
+    data.days = generateMonthDays();
+    data.headerText = generateHeaderText();
+    data.weekDaysHeader = generateWeekDaysHeader();
+    data.gridSize = QSize(m_columns, m_rows);
 
-    // Создаем элементы календаря
-    for (quint16 day = 1; day <= daysInMonth; ++day) {
-        QRectF rect(0, 0, 50, 50); // Размеры будут настроены в Scene
-        CalendarItem* item = new CalendarItem(rect,
-                                              QString::number(day),
-                                              Qt::white, Qt::gray, Qt::blue,
-                                              true, day,
-                                              m_currentDisplayDate.month(),
-                                              m_currentDisplayDate.year());
-        data.items.append(item);
+    // Рассчитываем размер ячейки на основе размера View
+    if (m_viewSize.isValid()) {
+        data.cellSize = QSizeF(m_viewSize.width() / m_columns,
+                               m_viewSize.height() / m_rows);
+    } else {
+        data.cellSize = QSizeF(50, 50); // Размер по умолчанию
     }
-
-    // Устанавливаем заголовок
-    data.monthYearHeader = QString("%1 %2")
-                               .arg(m_currentDisplayDate.month())
-                               .arg(m_currentDisplayDate.year());
 
     return data;
 }
 
-void CalendarPresenter::updateView(const CalendarDisplayData& data)
+QVector<CalendarDayData> CalendarPresenter::generateMonthDays() const
 {
-    if (!m_scene) return;
+    QVector<CalendarDayData> days;
 
-    // Передаем данные в Scene для отображения
-    m_scene->setCalendarData(data.items, data.monthYearHeader);
+    if (!m_system) return days;
 
-    // Можно добаditional логику обновления UI
-    emit calendarUpdated(data.currentDate, data.isValid);
+    // Получаем информацию о текущем месяце
+    quint16 daysInMonth = m_system->daysInMonth(m_currentDisplayDate.month(),
+                                                m_currentDisplayDate.year());
+
+    // Определяем день недели первого дня месяца
+    QDate firstDayOfMonth(m_currentDisplayDate.year(), m_currentDisplayDate.month(), 1);
+    int firstDayOfWeek = firstDayOfMonth.dayOfWeek(); // 1-7 (Mon-Sun)
+
+    // Добавляем пустые дни в начале (для выравнивания)
+    for (int i = 1; i < firstDayOfWeek; ++i) {
+        CalendarDayData emptyDay;
+        emptyDay.isEnabled = false;
+        emptyDay.displayText = "";
+        days.append(emptyDay);
+    }
+
+    // Добавляем дни месяца
+    QDate today = m_globalTime ?
+                      QDate(m_globalTime->year(), m_globalTime->month(), m_globalTime->day()) :
+                      QDate::currentDate();
+
+    for (quint16 day = 1; day <= daysInMonth; ++day) {
+        CalendarDayData dayData;
+        dayData.day = day;
+        dayData.month = m_currentDisplayDate.month();
+        dayData.year = m_currentDisplayDate.year();
+        dayData.displayText = QString::number(day);
+        dayData.isEnabled = m_system->isValidDate(day, dayData.month, dayData.year);
+        dayData.isCurrentDay = (day == m_currentDisplayDate.day() &&
+                                dayData.month == m_currentDisplayDate.month());
+        dayData.isToday = (day == today.day() &&
+                           dayData.month == today.month() &&
+                           dayData.year == today.year());
+        dayData.hasEvents = false; // Здесь можно добавить проверку событий
+
+        // Устанавливаем цвета
+        dayData.backgroundColor = getDayColor(dayData);
+        dayData.textColor = getTextColor(dayData);
+        dayData.borderColor = getBorderColor(dayData);
+
+        days.append(dayData);
+    }
+
+    return days;
 }
 
+QString CalendarPresenter::generateHeaderText() const
+{
+    // Генерируем заголовок "Месяц Год"
+    return QString("%1 %2")
+        .arg(m_currentDisplayDate.toString("MMMM"))
+        .arg(m_currentDisplayDate.year());
+}
+
+QString CalendarPresenter::generateWeekDaysHeader() const
+{
+    if (!m_system) return "";
+
+    // Генерируем заголовок с днями недели
+    QStringList weekDays;
+    for (int i = 1; i <= m_columns; ++i) {
+        Day* dayInfo = m_system->dayOfWeek(i);
+        if (dayInfo) {
+            weekDays.append(dayInfo->name.left(2)); // Сокращенные названия
+        } else {
+            weekDays.append("--");
+        }
+    }
+    return weekDays.join(" ");
+}
+
+void CalendarPresenter::updateView(const CalendarVisualData& data)
+{
+    if (!m_view) return;
+
+    // Передаем данные в View
+    m_view->displayCalendar(data);
+
+    // Можно добавить дополнительные обновления UI
+    emit calendarUpdated(m_currentDisplayDate);
+}
+
+// Обработчики навигации
 void CalendarPresenter::onNextDay()
 {
     if (!m_globalTime) return;
@@ -191,33 +250,49 @@ void CalendarPresenter::onDateSelected(const QDate& date)
     refreshCalendar();
 }
 
-void CalendarPresenter::onSystemTimeChanged()
+// Обработчики внешних событий
+void CalendarPresenter::onSystemChanged()
 {
-    // Реакция на изменения в системе календаря
-    if (m_globalTime) {
-        m_currentDisplayDate = QDate(m_globalTime->year(),
-                                     m_globalTime->month(),
-                                     m_globalTime->day());
-    }
     refreshCalendar();
 }
 
-void CalendarPresenter::handleViewResized(quint16 width, quint16 height)
+void CalendarPresenter::onSettingsChanged()
 {
-    Q_UNUSED(width)
-    Q_UNUSED(height)
-    // Перенастраиваем отображение при изменении размера
     refreshCalendar();
 }
 
-void CalendarPresenter::handleItemClicked(AbstractItem* item)
+void CalendarPresenter::onEventsUpdated()
 {
-    CalendarItem* calendarItem = qobject_cast<CalendarItem*>(item);
-    if (calendarItem) {
-        QDate selectedDate(calendarItem->year(),
-                           calendarItem->month(),
-                           calendarItem->day());
-        onDateSelected(selectedDate);
+    refreshCalendar();
+}
+
+// Обработчики сигналов от View
+void CalendarPresenter::handleDateClicked(const QDate& date)
+{
+    onDateSelected(date);
+}
+
+void CalendarPresenter::handleViewResized(const QSize& size)
+{
+    m_viewSize = size;
+    refreshCalendar();
+}
+
+void CalendarPresenter::handleItemClicked(CalendarItem* item)
+{
+    if (!item) return;
+
+    QDate selectedDate(item->year(), item->month(), item->day());
+    onDateSelected(selectedDate);
+}
+
+void CalendarPresenter::handleWheelZoom(qreal factor)
+{
+    m_zoomLevel *= factor;
+    m_zoomLevel = qBound(0.5, m_zoomLevel, 3.0); // Ограничиваем zoom
+
+    if (m_view) {
+        m_view->setZoomLevel(m_zoomLevel);
     }
 }
 
@@ -225,11 +300,41 @@ void CalendarPresenter::validateCurrentDate()
 {
     if (!m_system) return;
 
-    // Проверяем, что текущая дата валидна в системе календаря
+    // Проверяем валидность даты в текущей календарной системе
     if (!m_system->isValidDate(m_currentDisplayDate.day(),
                                m_currentDisplayDate.month(),
                                m_currentDisplayDate.year())) {
-        // Корректируем дату если нужно
-        m_currentDisplayDate = QDate::currentDate();
+        // Корректируем на сегодняшнюю дату
+        if (m_globalTime) {
+            m_currentDisplayDate = QDate(m_globalTime->year(),
+                                         m_globalTime->month(),
+                                         m_globalTime->day());
+        } else {
+            m_currentDisplayDate = QDate::currentDate();
+        }
     }
+}
+
+// Методы для визуальных настроек
+QColor CalendarPresenter::getDayColor(const CalendarDayData& dayData) const
+{
+    if (!dayData.isEnabled) return Qt::lightGray;
+    if (dayData.isToday) return QColor(255, 255, 200); // светло-желтый
+    if (dayData.isCurrentDay) return QColor(200, 230, 255); // светло-голубой
+    if (dayData.hasEvents) return QColor(255, 230, 200); // светло-оранжевый
+
+    return Qt::white;
+}
+
+QColor CalendarPresenter::getTextColor(const CalendarDayData& dayData) const
+{
+    if (!dayData.isEnabled) return Qt::darkGray;
+    return Qt::black;
+}
+
+QColor CalendarPresenter::getBorderColor(const CalendarDayData& dayData) const
+{
+    if (dayData.isToday) return Qt::red;
+    if (dayData.isCurrentDay) return Qt::blue;
+    return Qt::gray;
 }

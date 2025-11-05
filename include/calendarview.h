@@ -1,36 +1,35 @@
 #ifndef CALENDARVIEW_H
 #define CALENDARVIEW_H
 
-#include "calendarscene.h"
-#include <QObject>
-#include <QWidget>
 #include <QGraphicsView>
-#include <QDebug>
-#include <QEvent>
-#include <QTimer>
+#include "calendarscene.h"
 
 class CalendarView : public QGraphicsView
 {
     Q_OBJECT
+
 public:
-    CalendarView();
+    explicit CalendarView(QWidget *parent = nullptr);
 
-// public slots:
-//     void /*slot_*/windowResized(quint16 wWidth, quint16 wHeight);
+    // Управление отображением
+    void setZoomLevel(qreal level);
+    void fitToView();
+    void setViewMode(CalendarViewMode mode); // month/week/day
 
-private slots:
-    void /*slot_*/redraw();
+public slots:
+    void onDataReady(const CalendarVisualData& data);
 
 signals:
-    void signal_windowResized(quint16 wWidth, quint16 wHeight);
+    void dateClicked(const QDate& date);
+    void viewResized(const QSize& size);
 
 protected:
-    void mousePressEvent(QMouseEvent *event);
-    CalendarScene *scene;
-    quint16 m_calendarWidth;
-    quint16 m_calendarHeight;
-    void resizeEvent(QResizeEvent *event);
-    QTimer *timer;
+    void resizeEvent(QResizeEvent *event) override;
+    void wheelEvent(QWheelEvent *event) override;
+
+private:
+    CalendarScene *m_scene;
+    qreal m_zoomLevel;
 };
 
 #endif // CALENDARVIEW_H

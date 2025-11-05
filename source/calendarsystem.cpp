@@ -67,6 +67,13 @@ quint32 CalendarSystem::daysInYear(quint16 year) const
     return daysInYear;
 }
 
+quint16 CalendarSystem::weeksInMonth(quint16 month, quint32 year) const
+{
+    if(m_months)
+        return m_months->at(month - 1)->days / daysInWeek();
+    return 0;
+}
+
 bool CalendarSystem::addDayOfWeek(const QString &name, quint16 place)
 {
     if(place > m_daysInWeek)

@@ -1,34 +1,30 @@
-#ifndef CalendarPainter_H
-#define CalendarPainter_H
+#ifndef CALENDARSCENE_H
+#define CALENDARSCENE_H
 
-
-#include "abstractscene.h"
+#include <QGraphicsScene>
 #include "calendaritem.h"
-#include "common/calendarStructures.h"
 
-class CalendarScene : public AbstractScene
+class CalendarScene : public QGraphicsScene
 {
-    // Q_INTERFACES(AbstractScene)
     Q_OBJECT
+
 public:
-    CalendarScene(CalendarSystem *system, CustomDateTime *globalTime);
-    ~CalendarScene();
-    virtual void initialize() override;
+    explicit CalendarScene(QObject *parent = nullptr);
+
+    // Чисто графические методы
+    void setupCalendarLayout(const QSizeF& cellSize, int columns, int rows);
+    void addCalendarDay(const CalendarDayData& dayData, const QPointF& position);
+    void setVisualStyle(const CalendarVisualStyle& style);
 
 signals:
-    void signal_rebuild(AbstractScene *scene);
-public slots:
-    virtual void /*slot_*/windowResized(quint16 wWidth, quint16 wHeight) override;
-    virtual void /*slot_*/settingsChanged() override;
-    virtual void /*slot_*/rebuild(QVector<AbstractItem*> *input = nullptr) override;
+    void dayItemClicked(CalendarItem* item);
 
+private slots:
+    void onItemSelected(CalendarItem* item);
 
 private:
-    virtual void reposition() override;
-    QVector<Month*> *m_months;
-    CustomDateTime* m_globalTime;
-    CalendarSystem* m_system;
-
+    QVector<CalendarItem*> m_items;
+    CalendarVisualStyle m_style;
 };
 
-#endif // CalendarPainter_H
+#endif // CALENDARSCENE_H

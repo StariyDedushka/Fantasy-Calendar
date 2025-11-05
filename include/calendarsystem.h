@@ -46,6 +46,7 @@ public:
     Day* dayOfWeek(quint16 day) const;
     quint16 daysInMonth(quint16 month, quint32 year = 0) const;
     quint32 daysInYear(quint16 year = 0) const;
+    quint16 weeksInMonth(quint16 month, quint32 year = 0) const;
 
     bool addMonth(const QString &name, quint16 days, quint16 place = 0);
     bool removeMonth(const QString &name);
