@@ -4,8 +4,8 @@
 CalendarSystem::CalendarSystem() :
     m_months(new QVector<Month*>())
     , m_days(new QVector<Day*>())
-    , m_monthsInYear(0)
     , m_daysInWeek(0)
+    , m_monthsInYear(0)
     , m_secondsPerMinute(0)
     , m_minutesPerHour(0)
     , m_hoursPerDay(0)
@@ -57,7 +57,7 @@ quint16 CalendarSystem::daysInMonth(quint16 month, quint32 year) const
 }
 
 
-quint32 CalendarSystem::daysInYear(quint16 year) const
+quint32 CalendarSystem::daysInYear(quint32 year) const
 {
     Q_UNUSED(year);
     quint32 daysInYear = 0;
@@ -67,8 +67,21 @@ quint32 CalendarSystem::daysInYear(quint16 year) const
     return daysInYear;
 }
 
+Day* CalendarSystem::firstDayOfMonth(quint16 month, quint32 year) const
+{
+    quint32 days = 0;
+    days = daysInYear() * year;
+    for(int i = 0; i < month; i++)
+    {
+        days += months()->at(i)->days;
+    }
+    return dayOfWeek(days % daysInWeek());
+
+}
+
 quint16 CalendarSystem::weeksInMonth(quint16 month, quint32 year) const
 {
+    Q_UNUSED(year)
     if(m_months)
         return m_months->at(month - 1)->days / daysInWeek();
     return 0;
@@ -82,6 +95,7 @@ bool CalendarSystem::addDayOfWeek(const QString &name, quint16 place)
     Day *day = new Day();
     day->name = name;
     day->id = m_days->size() + 1;
+    day->position = day->id;
 
     m_days->insert(place, day);
     m_daysInWeek++;
@@ -190,10 +204,83 @@ bool CalendarSystem::moveMonth(quint16 month_id, quint16 newPlace)
 
 }
 
-bool CalendarSystem::removeDayOfWeek(const QString &name);
-bool CalendarSystem::removeDayOfWeek(quint16 id);
+bool CalendarSystem::removeDayOfWeek(const QString &name)
+{
+    for(int i = 0; i < m_days->size(); ++i)
+    {
+        if(m_days->at(i)->name == name)
+        {
+            Day *toRemove = m_days->at(i);
+            m_days->remove(m_days->at(i)->id);
+            delete toRemove;
+            return true;
+        }
+    }
+    return false;
+}
+bool CalendarSystem::removeDayOfWeek(quint16 id)
+{
+    for(int i = 0; i < m_days->size(); ++i)
+    {
+        if(m_days->at(i)->id == id)
+        {
+            Day *toRemove = m_days->at(i);
+            m_days->remove(m_days->at(i)->id);
+            delete toRemove;
+            return true;
+        }
+    }
+    return false;
+}
 
-bool CalendarSystem::editDayOfWeek(const QString& dayName, const QString& newName);
-bool CalendarSystem::editDayOfWeek(quint16 day_id, const QString& newName);
-bool CalendarSystem::moveDayOfWeek(quint16 day_id, quint16 newPlace);
-bool CalendarSystem::moveDayOfWeek(const QString& dayName, quint16 newPlace);
+bool CalendarSystem::editDayOfWeek(const QString& dayName, const QString& newName)
+{
+    for(Day *day : *m_days)
+    {
+        if(day->name == dayName)
+        {
+            day->name = newName;
+            return true;
+        }
+    }
+    return false;
+}
+
+bool CalendarSystem::editDayOfWeek(quint16 day_id, const QString& newName)
+{
+    for(Day *day : *m_days)
+    {
+        if(day->id == day_id)
+        {
+            day->name = newName;
+            return true;
+        }
+    }
+    return false;
+}
+
+bool CalendarSystem::moveDayOfWeek(quint16 day_id, quint16 newPlace)
+{
+    for(Day *day : *m_days)
+    {
+        if(day->id == day_id)
+        {
+            day->position = newPlace;
+            return true;
+        }
+    }
+    return false;
+}
+
+bool CalendarSystem::moveDayOfWeek(const QString& dayName, quint16 newPlace)
+{
+    for(Day *day : *m_days)
+    {
+        if(day->name == dayName)
+        {
+            day->position = newPlace;
+            return true;
+        }
+    }
+    return false;
+}

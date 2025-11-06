@@ -2,7 +2,7 @@
 #define TimeSystem_H
 
 #include <QObject>
-#include "common/calendarStructures.h"
+#include "include/common/calendarstructures.h"
 
 class CalendarSystem
 {
@@ -12,7 +12,6 @@ signals:
     void systemChanged();
 
 private:
-    quint16 h, m, s, ms;
     QVector<Month*> *m_months;
     QVector<Day*> *m_days;
 
@@ -20,13 +19,13 @@ private:
     quint16 m_minutesPerHour = 60;
     quint16 m_hoursPerDay = 24;
 
-    quint16 m_daysInWeek = 7;
-    quint16 m_monthsInYear = 12;
+    quint16 m_daysInWeek = 0;
+    quint16 m_monthsInYear = 0;
 
 public:
     CalendarSystem();
     CalendarSystem(const CalendarSystem&) = delete;
-    ~CalendarSystem() {}
+    ~CalendarSystem();
 
     // Настройки времени
     quint16 secondsPerMinute() const { return m_secondsPerMinute; }
@@ -34,8 +33,11 @@ public:
     quint16 hoursPerDay() const { return m_hoursPerDay; }
 
     // Настройки календаря
-    quint16 daysInWeek() const { return m_daysInWeek; }
-    quint16 monthsInYear() const { return m_monthsInYear; }
+    quint16 daysInWeek() const { return m_days->size(); }
+    quint16 monthsInYear() const { return m_months->size(); }
+
+    QVector<Month*>* months() const { return m_months; }
+    QVector<Day*>* days() const { return m_days; }
 
     bool setTimeSystem(quint16 secPerMin, quint16 minPerHour, quint16 hoursPerDay);
 
@@ -44,8 +46,9 @@ public:
 
     // Утилиты
     Day* dayOfWeek(quint16 day) const;
+    Day* firstDayOfMonth(quint16 month, quint32 year) const;
     quint16 daysInMonth(quint16 month, quint32 year = 0) const;
-    quint32 daysInYear(quint16 year = 0) const;
+    quint32 daysInYear(quint32 year = 0) const;
     quint16 weeksInMonth(quint16 month, quint32 year = 0) const;
 
     bool addMonth(const QString &name, quint16 days, quint16 place = 0);

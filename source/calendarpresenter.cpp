@@ -11,16 +11,14 @@ CalendarPresenter::CalendarPresenter(CalendarSystem* system,
     , m_globalTime(globalTime)
     , m_view(view)
     , m_columns(system->daysInWeek())
-    , m_rows(6)
+    , m_rows(system->weeksInMonth(globalTime->month, globalTime->year()))
     , m_zoomLevel(1.0)
 {
     // Устанавливаем начальную дату
     if (m_globalTime && m_system) {
-        m_currentDisplayDate = QDate(m_globalTime->year(),
-                                     m_globalTime->month(),
-                                     m_globalTime->day());
+        m_currentDisplayDate = m_globalTime;
     } else {
-        m_currentDisplayDate = QDate::currentDate();
+        m_currentDisplayDate = CustomDateTime(1, 1, 2000);
     }
 
     initialize();
@@ -50,7 +48,7 @@ void CalendarPresenter::initialize()
 
 void CalendarPresenter::setupConnections()
 {
-    if (!m_view) return;
+    if (!m_view || !m_system || !m_globalTime) return;
 
     // Подключаем сигналы от View
     connect(m_view, &CalendarView::dateClicked,
@@ -112,8 +110,9 @@ QVector<CalendarDayData> CalendarPresenter::generateMonthDays() const
                                                 m_currentDisplayDate.year());
 
     // Определяем день недели первого дня месяца
-    QDate firstDayOfMonth(m_currentDisplayDate.year(), m_currentDisplayDate.month(), 1);
-    int firstDayOfWeek = firstDayOfMonth.dayOfWeek(); // 1-7 (Mon-Sun)
+    CustomDateTime time;
+    Day *day = time.firstDayOfMonth(m_currentDisplayDate.month(), m_currentDisplayDate.year());
+    quint16 firstDayOfWeek = day->position; // 1,2 .. x
 
     // Добавляем пустые дни в начале (для выравнивания)
     for (int i = 1; i < firstDayOfWeek; ++i) {
@@ -124,9 +123,9 @@ QVector<CalendarDayData> CalendarPresenter::generateMonthDays() const
     }
 
     // Добавляем дни месяца
-    QDate today = m_globalTime ?
-                      QDate(m_globalTime->year(), m_globalTime->month(), m_globalTime->day()) :
-                      QDate::currentDate();
+    CustomDateTime today = m_globalTime ?
+                           CustomDateTime(m_globalTime->day(), m_globalTime->month(), m_globalTime->year()) :
+                           CustomDateTime(1, 1, 2000);
 
     for (quint16 day = 1; day <= daysInMonth; ++day) {
         CalendarDayData dayData;
@@ -157,7 +156,7 @@ QString CalendarPresenter::generateHeaderText() const
 {
     // Генерируем заголовок "Месяц Год"
     return QString("%1 %2")
-        .arg(m_currentDisplayDate.toString("MMMM"))
+        .arg(m_currentDisplayDate.month())
         .arg(m_currentDisplayDate.year());
 }
 
@@ -185,8 +184,8 @@ void CalendarPresenter::updateView(const CalendarVisualData& data)
     // Передаем данные в View
     m_view->displayCalendar(data);
 
-    // Можно добавить дополнительные обновления UI
-    emit calendarUpdated(m_currentDisplayDate);
+    // // Можно добавить дополнительные обновления UI
+    // emit calendarUpdated(m_currentDisplayDate);
 }
 
 // Обработчики навигации
@@ -225,16 +224,16 @@ void CalendarPresenter::onPrevMonth()
 void CalendarPresenter::onToday()
 {
     if (m_globalTime) {
-        m_currentDisplayDate = QDate(m_globalTime->year(),
-                                     m_globalTime->month(),
-                                     m_globalTime->day());
+        m_currentDisplayDate = CustomDateTime(m_globalTime->day(),
+                                              m_globalTime->month(),
+                                              m_globalTime->year());
     } else {
-        m_currentDisplayDate = QDate::currentDate();
+        m_currentDisplayDate = CustomDateTime(1, 1, 2000);
     }
     refreshCalendar();
 }
 
-void CalendarPresenter::onDateSelected(const QDate& date)
+void CalendarPresenter::onDateSelected(const CustomDateTime& date)
 {
     if (!date.isValid()) return;
 
@@ -267,7 +266,7 @@ void CalendarPresenter::onEventsUpdated()
 }
 
 // Обработчики сигналов от View
-void CalendarPresenter::handleDateClicked(const QDate& date)
+void CalendarPresenter::handleDateClicked(const CustomDateTime& date)
 {
     onDateSelected(date);
 }
@@ -282,7 +281,7 @@ void CalendarPresenter::handleItemClicked(CalendarItem* item)
 {
     if (!item) return;
 
-    QDate selectedDate(item->year(), item->month(), item->day());
+    CustomDateTime selectedDate(item->day(), item->month(), item->year());
     onDateSelected(selectedDate);
 }
 
@@ -306,11 +305,12 @@ void CalendarPresenter::validateCurrentDate()
                                m_currentDisplayDate.year())) {
         // Корректируем на сегодняшнюю дату
         if (m_globalTime) {
-            m_currentDisplayDate = QDate(m_globalTime->year(),
-                                         m_globalTime->month(),
-                                         m_globalTime->day());
+            m_currentDisplayDate = CustomDateTime(m_globalTime->day(),
+                                                  m_globalTime->month(),
+                                                  m_globalTime->year());
         } else {
-            m_currentDisplayDate = QDate::currentDate();
+            m_currentDisplayDate = CustomDateTime(1, 1, 2000);
+            qDebug() << "CalendarPresenter::validateCurrentDate"
         }
     }
 }

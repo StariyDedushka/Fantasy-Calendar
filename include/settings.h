@@ -6,7 +6,7 @@
 #include <QtXml>
 #include "calendarsystem.h"
 #include "customdatetime.h"
-#include "common/calendarStructures.h"
+#include "common/calendarstructures.h"
 
 
 class Settings : public QObject

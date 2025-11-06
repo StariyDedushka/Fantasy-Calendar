@@ -2,7 +2,6 @@
 #define CALENDARITEM_H
 
 #include "include/abstractitem.h"
-#include "include/eventcontainer.h"
 
 class CalendarItem : public AbstractItem
 {

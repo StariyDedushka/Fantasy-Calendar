@@ -2,13 +2,14 @@
 #define CUSTOMDATETIME_H
 
 #include <QObject>
-#include "calendarsystem.h"
+// #include "common/calendarstructures.h"
+
 class CalendarSystem;
 
 class CustomDateTime
 {
 private:
-    quint16 m_day;
+    quint32 m_day;
     quint16 m_month;
     quint32 m_year;
     quint16 m_hour;
@@ -16,10 +17,8 @@ private:
     quint16 m_second;
 
 public:
-    CalendarSystem *m_calendarSystem;
-    CustomDateTime() : m_calendarSystem(nullptr) {}
-    CustomDateTime(CalendarSystem* system);
-    CustomDateTime(CalendarSystem* system, quint16 day, quint16 month, quint32 year,
+    CustomDateTime();
+    CustomDateTime(quint16 day, quint16 month, quint32 year,
                    quint16 hour = 0, quint16 minute = 0, quint16 second = 0);
 
     // Геттеры
@@ -31,27 +30,25 @@ public:
     quint16 second() const { return m_second; }
 
     // Сеттеры с валидацией
-    bool setDate(quint16 day, quint16 month, quint32 year);
-    bool setTime(quint16 hour, quint16 minute, quint16 second = 0);
-    bool setDateTime(quint16 day, quint16 month, quint32 year,
+    void setDate(quint16 day, quint16 month, quint32 year);
+    void setTime(quint16 hour, quint16 minute, quint16 second = 0);
+    void setDateTime(quint16 day, quint16 month, quint32 year,
                      quint16 hour, quint16 minute, quint16 second = 0);
 
     // Валидация
     bool isValid() const;
-    bool isValidDate() const;
-    bool isValidTime() const;
 
     // Утилиты
     QString toString() const;
-    Day* dayOfWeek() const;
 
     // Операции с датой/временем
-    bool addDays(qint32 days);
-    bool addHours(qint32 hours);
-    bool addMonths(qint32 months);
+    void addDays(qint32 days);
+    void addHours(qint32 hours);
+    void addMonths(qint32 months);
    // Сравнение
     bool operator==(const CustomDateTime& other) const;
     bool operator<(const CustomDateTime& other) const;
+    CustomDateTime& operator=(const CustomDateTime& other);
 };
 
 #endif // CUSTOMDATETIME_H

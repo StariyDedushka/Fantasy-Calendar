@@ -35,3 +35,35 @@ void CalendarView::resizeEvent(QResizeEvent *event)
     m_calendarHeight = this->height();
     emit signal_windowResized(m_calendarWidth, m_calendarHeight);
 }
+
+void CalendarView::displayCalendar(const CalendarVisualData& data)
+{
+    if (!m_scene) return;
+
+    // Очищаем старые элементы
+    m_scene->clearCalendar();
+
+    // Создаем CalendarItem'ы из CalendarDayData
+    for (const CalendarDayData& dayData : data.days) {
+        if (!dayData.displayText.isEmpty()) {
+            // Создаем графический элемент
+            CalendarItem* item = new CalendarItem(
+                QRectF(0, 0, data.cellSize.width(), data.cellSize.height()),
+                dayData.displayText,
+                dayData.backgroundColor,
+                dayData.borderColor,
+                dayData.textColor,
+                dayData.isEnabled,
+                dayData.day,
+                dayData.month,
+                dayData.year
+                );
+
+            // Добавляем на сцену
+            m_scene->addCalendarItem(item);
+        }
+    }
+
+    // Настраиваем layout
+    m_scene->setupCalendarLayout(data.cellSize, data.gridSize.width(), data.gridSize.height());
+}

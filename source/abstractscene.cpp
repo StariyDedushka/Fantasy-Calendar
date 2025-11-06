@@ -1,5 +1,10 @@
 #include "include/abstractscene.h"
 
+AbstractScene::AbstractScene(QObject *parent)
+    : QGraphicsScene(parent)
+{
+}
+
 AbstractScene::~AbstractScene()
 {
     for(AbstractItem *item : m_items)

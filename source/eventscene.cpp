@@ -85,7 +85,7 @@ void EventScene::/*slot_*/rebuild(QVector<AbstractItem*> *input)
                 true);
             m_items.push_back(container);
             this->addItem(container);
-            connect(container, &AbstractItem::signal_itemClicked, this, &EventScene::/*slot_*/onItemClicked);
+            connect(container, &AbstractItem::itemClicked, this, &EventScene::/*slot_*/onItemClicked);
             qDebug() << "EventScene: container entry added! Container address:" << &container;
         }
         update();

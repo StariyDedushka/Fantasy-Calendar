@@ -4,6 +4,8 @@
 #include <QGraphicsView>
 #include "calendarscene.h"
 
+enum CalendarViewMode { Days, Months, Years };
+
 class CalendarView : public QGraphicsView
 {
     Q_OBJECT
@@ -15,6 +17,7 @@ public:
     void setZoomLevel(qreal level);
     void fitToView();
     void setViewMode(CalendarViewMode mode); // month/week/day
+    void displayCalendar(const CalendarVisualData& data);
 
 public slots:
     void onDataReady(const CalendarVisualData& data);

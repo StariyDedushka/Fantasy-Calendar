@@ -7,31 +7,11 @@
 #include "calendarsystem.h"
 #include "customdatetime.h"
 #include "calendarview.h"
-#include "calendarscene.h"
 #include "calendaritem.h"
+#include "calendarvisualstyle.h"
 
-// Структуры данных для отображения
-struct CalendarDayData {
-    quint16 day;
-    quint16 month;
-    quint32 year;
-    QString displayText;
-    bool isEnabled;
-    bool isCurrentDay;
-    bool isToday;
-    bool hasEvents;
-    QColor backgroundColor;
-    QColor textColor;
-    QColor borderColor;
-};
+// #include "common/calendarstructures.h"
 
-struct CalendarVisualData {
-    QVector<CalendarDayData> days;
-    QString headerText;
-    QString weekDaysHeader;
-    QSize gridSize; // columns x rows
-    QSizeF cellSize;
-};
 
 class CalendarPresenter : public QObject
 {
@@ -53,7 +33,7 @@ public slots:
     void onNextMonth();
     void onPrevMonth();
     void onToday();
-    void onDateSelected(const QDate& date);
+    void onDateSelected(const CustomDateTime& date);
 
     // Обработка внешних событий
     void onSystemChanged();
@@ -62,7 +42,7 @@ public slots:
 
 private slots:
     // Обработка сигналов от View
-    void handleDateClicked(const QDate& date);
+    void handleDateClicked(const CustomDateTime& date);
     void handleViewResized(const QSize& size);
     void handleItemClicked(CalendarItem* item);
     void handleWheelZoom(qreal factor);
@@ -76,6 +56,9 @@ private:
     QVector<CalendarDayData> generateMonthDays() const;
     QString generateHeaderText() const;
     QString generateWeekDaysHeader() const;
+    // Методы для работы со стилями
+    void applyVisualStyle();
+    void updateColorsFromSettings();
 
     // Визуальные настройки
     QColor getDayColor(const CalendarDayData& dayData) const;
@@ -85,8 +68,10 @@ private:
     CalendarSystem* m_system;
     CustomDateTime* m_globalTime;
     CalendarView* m_view;
+    // Визуальные настройки
+    CalendarVisualStyle m_visualStyle;
 
-    QDate m_currentDisplayDate;
+    CustomDateTime m_currentDisplayDate;
     QSize m_viewSize;
     quint16 m_columns;
     quint16 m_rows;

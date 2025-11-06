@@ -11,10 +11,6 @@ AbstractItem::AbstractItem(const QRectF &rect, QString text,  QColor colorPrimar
     , m_text(text)
     , m_parentScene(parent)
 {
-    // if(parent->metaObject()->className() == "AbstractScene")
-    // {
-    //     m_parentScene = parent;
-    // }
     m_hovered = false;
     m_selected = false;
     m_selectedItem = nullptr;
@@ -78,13 +74,13 @@ QSharedPointer<QPolygon> AbstractItem::buildTriangle(const QRectF &parentRect, d
 
 void AbstractItem::/*slot_*/onItemClicked(AbstractItem *item)
 {
-    emit signal_itemClicked(item);
+    emit itemClicked(item);
 }
 
 void AbstractItem::addItem(AbstractItem *item)
 {
     m_items.append(item);
-    connect(item, &AbstractItem::signal_itemClicked, this, &AbstractItem::/*slot_*/onItemClicked);
+    connect(item, &AbstractItem::itemClicked, this, &AbstractItem::/*slot_*/onItemClicked);
 }
 
 
@@ -94,7 +90,6 @@ void AbstractItem::toggleClicked()
     if (m_selected) {
         qDebug() << "Deselecting current item";
         m_selected = false;
-        setSelected(nullptr);
     }
     // Если кликнули по другому элементу
     else {
@@ -103,13 +98,11 @@ void AbstractItem::toggleClicked()
             qDebug() << "Deselecting previous item";
 
             m_selectedItem->m_selected = false;
-            setSelected(nullptr);
         }
 
         // Выделяем новый элемент
         qDebug() << "Selecting new item";
         m_selected = true;
-        setSelected(this);
     }
 
 }
@@ -120,9 +113,9 @@ void AbstractItem::setEnabled(bool option)
     update();
 }
 
-void AbstractItem::setSelected(AbstractItem *item)
+void AbstractItem::setSelected(bool selected)
 {
-    m_selectedItem = item;
+    m_selected = selected;
 }
 
 bool AbstractItem::isSelected() const
@@ -207,7 +200,7 @@ void AbstractItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
     // Если дочерних элементов нет или событие не над ними - обрабатываем сами
     qDebug() << "Handling event in parent";
     toggleClicked();
-    emit signal_itemClicked(this);
+    emit itemClicked(this);
     event->accept();
     update();
 
@@ -233,8 +226,13 @@ QRectF AbstractItem::boundingRect() const
     return m_rect;
 }
 
+void AbstractItem::setSelectedItem(AbstractItem *item)
+{
+    m_selectedItem = item;
+}
 
-AbstractItem& AbstractItem::operator=(AbstractItem&& other)
+
+AbstractItem* AbstractItem::operator=(AbstractItem&& other)
 {
     m_enabled = std::move(other.m_enabled);
     m_selected = std::move(other.m_selected);
@@ -249,11 +247,9 @@ AbstractItem& AbstractItem::operator=(AbstractItem&& other)
     m_colorSecondary = std::move(other.m_colorSecondary);
     m_colorTertiary = std::move(other.m_colorTertiary);
 
-
     m_rect = std::move(other.m_rect);
-
     m_selectedItem = std::move(other.m_selectedItem);
-
+    return this;
 }
 
 

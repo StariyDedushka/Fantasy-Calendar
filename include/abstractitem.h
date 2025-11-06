@@ -17,7 +17,7 @@ class AbstractItem : public QObject, public QGraphicsItem
     Q_OBJECT
 
 signals:
-    void signal_itemClicked(AbstractItem *item);
+    void itemClicked(AbstractItem *item);
 
 protected:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
@@ -40,7 +40,7 @@ protected:
     QVector<AbstractItem*> m_items;
     QRectF m_rect;
 
-    static inline AbstractItem *m_selectedItem = nullptr;
+    // static inline AbstractItem *m_selectedItem = nullptr;
 
     virtual void toggleClicked();
     virtual void setupPainter(QPainter *painter);
@@ -65,7 +65,8 @@ public:
     virtual bool isSelected() const;
     virtual bool isEnabled() const;
 
-    static void setSelected(AbstractItem *item);
+    // static void setSelectedItem(AbstractItem *item);
+    virtual void setSelected(bool selected);
     virtual void setEnabled(bool enabled);
     virtual void addItem(AbstractItem *item);
     virtual QVector<AbstractItem*>& getItems();
@@ -74,7 +75,7 @@ public:
     virtual void collapse();
     virtual void expand();
 
-    AbstractItem& operator=(AbstractItem&& other);
+    AbstractItem* operator=(AbstractItem&& other);
     bool operator==(const AbstractItem& other);
 
 };
