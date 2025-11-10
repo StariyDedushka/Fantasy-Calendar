@@ -3,14 +3,11 @@
 
 #include <QObject>
 #include <QSize>
-#include <QDebug>
-#include <QVector>
-
 #include "calendarsystem.h"
 #include "customdatetime.h"
-#include "calendarview.h"
-#include "calendaritem.h"
-#include "calendarvisualstyle.h"
+#include "eventview.h"
+#include "eventitem.h"
+#include "eventvisualstyle.h"
 
 // #include "common/calendarstructures.h"
 

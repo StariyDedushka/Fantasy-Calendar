@@ -1,22 +1,24 @@
 #include "include/abstractitem.h"
 
-AbstractItem::AbstractItem(const QRectF &rect, QString text,  QColor colorPrimary, QColor colorSecondary, QColor colorTertiary,
-                           bool enabled, QObject *parent) :
-    QGraphicsItem()
+AbstractItem::AbstractItem(const QRectF &rect,
+                           const QString &text = "",
+                           const QColor &colorPrimary = Qt::white,
+                           const QColor &colorSecondary = Qt::gray,
+                           const QColor &colorTertiary = Qt::darkGray,
+                           bool enabled = true,
+                           QObject *parent = nullptr) :
+    QGraphicsItem(parent)
     , m_enabled(enabled)
     , m_colorPrimary(colorPrimary)
     , m_colorSecondary(colorSecondary)
     , m_colorTertiary(colorTertiary)
     , m_rect(rect)
+    , m_highlighted(false)
     , m_text(text)
-    , m_parentScene(parent)
+    , m_selected(false)
 {
-    m_hovered = false;
-    m_selected = false;
-    m_selectedItem = nullptr;
-    AbstractItem::setAcceptHoverEvents(true);
+    setAcceptHoverEvents(true);
     setFlag(QGraphicsItem::ItemIsSelectable, true);
-    setFlag(QGraphicsItem::ItemIsFocusable, true);
 }
 
 
@@ -29,47 +31,55 @@ AbstractItem::~AbstractItem()
     m_items.clear();
 }
 
-QVector<AbstractItem*>& AbstractItem::getItems()
+void AbstractItem::setHighlighted(bool highlighted)
 {
-    return m_items;
-}
-
-void AbstractItem::setupPainter(QPainter *painter)
-{
-
-    QBrush brush(m_colorPrimary);
-    QBrush brushHover(m_colorPrimary.darker(120));
-
-
-    QPen pen(m_colorPrimary.darker(150));
-    QPen hoverPen(m_colorPrimary.lighter(150));
-
-
-    if(m_hovered || m_selected) {
-        painter->setBrush(brushHover);
-        painter->setPen(hoverPen);
-        painter->drawRect(m_rect);
-    } else {
-        painter->setBrush(brush);
-        painter->setPen(pen);
-        painter->drawRect(m_rect);
+    if (m_highlighted != highlighted) {
+        m_highlighted = highlighted;
+        update();
     }
 }
 
-QSharedPointer<QPolygon> AbstractItem::buildTriangle(const QRectF &parentRect, double scale, qint16 rotation)
-{
-    QSharedPointer<QPolygon> triangle(new QPolygon);
-    double modifier = scale / 100.0;
-    quint8 width = 15, height = 15;
-    QPoint center(parentRect.x() + width, parentRect.y() + parentRect.height() / 2);
-    // qDebug() << "ParentPos x:" << parentRect.x() << "ParentPos y:" << parentRect.y();
-    QPoint point1(center.x() - (width/2) * modifier, center.y() + (height/2) * modifier);
-    QPoint point2(center.x() - (width/2) * modifier, center.y() - (height/2) * modifier);
-    QPoint point3(center.x() + (width/2) * modifier, center.y());
-    *triangle << point1 << point2 << point3;
-    *triangle = QTransform().translate(center.x(), center.y()).rotate(rotation).translate(-center.x(), -center.y()).map(*triangle);
-    return triangle;
-}
+// QVector<AbstractItem*>& AbstractItem::getItems()
+// {
+//     return m_items;
+// }
+
+// void AbstractItem::setupPainter(QPainter *painter)
+// {
+
+//     QBrush brush(m_colorPrimary);
+//     QBrush brushHover(m_colorPrimary.darker(120));
+
+
+//     QPen pen(m_colorPrimary.darker(150));
+//     QPen hoverPen(m_colorPrimary.lighter(150));
+
+
+//     if(m_hovered || m_selected) {
+//         painter->setBrush(brushHover);
+//         painter->setPen(hoverPen);
+//         painter->drawRect(m_rect);
+//     } else {
+//         painter->setBrush(brush);
+//         painter->setPen(pen);
+//         painter->drawRect(m_rect);
+//     }
+// }
+
+// QSharedPointer<QPolygon> AbstractItem::buildTriangle(const QRectF &parentRect, double scale, qint16 rotation)
+// {
+//     QSharedPointer<QPolygon> triangle(new QPolygon);
+//     double modifier = scale / 100.0;
+//     quint8 width = 15, height = 15;
+//     QPoint center(parentRect.x() + width, parentRect.y() + parentRect.height() / 2);
+//     // qDebug() << "ParentPos x:" << parentRect.x() << "ParentPos y:" << parentRect.y();
+//     QPoint point1(center.x() - (width/2) * modifier, center.y() + (height/2) * modifier);
+//     QPoint point2(center.x() - (width/2) * modifier, center.y() - (height/2) * modifier);
+//     QPoint point3(center.x() + (width/2) * modifier, center.y());
+//     *triangle << point1 << point2 << point3;
+//     *triangle = QTransform().translate(center.x(), center.y()).rotate(rotation).translate(-center.x(), -center.y()).map(*triangle);
+//     return triangle;
+// }
 
 
 void AbstractItem::/*slot_*/onItemClicked(AbstractItem *item)
@@ -77,40 +87,16 @@ void AbstractItem::/*slot_*/onItemClicked(AbstractItem *item)
     emit itemClicked(item);
 }
 
-void AbstractItem::addItem(AbstractItem *item)
-{
-    m_items.append(item);
-    connect(item, &AbstractItem::itemClicked, this, &AbstractItem::/*slot_*/onItemClicked);
-}
+// void AbstractItem::addItem(AbstractItem *item)
+// {
+//     m_items.append(item);
+//     connect(item, &AbstractItem::itemClicked, this, &AbstractItem::/*slot_*/onItemClicked);
+// }
 
-
-void AbstractItem::toggleClicked()
-{
-    // Если кликнули по уже выделенному элементу - снимаем выделение
-    if (m_selected) {
-        qDebug() << "Deselecting current item";
-        m_selected = false;
-    }
-    // Если кликнули по другому элементу
-    else {
-        // Снимаем выделение с предыдущего элемента
-        if (m_selectedItem && m_selectedItem != this) {
-            qDebug() << "Deselecting previous item";
-
-            m_selectedItem->m_selected = false;
-        }
-
-        // Выделяем новый элемент
-        qDebug() << "Selecting new item";
-        m_selected = true;
-    }
-
-}
 
 void AbstractItem::setEnabled(bool option)
 {
     m_enabled = option;
-    update();
 }
 
 void AbstractItem::setSelected(bool selected)

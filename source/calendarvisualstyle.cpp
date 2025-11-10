@@ -1,3 +1,2 @@
-#include "calendarvisualstyle.h"
+#include "include/calendarvisualstyle.h"
 
-CalendarVisualStyle::CalendarVisualStyle() {}

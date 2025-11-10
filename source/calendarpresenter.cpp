@@ -1,6 +1,4 @@
 #include "include/calendarpresenter.h"
-#include <QDebug>
-#include <QVector>
 
 CalendarPresenter::CalendarPresenter(CalendarSystem* system,
                                      CustomDateTime* globalTime,
@@ -11,12 +9,12 @@ CalendarPresenter::CalendarPresenter(CalendarSystem* system,
     , m_globalTime(globalTime)
     , m_view(view)
     , m_columns(system->daysInWeek())
-    , m_rows(system->weeksInMonth(globalTime->month, globalTime->year()))
+    , m_rows(system->weeksInMonth(globalTime->month(), globalTime->year()))
     , m_zoomLevel(1.0)
 {
     // Устанавливаем начальную дату
     if (m_globalTime && m_system) {
-        m_currentDisplayDate = m_globalTime;
+        m_currentDisplayDate = *m_globalTime;
     } else {
         m_currentDisplayDate = CustomDateTime(1, 1, 2000);
     }
@@ -57,7 +55,7 @@ void CalendarPresenter::setupConnections()
             this, &CalendarPresenter::handleViewResized);
     connect(m_view, &CalendarView::itemClicked,
             this, &CalendarPresenter::handleItemClicked);
-    connect(m_view, &CalendarView::wheelZoomed,
+    connect(m_view, &CalendarView::zoomChanged,
             this, &CalendarPresenter::handleWheelZoom);
 
     // Подключаемся к моделям (если они имеют сигналы)
@@ -83,11 +81,11 @@ CalendarVisualData CalendarPresenter::generateVisualData() const
     CalendarVisualData data;
 
     // Генерируем данные дней
-    data.days = generateMonthDays();
+    data.items = generateMonthDays();
     data.headerText = generateHeaderText();
     data.weekDaysHeader = generateWeekDaysHeader();
-    data.gridSize = QSize(m_columns, m_rows);
-
+    data.columns = m_columns;
+    data.rows = m_rows;
     // Рассчитываем размер ячейки на основе размера View
     if (m_viewSize.isValid()) {
         data.cellSize = QSizeF(m_viewSize.width() / m_columns,
@@ -110,8 +108,7 @@ QVector<CalendarDayData> CalendarPresenter::generateMonthDays() const
                                                 m_currentDisplayDate.year());
 
     // Определяем день недели первого дня месяца
-    CustomDateTime time;
-    Day *day = time.firstDayOfMonth(m_currentDisplayDate.month(), m_currentDisplayDate.year());
+    Day *day = m_system.firstDayOfMonth(m_currentDisplayDate.month(), m_currentDisplayDate.year());
     quint16 firstDayOfWeek = day->position; // 1,2 .. x
 
     // Добавляем пустые дни в начале (для выравнивания)

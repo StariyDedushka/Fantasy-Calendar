@@ -2,6 +2,8 @@
 #define CALENDARSTRUCTURES_H
 #include <QObject>
 #include <QColor>
+#include "include/calendaritem.h"
+#include "include/eventitem.h"
 #include <QSize>
 
 struct Month {
@@ -27,12 +29,31 @@ struct CalendarDayData {
 };
 
 struct CalendarVisualData {
-    QVector<CalendarDayData> days;
+    QVector<CalendarItem*> items;
     QString headerText;
     QString weekDaysHeader;
-    QSize gridSize; // columns x rows
     QSizeF cellSize;
+    quint16 columns;
+    quint16 rows;
 };
+
+struct CalendarEventData {
+    quint32 id;
+    QString displayText;
+    bool isEnabled;
+    bool isToday;
+    QColor backgroundColor;
+    QColor textColor;
+    QColor borderColor;
+};
+
+struct EventVisualData {
+    QVector<EventItem*> items;
+    QString headerText;
+    QSizeF cellSize;
+    quint16 rows;
+};
+
 
 struct Day {
     quint16 id;

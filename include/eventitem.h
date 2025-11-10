@@ -1,22 +1,22 @@
-#ifndef CALENDAREVENT_H
-#define CALENDAREVENT_H
+#ifndef EVENTITEM_H
+#define EVENTITEM_H
 
 
 #include <QObject>
 #include "abstractitem.h"
 #include "customdatetime.h"
 
-class CalendarEvent : public AbstractItem
+class EventItem : public AbstractItem
 {
     Q_OBJECT
 public:
-    CalendarEvent();
-    CalendarEvent(CustomDateTime startTime, CustomDateTime endTime,
+    EventItem();
+    EventItem(CustomDateTime startTime, CustomDateTime endTime,
                   const QRectF &rect, QString text, QColor colorPrimary = Qt::green,
                   QColor colorSecondary = Qt::darkGreen, QColor colorTertiary = Qt::yellow,
                   bool enabled = true, QObject *parent = nullptr);
 
-    CalendarEvent(CustomDateTime startTime, const QRectF &rect, QString text,
+    EventItem(CustomDateTime startTime, const QRectF &rect, QString text,
                   QColor colorPrimary = Qt::green, QColor colorSecondary = Qt::darkGreen, QColor colorTertiary = Qt::yellow,
                   bool enabled = true, QObject *parent = nullptr);
 
@@ -44,4 +44,4 @@ private:
     void calculateAutoEndTime();
 };
 
-#endif // CALENDAREVENT_H
+#endif // EVENTITEM_H

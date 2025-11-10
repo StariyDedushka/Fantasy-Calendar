@@ -3,28 +3,24 @@
 
 #include <QObject>
 #include <QSize>
-#include <QDebug>
-#include <QVector>
-
 #include "calendarsystem.h"
 #include "customdatetime.h"
-#include "calendarview.h"
-#include "calendaritem.h"
-#include "calendarvisualstyle.h"
+#include "eventvisualstyle.h"
+#include "eventitem.h"
 
 // #include "common/calendarstructures.h"
 
 
-class CalendarPresenter : public QObject
+class EventPresenter : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit CalendarPresenter(CalendarSystem* system,
+    explicit EventPresenter(CalendarSystem* system,
                                CustomDateTime* globalTime,
                                CalendarView* view,
                                QObject* parent = nullptr);
-    ~CalendarPresenter();
+    ~EventPresenter();
 
     void initialize();
     void refreshCalendar();
@@ -32,10 +28,10 @@ public:
 public slots:
     void onNextDay();
     void onPrevDay();
-    void onNextMonth();
-    void onPrevMonth();
-    void onToday();
-    void onDateSelected(const CustomDateTime& date);
+    // void onNextMonth();
+    // void onPrevMonth();
+    // void onToday();
+    // void onDateSelected(const CustomDateTime& date);
 
     // Обработка внешних событий
     void onSystemChanged();
@@ -44,18 +40,17 @@ public slots:
 
 private slots:
     // Обработка сигналов от View
-    void handleDateClicked(const CustomDateTime& date);
     void handleViewResized(const QSize& size);
-    void handleItemClicked(CalendarItem* item);
+    void handleItemClicked(EventItem* item);
     void handleWheelZoom(qreal factor);
 
 private:
     void setupConnections();
-    CalendarVisualData generateVisualData() const;
+    EventVisualData generateVisualData() const;
     void updateView(const CalendarVisualData& data);
     void validateCurrentDate();
     void calculateGridSize();
-    QVector<CalendarDayData> generateMonthDays() const;
+    QVector<CalendarEventData> generateMonthDays() const;
     QString generateHeaderText() const;
     QString generateWeekDaysHeader() const;
     // Методы для работы со стилями
@@ -63,9 +58,9 @@ private:
     void updateColorsFromSettings();
 
     // Визуальные настройки
-    QColor getDayColor(const CalendarDayData& dayData) const;
-    QColor getTextColor(const CalendarDayData& dayData) const;
-    QColor getBorderColor(const CalendarDayData& dayData) const;
+    QColor getDayColor(const CalendarEventData& dayData) const;
+    QColor getTextColor(const CalendarEventData& dayData) const;
+    QColor getBorderColor(const CalendarEventData& dayData) const;
 
     CalendarSystem* m_system;
     CustomDateTime* m_globalTime;

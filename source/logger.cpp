@@ -19,6 +19,7 @@ void Logger::operator()(LogLevel level,
                         char const* file,
                         int line)
 {
+    bool crash = false;
     QString lvlStr;
     switch(level)
     {
@@ -33,6 +34,10 @@ void Logger::operator()(LogLevel level,
         break;
     case ERROR:
         lvlStr = "ERROR";
+        break;
+    case FATAL:
+        lvlStr = "FATAL";
+        crash = true;
         break;
     }
 
@@ -52,4 +57,9 @@ void Logger::operator()(LogLevel level,
 
     // Также выводим в консоль
     qDebug() << logEntry.trimmed();
+
+    if(crash)
+    {
+        // throw std::exception() -- можно потом включить логирование фатальных ошибок
+    }
 }

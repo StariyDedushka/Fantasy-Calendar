@@ -10,6 +10,8 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QtDebug>
+#include "customdatetime.h"
+#include <QStyleOption>
 
 class AbstractItem : public QObject, public QGraphicsItem
 {
@@ -25,25 +27,26 @@ protected:
     virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
 
     bool m_enabled;
-    bool m_selected;
-    bool m_hovered;
     bool m_expanded;
     bool m_expandable;
+    // Визуальные состояния
+    bool m_highlighted;
+    bool m_hovered;
+
     quint16 m_groupId;
     QString m_text;
-    QObject *m_parentScene = nullptr;
+    QVector<quint32> m_item_ids;
 
     QColor m_colorPrimary;
     QColor m_colorSecondary;
     QColor m_colorTertiary;
 
-    QVector<AbstractItem*> m_items;
+    // QVector<AbstractItem*> m_items;
     QRectF m_rect;
 
     // static inline AbstractItem *m_selectedItem = nullptr;
 
-    virtual void toggleClicked();
-    virtual void setupPainter(QPainter *painter);
+    // virtual void setupPainter(QPainter *painter);
 
     void setText(const QString &text);
     QString text() const { return m_text; }
@@ -54,8 +57,13 @@ private slots:
 
 public:
     virtual ~AbstractItem();
-    AbstractItem(const QRectF &rect, QString text = "", QColor colorPrimary = Qt::green, QColor colorSecondary = Qt::darkGreen,
-                 QColor colorTertiary = Qt::yellow, bool enabled = true, QObject *parent = nullptr);
+    AbstractItem(const QRectF &rect,
+                 const QString &text = "",
+                 const QColor &colorPrimary = Qt::white,
+                 const QColor &colorSecondary = Qt::gray,
+                 const QColor &colorTertiary = Qt::darkGray,
+                 bool enabled = true,
+                 QObject *parent = nullptr);
 
 
     virtual QRectF boundingRect() const override;
@@ -66,11 +74,11 @@ public:
     virtual bool isEnabled() const;
 
     // static void setSelectedItem(AbstractItem *item);
-    virtual void setSelected(bool selected);
+    virtual void setHighlighted(bool highlighted);
     virtual void setEnabled(bool enabled);
-    virtual void addItem(AbstractItem *item);
-    virtual QVector<AbstractItem*>& getItems();
-    virtual QSharedPointer<QPolygon> buildTriangle(const QRectF &parentRect, double scale, qint16 rotation);
+    // virtual void addItem(AbstractItem *item);
+    // virtual QVector<AbstractItem*>& getItems();
+    // virtual QSharedPointer<QPolygon> buildTriangle(const QRectF &parentRect, double scale, qint16 rotation);
 
     virtual void collapse();
     virtual void expand();

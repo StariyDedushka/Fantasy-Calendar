@@ -18,6 +18,7 @@ CalendarSystem::~CalendarSystem()
     for(Day *day : *m_days) delete day;
     delete m_months;
     delete m_days;
+    LOG(INFO, logger, "Object destroyed");
 }
 
 bool CalendarSystem::setTimeSystem(quint16 secPerMin, quint16 minPerHour, quint16 hoursPerDay)
@@ -28,8 +29,11 @@ bool CalendarSystem::setTimeSystem(quint16 secPerMin, quint16 minPerHour, quint1
         m_secondsPerMinute = secPerMin;
         m_minutesPerHour = minPerHour;
         m_hoursPerDay = hoursPerDay;
+        LOG(INFO, logger, QString("Set time system to spm: %1, mph: %2, hpd: %3")
+                                  .arg(secPerMin).arg(minPerHour).arg(hoursPerDay);
         return true;
     }
+    LOG(WARN, logger, "Couldn't set time system");
     return false;
 }
 
@@ -89,16 +93,24 @@ quint16 CalendarSystem::weeksInMonth(quint16 month, quint32 year) const
 
 bool CalendarSystem::addDayOfWeek(const QString &name, quint16 place)
 {
-    if(place > m_daysInWeek)
-        place = m_daysInWeek - 1;
 
     Day *day = new Day();
     day->name = name;
     day->id = m_days->size() + 1;
     day->position = day->id;
 
-    m_days->insert(place, day);
+    if(name.isEmpty())
+    {
+        LOG(ERROR, logger, "Tried adding a day with an empty name");
+        return false;
+    }
+
+    if(place > m_daysInWeek)
+        m_days->append(day);
+    else
+        m_days->insert(place, day);
     m_daysInWeek++;
+    LOG(INFO, logger, QString("Added day of week: %1, №%2").arg(name).arg(place));
     return true;
 }
 
@@ -106,6 +118,16 @@ bool CalendarSystem::addMonth(const QString &name, quint16 days, quint16 place)
 {
     if(place > m_months->size())
         place = m_months->size();
+    if(name.isEmpty())
+    {
+        LOG(ERROR, logger, "Tried adding a month with an empty name");
+        return false;
+    }
+    if(!(days > 0))
+    {
+        LOG(ERROR, logger, "Tried adding a month with zero days");
+        return false;
+    }
 
     Month *month = new Month();
     month->name = name;
@@ -124,10 +146,15 @@ bool CalendarSystem::removeMonth(const QString &name)
     {
         if(month->name == name)
         {
-            delete month;
+            try
+                delete month;
+            catch
+                LOG(FATAL, logger, QString("Trying to free unallocated memory").arg(name));
+            LOG(INFO, logger, QString("Deleted month %1 succesfully").arg(name));
             return true;
         }
     }
+    LOG(ERROR, logger, QString("Couldn't delete month %1").arg(name));
     return false;
 }
 
@@ -137,99 +164,170 @@ bool CalendarSystem::removeMonth(quint16 id)
     {
         if(month->id == id)
         {
-            delete month;
+            try
+                delete month;
+            catch
+                LOG(FATAL, logger, QString("Trying to free unallocated memory").arg(id));
+            LOG(INFO, logger, QString("Deleted month with id %1 succesfully").arg(id));
             return true;
         }
     }
+    LOG(ERROR, logger, QString("Couldn't delete month with id %1").arg(name));
     return false;
 }
 
-bool CalendarSystem::editMonth(const QString& monthName, quint16 newDays, const QString& newName)
+bool CalendarSystem::editMonth(const QString name, quint16 newDays)
+{
+    if(newDays == 0)
+    {
+        LOG(ERROR, logger, QString("Tried to change month %1's total days to 0").arg(name));
+        return false;
+    }
+
+    for(Month *month : *m_months)
+    {
+        if(month->name == name)
+        {
+            month->days = newDays;
+            LOG(INFO, logger, QString("Changed month %1's total days to %2").arg(name).arg(newDays));
+            return true;
+        }
+    }
+    LOG(ERROR, logger, QString("Couldn't find month named %1").arg(name));
+    return false;
+}
+
+bool CalendarSystem::editMonth(quint16 id, const QString& newName)
 {
     for(Month *month : *m_months)
     {
-        if(month->name == monthName)
+        if(month->id == id)
         {
-            if(newDays == 0 && newName.isEmpty())
-                return false;
-            if(newDays != 0)
-                month->days = newDays;
-            if(newName != 0)
+            try
                 month->name = newName;
-            return true;
-        }
-    }
-    return false;
-}
-bool CalendarSystem::editMonth(quint16 month_id, quint16 newDays, const QString& newName)
-{
-    for(Month *month : *m_months)
-    {
-        if(month->id == month_id)
-        {
-            if(newDays == 0 && newName.isEmpty())
+            catch {
+                LOG(FATAL, logger, QString("Trying to change month %1's name to undefined").arg(id));
                 return false;
-            if(newDays != 0)
-                month->days = newDays;
-            if(newName != 0)
-                month->name = newName;
+            }
+            LOG(INFO, logger, QString("Changed month with id %1's name to %2").arg(id).arg(newName));
             return true;
         }
     }
     return false;
 }
 
-bool CalendarSystem::moveMonth(const QString& monthName, quint16 newPlace)
+bool CalendarSystem::editMonth(quint16 id, quint16 newDays)
 {
+    if(newDays == 0)
+    {
+        LOG(ERROR, logger, QString("Tried to change month with id %1's total days to 0").arg(id));
+        return false;
+    }
+
     for(Month *month : *m_months)
     {
-        if(month->name == monthName)
+        if(month->id == id)
         {
-            m_months->insert(newPlace, std::move(month));
+            month->days = newDays;
+            LOG(INFO, logger, QString("Changed month with id %1's total days to %2").arg(id).arg(newDays));
+            return true;
         }
     }
+    LOG(ERROR, logger, QString("Couldn't find month with id %1").arg(id));
     return false;
 }
 
-bool CalendarSystem::moveMonth(quint16 month_id, quint16 newPlace)
+bool CalendarSystem::moveMonth(const QString& name, quint16 newPlace)
 {
+    if(newPlace > m_months->size())
+    {
+        LOG(WARN, logger, QString("Month %1's new place is greater than total array size, defaulting to last place").arg(name));
+        newPlace = m_months->size();
+    }
+
     for(Month *month : *m_months)
     {
-        if(month->id == month_id)
+        if(month->name == name)
         {
-            m_months->insert(newPlace, std::move(month));
+            m_months->move(m_months->indexOf(month), newPlace));
+            LOG(INFO, logger, QString("Moved month %1 to position %2").arg(name).arg(newPlace));
+            return true;
         }
     }
+    LOG(ERROR, logger, QString("Couldn't find month named %1").arg(name));
     return false;
-
 }
+
+bool CalendarSystem::moveMonth(quint16 id, quint16 newPlace)
+{
+    if(newPlace > m_months->size())
+    {
+        LOG(WARN, logger, QString("Month %1's new place is greater than total array size, defaulting to last place").arg(id));
+        newPlace = m_months->size();
+    }
+
+    for(Month *month : *m_months)
+    {
+        if(month->id == id)
+        {
+            m_months->move(m_months->indexOf(month), newPlace);
+            LOG(INFO, logger, QString("Moved month %1 to position %2").arg(id).arg(newPlace));
+            return true;
+        }
+    }
+    LOG(ERROR, logger, QString("Couldn't find month named %1").arg(name));
+    return false;
+}
+
 
 bool CalendarSystem::removeDayOfWeek(const QString &name)
 {
-    for(int i = 0; i < m_days->size(); ++i)
+    int i = 0;
+    for(Day *day : *m_days)
     {
-        if(m_days->at(i)->name == name)
+        i++;
+        if(day->id == id)
         {
-            Day *toRemove = m_days->at(i);
-            m_days->remove(m_days->at(i)->id);
-            delete toRemove;
+            try
+            {
+                delete m_days->at(i);
+                m_days->remove(i);
+            } catch ()
+            {
+                LOG(FATAL, logger, "Trying to free unallocated memory");
+                return false;
+            }
+            LOG(INFO, logger, QString("Deleted day %1 succesfully").arg(id));
             return true;
         }
     }
+    LOG(ERROR, logger, QString("Couldn't delete month with id %1").arg(name));
     return false;
+
 }
+
 bool CalendarSystem::removeDayOfWeek(quint16 id)
 {
-    for(int i = 0; i < m_days->size(); ++i)
+    int i = 0;
+    for(Day *day : *m_days)
     {
-        if(m_days->at(i)->id == id)
+        i++;
+        if(day->id == id)
         {
-            Day *toRemove = m_days->at(i);
-            m_days->remove(m_days->at(i)->id);
-            delete toRemove;
+            try
+            {
+                delete m_days->at(i);
+                m_days->remove(i);
+            } catch ()
+            {
+                LOG(FATAL, logger, "Trying to free unallocated memory");
+                return false;
+            }
+            LOG(INFO, logger, QString("Deleted day %1 succesfully").arg(id));
             return true;
         }
     }
+    LOG(ERROR, logger, QString("Couldn't delete month with id %1").arg(name));
     return false;
 }
 

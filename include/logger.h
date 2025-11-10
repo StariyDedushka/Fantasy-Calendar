@@ -8,7 +8,7 @@
 #include <QRegExp>
 
 
-enum LogLevel { DEBUG, INFO, WARN, ERROR };
+enum LogLevel { DEBUG, INFO, WARN, ERROR, FATAL};
 
 class Logger {
 public:

@@ -31,6 +31,21 @@ void CustomDateTime::setDate(quint16 day, quint16 month, quint32 year)
     m_year = year;
 }
 
+void CustomDateTime::setDay(quint16 day)
+{
+    m_day = day;
+}
+
+void CustomDateTime::setMonth(quint16 month)
+{
+    m_month = month;
+}
+
+void CustomDateTime::setYear(quint32 year)
+{
+    m_year = year;
+}
+
 void CustomDateTime::addDays(qint32 days)
 {
     m_day += days;

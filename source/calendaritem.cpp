@@ -1,64 +1,95 @@
 #include "include/calendaritem.h"
 
-CalendarItem::CalendarItem(const QRectF &rect, QString text, QColor colorPrimary, QColor colorSecondary, QColor colorTertiary,
-                 bool enabled, quint16 day, quint16 month, quint32 year, QObject *parent) :
-
-    AbstractItem(rect, text, colorPrimary, colorSecondary, colorTertiary, enabled, parent)
-    , m_day(day)
-    , m_month(month)
-    , m_year(year)
+CalendarItem::CalendarItem(const QRectF &rect, const QString &text,
+                           const QColor &colorPrimary, const QColor &colorSecondary,
+                           const QColor &colorTertiary, bool enabled,
+                           CustomDateTime dateTime, QObject *parent)
+    : AbstractItem(rect, text, colorPrimary, colorSecondary, colorTertiary, enabled, parent)
+    , m_dateTime(dateTime)
+    , m_hasEvents(false)
+    , m_isToday(false)
 {
-    m_expandable = false;
+
 }
 
-
-void CalendarItem::setDay(quint16 day)
+void CalendarItem::paint(QPainter *painter,
+                         const QStyleOptionGraphicsItem *option,
+                         QWidget *widget)
 {
-    m_day = day;
+    Q_UNUSED(widget)
+
+    // Настройка painter'а
+    painter->setRenderHint(QPainter::Antialiasing);
+
+    // Фон
+    QRectF rect = boundingRect();
+    QBrush backgroundBrush = m_colorPrimary;
+
+    // Изменение цвета в зависимости от состояния
+    if (!m_enabled) {
+        backgroundBrush = Qt::lightGray;
+    } else if (m_selected) {
+        backgroundBrush = m_colorSecondary;
+    } else if (m_hovered) {
+        backgroundBrush = m_colorSecondary.darker(120);
+    } else if (m_isToday) {
+        backgroundBrush = QColor(255, 255, 200); // Светло-желтый для сегодня
+    } else if (m_hasEvents) {
+        backgroundBrush = QColor(255, 230, 200); // Светло-оранжевый для дней с событиями
+    }
+
+    // Рисуем фон
+    painter->setBrush(backgroundBrush);
+    painter->setPen(QPen(m_colorTertiary, 1));
+    painter->drawRoundedRect(rect, 4, 4);
+
+    // Рисуем текст
+    if (!m_text.isEmpty()) {
+        painter->setPen(m_enabled ? Qt::black : Qt::darkGray);
+        QFont font = painter->font();
+        font.setPointSize(10);
+
+        if (m_isToday) {
+            font.setBold(true);
+            painter->setPen(Qt::red);
+        }
+
+        painter->setFont(font);
+        painter->drawText(rect, Qt::AlignCenter, m_text);
+    }
+
+    // Индикатор событий
+    if (m_hasEvents && m_enabled) {
+        painter->setBrush(Qt::red);
+        painter->setPen(Qt::NoPen);
+        painter->drawEllipse(rect.topRight() - QPointF(8, -4), 3, 3);
+    }
+
+    // Выделение
+    if (m_highlighted) {
+        painter->setBrush(Qt::NoBrush);
+        painter->setPen(QPen(Qt::blue, 2));
+        painter->drawRoundedRect(rect.adjusted(1, 1, -1, -1), 4, 4);
+    }
 }
 
-void CalendarItem::setMonth(quint16 month)
+void CalendarItem::setHasEvents(bool hasEvents)
 {
-    m_month = month;
+    if (m_hasEvents != hasEvents) {
+        m_hasEvents = hasEvents;
+        update();
+    }
 }
 
-void CalendarItem::setYear(quint32 year)
+void CalendarItem::setToday(bool today)
 {
-    m_year = year;
+    if (m_isToday != today) {
+        m_isToday = today;
+        update();
+    }
 }
 
-quint16 CalendarItem::day() const
+void CalendarItem::updateAppearance()
 {
-    return m_day;
-}
-
-quint16 CalendarItem::month() const
-{
-    return m_month;
-}
-
-quint32 CalendarItem::year() const
-{
-    return m_year;
-}
-
-
-void CalendarItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
-{
-
-    setupPainter(painter);
-    painter->drawText(m_rect, "День " + QString::number(m_day));
-}
-
-bool CalendarItem::operator==(const CalendarItem& other)
-{
-    return AbstractItem::operator==(other) && m_day == other.m_day && m_month == other.m_month && m_year == other.m_year;
-}
-
-CalendarItem& CalendarItem::operator=(CalendarItem&& other)
-{
-    AbstractItem::operator=(std::move(other));
-    m_day = other.m_day;
-    m_month = other.m_month;
-    m_year = other.m_year;
+    update();
 }

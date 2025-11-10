@@ -1,40 +1,48 @@
 #ifndef CALENDARITEM_H
 #define CALENDARITEM_H
 
-#include "include/abstractitem.h"
+#include "abstractitem.h"
 
 class CalendarItem : public AbstractItem
 {
     Q_OBJECT
 
-private:
-    quint16 m_day;
-    quint16 m_month;
-    quint32 m_year;
-
-
 public:
-    CalendarItem(const QRectF &rect, QString text = "", QColor colorPrimary = Qt::green, QColor colorSecondary = Qt::darkGreen, QColor colorTertiary = Qt::yellow,
-                 bool enabled = true, quint16 day = 1, quint16 month = 1, quint32 year = 2000, QObject *parent = nullptr);
+    CalendarItem(const QRectF &rect,
+                 const QString &text = "",
+                 const QColor &colorPrimary = Qt::white,
+                 const QColor &colorSecondary = Qt::gray,
+                 const QColor &colorTertiary = Qt::darkGray,
+                 bool enabled = true,
+                 CustomDateTime dateTime = CustomDateTime(1, 1, 2000),
+                 QObject *parent = nullptr);
 
-    quint16 day() const;
-    quint16 month() const;
-    quint32 year() const;
+    // Только данные для отображения (read-only)
+    quint16 day() const { return m_day; }
+    quint16 month() const { return m_month; }
+    quint32 year() const { return m_year; }
 
-    void setDay(quint16 day);
-    void setMonth(quint16 month);
-    void setYear(quint32 year);
+    // Визуальные состояния
+    void setHighlighted(bool highlighted);
+    void setHasEvents(bool hasEvents);
+    void setToday(bool today);
 
+    // QGraphicsItem interface
+    virtual void paint(QPainter *painter,
+                       const QStyleOptionGraphicsItem *option,
+                       QWidget *widget) override;
 
-    // virtual void addItem(AbstractItem &item) override;
+    // Ограниченная функциональность
+    void updateAppearance();
 
-    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
-    bool operator==(const CalendarItem& other);
-    CalendarItem& operator=(CalendarItem&& other);
-    bool operator<(const CalendarItem& other);
-    bool operator>(const CalendarItem& other);
+private:
+    // Immutable данные дня
+    const CustomDateTime m_dateTime;
 
+    // Визуальные состояния
+    bool m_highlighted;
+    bool m_hasEvents;
+    bool m_isToday;
 };
-
 
 #endif // CALENDARITEM_H

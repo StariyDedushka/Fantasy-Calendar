@@ -1,6 +1,6 @@
-#include "include/eventitem.h"
+#include "include/calendarevent.h"
 
-EventItem::EventItem(CustomDateTime startTime, CustomDateTime endTime,
+CalendarEvent::CalendarEvent(CustomDateTime startTime, CustomDateTime endTime,
                              const QRectF &rect, QString text, QColor colorPrimary,
                              QColor colorSecondary, QColor colorTertiary,
                              bool enabled, QObject *parent)
@@ -11,7 +11,7 @@ EventItem::EventItem(CustomDateTime startTime, CustomDateTime endTime,
 {
 }
 
-EventItem::EventItem(CustomDateTime startTime, const QRectF &rect, QString text,
+CalendarEvent::CalendarEvent(CustomDateTime startTime, const QRectF &rect, QString text,
                              QColor colorPrimary, QColor colorSecondary, QColor colorTertiary,
                              bool enabled, QObject *parent)
     : AbstractItem(rect, text, colorPrimary, colorSecondary, colorTertiary, enabled, parent)
@@ -21,7 +21,7 @@ EventItem::EventItem(CustomDateTime startTime, const QRectF &rect, QString text,
     calculateAutoEndTime();
 }
 
-void EventItem::setStartTime(const CustomDateTime &time)
+void CalendarEvent::setStartTime(const CustomDateTime &time)
 {
     if (time.isValid()) {
         m_startTime = time;
@@ -32,7 +32,7 @@ void EventItem::setStartTime(const CustomDateTime &time)
     }
 }
 
-void EventItem::setEndTime(const CustomDateTime &time)
+void CalendarEvent::setEndTime(const CustomDateTime &time)
 {
     if (time.isValid() && time < m_startTime) {
         qDebug() << "End time cannot be before start time";
@@ -43,7 +43,7 @@ void EventItem::setEndTime(const CustomDateTime &time)
     update();
 }
 
-void EventItem::calculateAutoEndTime()
+void CalendarEvent::calculateAutoEndTime()
 {
     // Автоматически устанавливаем конец события через 1 час
     m_endTime = m_startTime;
@@ -51,12 +51,12 @@ void EventItem::calculateAutoEndTime()
                       m_startTime.minute(), m_startTime.second());
 }
 
-bool EventItem::isValid() const
+bool CalendarEvent::isValid() const
 {
     return m_startTime.isValid() && m_endTime.isValid() && m_startTime < m_endTime;
 }
 
-quint32 EventItem::durationInMinutes() const
+quint32 CalendarEvent::durationInMinutes() const
 {
     // Упрощенный расчет длительности (можно усложнить)
     quint32 totalMinutes = 0;
@@ -70,7 +70,7 @@ quint32 EventItem::durationInMinutes() const
     return totalMinutes;
 }
 
-void EventItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void CalendarEvent::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     Q_UNUSED(widget)
 
@@ -88,6 +88,10 @@ void EventItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
         backgroundBrush = m_colorSecondary;
     } else if (m_hovered) {
         backgroundBrush = m_colorSecondary.darker(120);
+    } else if (m_isToday) {
+        backgroundBrush = QColor(255, 255, 200); // Светло-желтый для сегодня
+    } else if (m_hasEvents) {
+        backgroundBrush = QColor(255, 230, 200); // Светло-оранжевый для дней с событиями
     }
 
     // Рисуем фон
@@ -106,9 +110,13 @@ void EventItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                                   .arg(m_startTime.hour(), 2, 10, QChar('0'))
                                   .arg(m_startTime.minute(), 2, 10, QChar('0'))
                                   .arg(m_text);
+        if (m_isToday) {
+            font.setBold(true);
+            painter->setPen(Qt::red);
+        }
 
         painter->setFont(font);
-        painter->drawText(rect, Qt::AlignCenter, displayText);
+        painter->drawText(rect, Qt::AlignCenter, m_text);
     }
 
     // Индикатор событий

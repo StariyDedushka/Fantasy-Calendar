@@ -2,7 +2,7 @@
 #define EVENTCONTAINER_H
 
 #include <QObject>
-#include "calendarevent.h"
+#include "eventitem.h"
 
 class EventContainer : public AbstractItem
 {

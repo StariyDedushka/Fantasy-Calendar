@@ -31,6 +31,9 @@ public:
 
     // Сеттеры с валидацией
     void setDate(quint16 day, quint16 month, quint32 year);
+    void setDay(quint16 day);
+    void setMonth(quint16 month);
+    void setYear(quint16 year);
     void setTime(quint16 hour, quint16 minute, quint16 second = 0);
     void setDateTime(quint16 day, quint16 month, quint32 year,
                      quint16 hour, quint16 minute, quint16 second = 0);
