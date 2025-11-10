@@ -234,7 +234,7 @@ CalendarItem* CalendarScene::itemAtPos(const QPointF& pos) const
     return qgraphicsitem_cast<CalendarItem*>(item);
 }
 
-void CalendarScene::handleItemClick(CalendarItem* item)
+void CalendarScene::handleItemClick(AbstractItem* item)
 {
     if (item && item->isEnabled()) {
         // Можно добавить дополнительную логику выделения

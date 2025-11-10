@@ -5,11 +5,11 @@ EventContainer::EventContainer(const QRectF &rect, QString text,  QColor colorPr
     AbstractItem(rect, text, colorPrimary, colorSecondary, colorTertiary, enabled, parent)
 {
     m_expandable = true;
-    CalendarEvent *testEvent = new CalendarEvent(CustomDateTime(), QRectF(20, 40, 50, 30), "хуй", Qt::darkGreen, Qt::darkGreen, Qt::yellow, true, this);
+    EventItem *testEvent = new EventItem(CustomDateTime(), QRectF(20, 40, 50, 30), "хуй", Qt::darkGreen, Qt::darkGreen, Qt::yellow, true, this);
     addItem(testEvent);
-    // CalendarEvent *testEvent2 = new CalendarEvent(QRectF(50, 80, 100, 60), Qt::darkGreen, Qt::darkGreen, Qt::yellow, true, this);
+    // EventItem *testEvent2 = new EventItem(QRectF(50, 80, 100, 60), Qt::darkGreen, Qt::darkGreen, Qt::yellow, true, this);
     // addItem(testEvent2);
-    // CalendarEvent *testEvent3 = new CalendarEvent(QRectF(20, 40, 50, 30), Qt::darkGreen, Qt::darkGreen, Qt::yellow, true, this);
+    // EventItem *testEvent3 = new EventItem(QRectF(20, 40, 50, 30), Qt::darkGreen, Qt::darkGreen, Qt::yellow, true, this);
     // addItem(testEvent3);
 
 }

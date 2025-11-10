@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "include/common/calendarstructures.h"
+#include "global_logger.h"
 
 class CalendarSystem
 {
@@ -55,10 +56,12 @@ public:
     bool removeMonth(const QString &name);
     bool removeMonth(quint16 id);
 
-    bool editMonth(const QString& monthName, quint16 newDays = 0, const QString& newName = "");
-    bool editMonth(quint16 month_id, quint16 newDays = 0, const QString& newName = "");
-    bool moveMonth(const QString& monthName, quint16 newPlace);
-    bool moveMonth(quint16 month_id, quint16 newPlace);
+    bool editMonth(const QString& name, quint16 newDays);
+    bool editMonth(const QString& name, const QString& newName);
+    bool editMonth(quint16 id, quint16 newDays);
+    bool editMonth(quint16 id, const QString& newName);
+    bool moveMonth(const QString& name, quint16 newPlace);
+    bool moveMonth(quint16 id, quint16 newPlace);
 
     bool addDayOfWeek(const QString &name, quint16 place = 0);
     bool removeDayOfWeek(const QString &name);

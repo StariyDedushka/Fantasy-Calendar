@@ -41,7 +41,7 @@ public slots:
     void clearHighlights();
 
 private slots:
-    void handleItemClick(CalendarItem* item);
+    void handleItemClick(AbstractItem* item);
 
 private:
     void setupConnections();
