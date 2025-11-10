@@ -18,9 +18,9 @@ public:
                  QObject *parent = nullptr);
 
     // Только данные для отображения (read-only)
-    quint16 day() const { return m_day; }
-    quint16 month() const { return m_month; }
-    quint32 year() const { return m_year; }
+    quint16 day() const { return m_dateTime.day(); }
+    quint16 month() const { return m_dateTime.month(); }
+    quint32 year() const { return m_dateTime.year(); }
 
     // Визуальные состояния
     void setHighlighted(bool highlighted);
