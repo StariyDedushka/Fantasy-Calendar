@@ -1,27 +1,69 @@
-#ifndef EVENTVIEW_H
-#define EVENTVIEW_H
+#ifndef CALENDARVIEW_H
+#define CALENDARVIEW_H
 
-#include <QObject>
 #include <QGraphicsView>
+#include <QObject>
+#include <QWidget>
+#include <QResizeEvent>
+#include <QMouseEvent>
+#include <QWheelEvent>
+#include <QScrollBar>
 #include "eventscene.h"
+#include "eventitem.h"
 
-class EventView : public QGraphicsView
+
+class CalendarScene;
+struct CalendarVisualData;
+
+class CalendarView : public QGraphicsView
 {
     Q_OBJECT
 
+public:
+    explicit CalendarView(QWidget *parent = nullptr);
+    ~CalendarView();
+
+    // Основной метод для отображения календаря
+    void displayEvents(const EventVisualData& data);
+
+    // Управление отображением
+    void setZoomLevel(qreal level);
+    void fitToView();
+    void setInteractive(bool interactive);
+
+    // Настройки View
+    void setAntialiasingEnabled(bool enabled);
+    void setViewportUpdateMode(ViewportUpdateMode mode);
+
+public slots:
+    void clearCalendar();
+    void updateView();
+
 signals:
-    void signal_windowResized(quint16 wWidth, quint16 wHeight);
-    void signal_rebuild(QVector<AbstractItem*> *m_items = nullptr);
+    // Сигналы пользовательских действий
+    void dateClicked(CustomDa);
+    void viewResized(const QSize& size);
+    void zoomChanged(qreal zoomLevel);
+    void itemClicked(EventItem *item);
 
 protected:
-    void resizeEvent(QResizeEvent *event);
-    quint16 m_windowWidth;
-    quint16 m_windowHeight;
-    EventScene *scene;
-    CalendarSystem *m_system;
+    void resizeEvent(QResizeEvent *event) override;
+    void wheelEvent(QWheelEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
 
-public:
-    EventView(CalendarSystem *system);
+private slots:
+    void handleSceneItemClicked(class EventItem* item);
+
+private:
+    void setupView();
+    void calculateOptimalZoom();
+
+    CalendarScene *m_scene;
+    qreal m_zoomLevel;
+    bool m_isPanning;
+    QPoint m_panStartPos;
 };
 
-#endif // EVENTVIEW_H
+#endif // CALENDARVIEW_H

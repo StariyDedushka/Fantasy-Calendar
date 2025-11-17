@@ -37,7 +37,7 @@ void EventPresenter::initialize()
     setupConnections();
 
     // Первоначальная загрузка данных
-    refreshCalendar();
+    refreshEvents();
 }
 
 void EventPresenter::setupConnections()
@@ -45,7 +45,7 @@ void EventPresenter::setupConnections()
     if (!m_view || !m_system || !m_globalTime) return;
 
     // Подключаем сигналы от View
-    connect(m_view, &EventView::dateClicked,
+    connect(m_view, &EventView::eventClicked,
             this, &EventPresenter::handleDateClicked);
     connect(m_view, &EventView::viewResized,
             this, &EventPresenter::handleViewResized);
@@ -269,7 +269,7 @@ void EventPresenter::handleViewResized(const QSize& size)
     refreshCalendar();
 }
 
-void EventPresenter::handleItemClicked(CalendarItem* item)
+void EventPresenter::handleItemClicked(EventItem* item)
 {
     if (!item) return;
 
