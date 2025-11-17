@@ -9,7 +9,8 @@ class CalendarSystem;
 class CustomDateTime
 {
 private:
-    quint32 m_day;
+    quint16 m_day;
+    quint32 m_dayAbsolute;
     quint16 m_month;
     quint32 m_year;
     quint16 m_hour;
@@ -23,6 +24,7 @@ public:
 
     // Геттеры
     quint16 day() const { return m_day; }
+    quint32 dayAbsolute() const { return m_dayAbsolute; }
     quint16 month() const { return m_month; }
     quint32 year() const { return m_year; }
     quint16 hour() const { return m_hour; }
@@ -51,6 +53,7 @@ public:
    // Сравнение
     bool operator==(const CustomDateTime& other) const;
     bool operator<(const CustomDateTime& other) const;
+    bool operator>(const CustomDateTime& other) const;
     CustomDateTime& operator=(const CustomDateTime& other);
 };
 

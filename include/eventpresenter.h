@@ -7,6 +7,8 @@
 #include "customdatetime.h"
 #include "eventvisualstyle.h"
 #include "eventitem.h"
+#include "eventview.h"
+#include "global_logger.h"
 
 // #include "common/calendarstructures.h"
 
@@ -17,20 +19,17 @@ class EventPresenter : public QObject
 
 public:
     explicit EventPresenter(CalendarSystem* system,
-                               CustomDateTime* globalTime,
-                               CalendarView* view,
-                               QObject* parent = nullptr);
+                           CustomDateTime* globalTime,
+                           EventView* view,
+                           QObject* parent = nullptr);
     ~EventPresenter();
 
     void initialize();
-    void refreshCalendar();
+    void refreshEvents();
 
 public slots:
     void onNextDay();
     void onPrevDay();
-    // void onNextMonth();
-    // void onPrevMonth();
-    // void onToday();
     // void onDateSelected(const CustomDateTime& date);
 
     // Обработка внешних событий
@@ -47,10 +46,10 @@ private slots:
 private:
     void setupConnections();
     EventVisualData generateVisualData() const;
-    void updateView(const CalendarVisualData& data);
+    void updateView(const EventVisualData& data);
     void validateCurrentDate();
     void calculateGridSize();
-    QVector<CalendarEventData> generateMonthDays() const;
+    QVector<CalendarEventData> generateEvents() const;
     QString generateHeaderText() const;
     QString generateWeekDaysHeader() const;
     // Методы для работы со стилями
@@ -64,11 +63,10 @@ private:
 
     CalendarSystem* m_system;
     CustomDateTime* m_globalTime;
-    CalendarView* m_view;
+    EventView* m_view;
     // Визуальные настройки
-    CalendarVisualStyle m_visualStyle;
+    EventVisualStyle m_visualStyle;
 
-    CustomDateTime m_currentDisplayDate;
     QSize m_viewSize;
     quint16 m_columns;
     quint16 m_rows;

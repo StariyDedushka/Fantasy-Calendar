@@ -80,43 +80,51 @@ bool CustomDateTime::isValid() const
     return true;
 }
 
-
 QString CustomDateTime::toString() const
 {
-    return QString("Day %1, Month %2, Year %3 - %4:%5:%6")
-        .arg(m_day).arg(m_month).arg(m_year)
-        .arg(m_hour).arg(m_minute).arg(m_second);
+    return QString("%1/%2/%3 - %4:%5:%6")
+                    .arg(m_day).arg(m_month).arg(m_year)
+                    .arg(m_hour).arg(m_minute).arg(m_second);
 }
-
-// Day* CustomDateTime::dayOfWeek() const
-// {
-//     return m_calendarSystem->dayOfWeek(m_day);
-// }
-
 
 
 bool CustomDateTime::operator==(const CustomDateTime& other) const
 {
-    if(this->m_second == other.m_second && this->m_minute == other.m_minute && this->m_hour == other.m_hour
-        && this->m_day == other.m_day && this->m_month == other.m_month && this->m_year == other.m_year)
+    if(this->m_second == other.m_second
+        && this->m_minute == other.m_minute
+        && this->m_hour == other.m_hour
+        && this->m_day == other.m_day
+        && this->m_month == other.m_month
+        && this->m_year == other.m_year)
         return true;
     else return false;
 }
 
 bool CustomDateTime::operator<(const CustomDateTime& other) const
 {
-    if(m_year < other.m_year) return true;
-    if(m_month < other.m_month) return true;
-    if(m_day < other.m_day) return true;
-    if(m_hour < other.m_hour) return true;
-    if(m_minute < other.m_minute) return true;
-    if(m_second < other.m_second) return true;
+    if(m_year > other.m_year)       return false;
+    if(m_month > other.m_month)     return false;
+    if(m_day > other.m_day)         return false;
+    if(m_hour > other.m_hour)       return false;
+    if(m_minute > other.m_minute)   return false;
+    if(m_second > other.m_second)   return false;
+    return true;
+}
+
+bool CustomDateTime::operator>(const CustomDateTime& other) const
+{
+    if(m_year > other.m_year)       return true;
+    if(m_month > other.m_month)     return true;
+    if(m_day > other.m_day)         return true;
+    if(m_hour > other.m_hour)       return true;
+    if(m_minute > other.m_minute)   return true;
+    if(m_second > other.m_second)   return true;
     return false;
 }
 
 CustomDateTime& CustomDateTime::operator=(const CustomDateTime& other)
 {
-    if(this != &other)
+    if(this == &other)
         return *this;
     m_day = other.m_day;
     m_month = other.m_month;
