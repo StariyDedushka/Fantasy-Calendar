@@ -4,16 +4,16 @@
 #include <QGraphicsScene>
 #include <QObject>
 #include "eventitem.h"
-#include "common/calendarstructures.h"
+#include "common/eventstructures.h"
 
 
-class CalendarScene : public QGraphicsScene
+class EventScene : public QGraphicsScene
 {
     Q_OBJECT
 
 public:
-    explicit CalendarScene(QObject *parent = nullptr);
-    ~CalendarScene();
+    explicit EventScene(QObject *parent = nullptr);
+    ~EventScene();
 
     // Основной метод для установки данных
     void setEventData(const EventVisualData& data);

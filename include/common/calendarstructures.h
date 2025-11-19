@@ -13,6 +13,11 @@ struct Month {
     QString name;
 };
 
+struct Day {
+    quint16 id;
+    quint16 position;
+    QString name;
+};
 
 struct CalendarDayData {
     quint16 day;
@@ -54,22 +59,15 @@ struct EventVisualData {
     quint16 rows;
 };
 
-
-struct Day {
-    quint16 id;
-    quint16 position;
-    QString name;
-};
-
 struct EventGroup {
     quint16 id;
     QString name;
     QColor color;
-    enum position {
-        First,
-        Normal,
-        Last
-    };
+    // enum position {
+    //     First,
+    //     Middle,
+    //     Last
+    // };
 };
 
 #endif

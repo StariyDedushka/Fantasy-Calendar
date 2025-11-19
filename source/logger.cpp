@@ -8,9 +8,7 @@ Logger::Logger(LogLevel l, const QString& filename) : m_level(l)
     fullName.append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm:ss"));
     logFile.setFileName(fullName);
     if(!logFile.open(QIODevice::WriteOnly))
-    {
-        qDebug() << "Could not open log file" << fullName;
-    }
+        throw std::runtime_error("Could not open log file");
 }
 
 void Logger::operator()(LogLevel level,
@@ -30,7 +28,7 @@ void Logger::operator()(LogLevel level,
         lvlStr = "INFO";
         break;
     case WARN:
-        lvlStr = "WARN";
+        lvlStr = "WARNING";
         break;
     case ERROR:
         lvlStr = "ERROR";

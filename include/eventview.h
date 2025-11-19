@@ -1,5 +1,5 @@
-#ifndef CALENDARVIEW_H
-#define CALENDARVIEW_H
+#ifndef EVENTVIEW_H
+#define EVENTVIEW_H
 
 #include <QGraphicsView>
 #include <QObject>
@@ -9,7 +9,6 @@
 #include <QWheelEvent>
 #include <QScrollBar>
 #include "eventscene.h"
-#include "eventitem.h"
 
 
 class CalendarScene;
@@ -60,10 +59,10 @@ private:
     void setupView();
     void calculateOptimalZoom();
 
-    CalendarScene *m_scene;
+    EventScene *m_scene;
     qreal m_zoomLevel;
     bool m_isPanning;
     QPoint m_panStartPos;
 };
 
-#endif // CALENDARVIEW_H
+#endif // EVENTVIEW_H

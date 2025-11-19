@@ -1,3 +1,6 @@
+#ifndef LOGGER_H
+#define LOGGER_H
+
 #include <QDebug>
 #include <QString>
 #include <QFile>
@@ -12,7 +15,7 @@ enum LogLevel { DEBUG, INFO, WARN, ERROR, FATAL};
 
 class Logger {
 public:
-    Logger(LogLevel l, const QString& filename = "log.txt");
+    Logger(LogLevel l, const QString& filename);
     ~Logger() { if(logFile.isOpen()) logFile.close(); }
 
     void operator()(LogLevel level,
@@ -34,3 +37,6 @@ Logger_(                 \
         __FILE__,        \
         __LINE__         \
     )
+
+
+#endif

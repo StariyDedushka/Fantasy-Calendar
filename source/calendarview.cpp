@@ -16,7 +16,6 @@ CalendarView::CalendarView(QWidget *parent)
 
 CalendarView::~CalendarView()
 {
-    // Scene удалится автоматически, так как parent - this
 }
 
 void CalendarView::setupView()

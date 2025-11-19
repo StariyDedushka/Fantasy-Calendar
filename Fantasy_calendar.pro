@@ -11,7 +11,6 @@ CONFIG += c++17
 SOURCES += \
     source/eventpresenter.cpp \
     source/eventitem.cpp \
-    source/calendarvisualstyle.cpp \
     source/eventitem.cpp \
     source/global_logger.cpp \
     source/logger.cpp \

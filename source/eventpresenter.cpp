@@ -1,19 +1,17 @@
 #include "include/eventpresenter.h"
 
 EventPresenter::EventPresenter(CalendarSystem* system,
-                                     CustomDateTime* globalTime,
-                                     EventView* view,
-                                     QObject* parent)
+                               CustomDateTime* globalTime,
+                               EventView* view,
+                               QObject* parent)
     : QObject(parent)
     , m_system(system)
     , m_globalTime(globalTime)
     , m_view(view)
     , m_columns(1)
-    , m_rows(system->weeksInMonth(globalTime->month(), globalTime->year()))
+    , m_rows(0)
     , m_zoomLevel(1.0)
 {
-    // Устанавливаем начальную дату
-
     initialize();
 }
 

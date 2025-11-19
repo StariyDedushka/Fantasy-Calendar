@@ -9,7 +9,6 @@
 #include "calendarsystem.h"
 #include "customdatetime.h"
 #include "calendarview.h"
-#include "calendaritem.h"
 #include "calendarvisualstyle.h"
 
 // #include "common/calendarstructures.h"

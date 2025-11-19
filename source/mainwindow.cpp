@@ -150,16 +150,6 @@ void MainWindow::initialize()
 
 
 
-// void MainWindow::resizeEvent(QResizeEvent *event)
-// {
-//     quint16 calendarWidth = calendarWindow->width();
-//     quint16 calendarHeight = calendarWindow->height();
-//     emit signal_windowResized(calendarWidth, calendarHeight);
-
-//     // qDebug() << "Current QGraphicsView width:" << m_calendarWidth;;
-//     // qDebug() << "Current QGraphicsView height:" << m_calendarHeight;
-// }
-
 void MainWindow::on_btn_monthPrev_top_clicked()
 {
 

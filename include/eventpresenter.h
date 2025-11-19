@@ -1,12 +1,11 @@
-#ifndef CALENDARPRESENTER_H
-#define CALENDARPRESENTER_H
+#ifndef EVENTPRESENTER_H
+#define EVENTPRESENTER_H
 
 #include <QObject>
 #include <QSize>
 #include "calendarsystem.h"
 #include "customdatetime.h"
 #include "eventvisualstyle.h"
-#include "eventitem.h"
 #include "eventview.h"
 #include "global_logger.h"
 
@@ -50,14 +49,12 @@ private:
     void validateCurrentDate();
     void calculateGridSize();
     QVector<CalendarEventData> generateEvents() const;
-    QString generateHeaderText() const;
-    QString generateWeekDaysHeader() const;
     // Методы для работы со стилями
     void applyVisualStyle();
     void updateColorsFromSettings();
 
     // Визуальные настройки
-    QColor getDayColor(const CalendarEventData& dayData) const;
+    QColor getEventColor(const CalendarEventData& dayData) const;
     QColor getTextColor(const CalendarEventData& dayData) const;
     QColor getBorderColor(const CalendarEventData& dayData) const;
 
@@ -73,4 +70,4 @@ private:
     qreal m_zoomLevel;
 };
 
-#endif // CALENDARPRESENTER_H
+#endif // EVENTPRESENTER_H

@@ -1,93 +1,67 @@
-#include "include/eventscene.h"
+#ifndef EVENTSCENE_H
+#define EVENTSCENE_H
+
+#include <QGraphicsScene>
+#include <QObject>
+#include "include/eventitem.h"
+#include "include/common/calendarstructures.h"
 
 
-EventScene::EventScene() :
-    AbstractScene()
+class EventScene : public QGraphicsScene
 {
-}
+    Q_OBJECT
 
-EventScene::~EventScene()
-{
-}
+public:
+    explicit EventScene(QObject *parent = nullptr);
+    ~EventScene();
 
+    // Основной метод для установки данных
+    void setEventData(const EventVisualData& data);
 
-// void EventScene::initialize()
-// {
-//     this->setSceneRect(0, 0, m_wWidth, m_wHeight);
-//     m_rectSizeX = 120;
-//     m_rectSizeY = 70;
-//     qDebug() << "Event Painter: initialized scene!";
+    // Очистка сцены
+    void clearEvent();
 
-//     /*slot_*/rebuild();
-// }
+    // Настройки отображения
+    void setCellSize(const QSizeF& size);
+    void setGridSize(quint16 columns, quint16 rows);
+    void setBackgroundColor(const QColor& color);
+    void setHeaderVisible(bool visible);
 
+    // Получение элементов
+    QVector<EventItem*> items() const { return m_eventItems; }
+    EventItem* itemAtPos(const QPointF& pos) const;
 
+signals:
+    void itemClicked(EventItem* item);
+    void sceneReady();
 
-// void EventScene::/*slot_*/windowResized(quint16 wWidth, quint16 wHeight)
-// {
-//     m_wWidth = wWidth;
-//     m_wHeight = wHeight;
-//     this->setSceneRect(0, 0, m_wWidth, m_wHeight);
-//     m_rectSizeX = wWidth - 20;
-//     m_rectSizeY = 40 * (m_items.count() + 1);
+public slots:
+    void updateLayout();
+    void highlightDate(quint16 day, quint16 month, quint32 year);
+    void clearHighlights();
 
-//     reposition();
-// }
+private slots:
+    void handleItemClick(AbstractItem* item);
 
-// void EventScene::/*slot_*/settingsChanged()
-// {
+private:
+    void setupConnections();
+    void repositionItems();
+    void createHeader();
+    void createWeekDaysHeader();
 
-// }
-// void EventScene::reposition()
-// {
-//     qDebug() << "EventScene: repositioning!";
-//     uint row = 0;
-//     foreach(AbstractItem *container, m_items)
-//     {
-//         uint size = container->getItems().size();
-//         m_rectSizeY = 30 * size;
-//         container->setRect(10, row * (m_rectSizeY + 8) + 10, m_rectSizeX, m_rectSizeY);
-//         row++;
-//     }
-//     update();
-// }
+    QVector<EventItem*> m_eventItems;
+    QSizeF m_cellSize;
+    quint16 m_columns;
+    quint16 m_rows;
+    QString m_headerText;
+    QString m_weekDaysHeader;
+    QColor m_backgroundColor;
+    bool m_showHeader;
+    bool m_showWeekDays;
 
-// void EventScene::/*slot_*/rebuild(QVector<AbstractItem*> *input)
-// {
-//     qDebug() << "EventScene: rebuild called!";
-//     while(!m_items.empty())
-//     {
-//         this->removeItem(m_items.at(0));
-//         m_items.removeAt(0);
-//     }
+    // Графические элементы заголовков
+    QGraphicsTextItem* m_headerItem;
+    QGraphicsTextItem* m_weekDaysItem;
+};
 
-
-//     int row = 0;
-//     row++;
-
-//     // временно прописываем позицию отрисовки прямо в иницилизации ячейки календаря
-//     // TODO: перенести параметры позиции в настройки
-//     if(input)
-//     {
-//         // Очищаем старые элементы
-//         // 1. Очищаем предыдущие элементы
-//         for(AbstractItem *item : m_items) {
-//             this->removeItem(item);  // Убираем из сцены
-//             delete item;             // Освобождаем память
-//         }
-//         m_items.clear();
-
-//         // Создаем новые элементы
-//         for(int i = 0; i < input->size(); ++i) {
-//             AbstractItem *container = new EventContainer(
-//                 QRectF(row * (m_rectSizeX + 8) + 10, row * (m_rectSizeY + 8), m_rectSizeX, m_rectSizeY),
-//                 "", Qt::green, Qt::darkGreen, Qt::yellow,
-//                 true);
-//             m_items.push_back(container);
-//             this->addItem(container);
-//             connect(container, &AbstractItem::itemClicked, this, &EventScene::/*slot_*/onItemClicked);
-//             qDebug() << "EventScene: container entry added! Container address:" << &container;
-//         }
-//         update();
-//     }
-// }
+#endif // EVENTSCENE_H
