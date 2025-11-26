@@ -1,6 +1,6 @@
 #include "include/logger.h"
 
-Logger::Logger(LogLevel l, const QString& filename) : m_level(l)
+Logger::Logger(const QString& filename)
 {
     QString fullName = "../logs/";
     fullName.append(filename);

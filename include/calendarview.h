@@ -42,7 +42,7 @@ public slots:
 
 signals:
     // Сигналы пользовательских действий
-    void dateClicked(CustomDa);
+    void dateClicked(CustomDateTime time);
     void viewResized(const QSize& size);
     void zoomChanged(qreal zoomLevel);
     void itemClicked(CalendarItem *item);

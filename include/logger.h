@@ -15,7 +15,7 @@ enum LogLevel { DEBUG, INFO, WARN, ERROR, FATAL};
 
 class Logger {
 public:
-    Logger(LogLevel l, const QString& filename);
+    Logger(const QString& filename);
     ~Logger() { if(logFile.isOpen()) logFile.close(); }
 
     void operator()(LogLevel level,

@@ -108,7 +108,7 @@ QVector<CalendarDayData> CalendarPresenter::generateMonthDays() const
                                                 m_currentDisplayDate.year());
 
     // Определяем день недели первого дня месяца
-    Day *day = m_system.firstDayOfMonth(m_currentDisplayDate.month(), m_currentDisplayDate.year());
+    DayOfWeek *day = m_system.firstDayOfMonth(m_currentDisplayDate.month(), m_currentDisplayDate.year());
     quint16 firstDayOfWeek = day->position; // 1,2 .. x
 
     // Добавляем пустые дни в начале (для выравнивания)
@@ -164,7 +164,7 @@ QString CalendarPresenter::generateWeekDaysHeader() const
     // Генерируем заголовок с днями недели
     QStringList weekDays;
     for (int i = 1; i <= m_columns; ++i) {
-        Day* dayInfo = m_system->dayOfWeek(i);
+        DayOfWeek* dayInfo = m_system->dayOfWeek(i);
         if (dayInfo) {
             weekDays.append(dayInfo->name.left(2)); // Сокращенные названия
         } else {

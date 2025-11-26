@@ -52,7 +52,6 @@ void EventPresenter::setupConnections()
     connect(m_view, &EventView::zoomChanged,
             this, &EventPresenter::handleWheelZoom);
 
-    // Подключаемся к моделям (если они имеют сигналы)
     // connect(m_system, &CalendarSystem::systemChanged,
     //         this, &EventPresenter::onSystemChanged);
     // connect(m_globalTime, &CustomDateTime::timeChanged,
@@ -63,6 +62,7 @@ void EventPresenter::refreshEvents()
 {
     if (!m_system || !m_view) return;
 
+    LOG(INFO, logger, "Refreshing events, generating visual data");
     // Генерируем визуальные данные
     EventVisualData visualData = generateVisualData();
 
@@ -74,10 +74,9 @@ EventVisualData EventPresenter::generateVisualData() const
 {
     EventVisualData data;
 
-    // Генерируем данные дней
-    data.items = generateEvents();
+    // Генерируем данные контейнеров событий
+    data.items = generateContainers();
     data.headerText = generateHeaderText();
-    data.columns = m_columns;
     data.rows = m_rows;
     // Рассчитываем размер ячейки на основе размера View
     if (m_viewSize.isValid()) {
@@ -90,34 +89,46 @@ EventVisualData EventPresenter::generateVisualData() const
     return data;
 }
 
+QVector<EventContainerData> EventPresenter::generateContainers() const
+{
+    QVector<EventContainerData> containers;
+
+    if (!m_system) return containers;
+
+
+    for (quint16 i = 0; i <= day; ++i) {
+        CalendarEventData dayData;
+        dayData.day = day;
+        dayData.month = m_currentDisplayDate.month();
+        dayData.year = m_currentDisplayDate.year();
+        dayData.displayText = QString::number(day);
+        dayData.isEnabled = m_system->isValidDate(day, dayData.month, dayData.year);
+        dayData.isCurrentDay = (day == m_currentDisplayDate.day() &&
+                                dayData.month == m_currentDisplayDate.month());
+        dayData.isToday = (day == today.day() &&
+                           dayData.month == today.month() &&
+                           dayData.year == today.year());
+        dayData.hasEvents = false; // Здесь можно добавить проверку событий
+
+        // Устанавливаем цвета
+        dayData.backgroundColor = getDayColor(dayData);
+        dayData.textColor = getTextColor(dayData);
+        dayData.borderColor = getBorderColor(dayData);
+
+        days.append(dayData);
+    }
+
+    return days;
+}
+
 QVector<CalendarEventData> EventPresenter::generateEvents() const
 {
     QVector<CalendarEventData> events;
 
     if (!m_system) return events;
 
-    // Получаем информацию о текущем месяце
-    quint16 daysInMonth = m_system->currentDay(m_currentDisplayDate.month(),
-                                                m_currentDisplayDate.year());
 
-    // Определяем день недели первого дня месяца
-    Day *day = m_system.firstDayOfMonth(m_currentDisplayDate.month(), m_currentDisplayDate.year());
-    quint16 firstDayOfWeek = day->position; // 1,2 .. x
-
-    // Добавляем пустые дни в начале (для выравнивания)
-    for (int i = 1; i < firstDayOfWeek; ++i) {
-        CalendarEventData emptyDay;
-        emptyDay.isEnabled = false;
-        emptyDay.displayText = "";
-        days.append(emptyDay);
-    }
-
-    // Добавляем дни месяца
-    CustomDateTime today = m_globalTime ?
-                           CustomDateTime(m_globalTime->day(), m_globalTime->month(), m_globalTime->year()) :
-                           CustomDateTime(1, 1, 2000);
-
-    for (quint16 day = 1; day <= daysInMonth; ++day) {
+    for (quint16 i = 0; i <= day; ++i) {
         CalendarEventData dayData;
         dayData.day = day;
         dayData.month = m_currentDisplayDate.month();
@@ -157,7 +168,7 @@ QString EventPresenter::generateWeekDaysHeader() const
     // Генерируем заголовок с днями недели
     QStringList weekDays;
     for (int i = 1; i <= m_columns; ++i) {
-        Day* dayInfo = m_system->dayOfWeek(i);
+        DayOfWeek* dayInfo = m_system->dayOfWeek(i);
         if (dayInfo) {
             weekDays.append(dayInfo->name.left(2)); // Сокращенные названия
         } else {

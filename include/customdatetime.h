@@ -2,6 +2,7 @@
 #define CUSTOMDATETIME_H
 
 #include <QObject>
+#include "global_logger.h"
 // #include "common/calendarstructures.h"
 
 class CalendarSystem;

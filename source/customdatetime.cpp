@@ -21,7 +21,12 @@ CustomDateTime::CustomDateTime(quint16 day, quint16 month, quint32 year,
     m_minute(minute),
     m_second(second)
 {
-
+    if(day == 0 || month == 0)
+    {
+        LOG(WARN, logger, "Tried constructing with invalid day/month, defaulting to 1/1");
+        day = 1;
+        month = 1;
+    }
 }
 
 void CustomDateTime::setDate(quint16 day, quint16 month, quint32 year)

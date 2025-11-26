@@ -4,6 +4,10 @@
 #include <QObject>
 #include "include/common/calendarstructures.h"
 #include "global_logger.h"
+#include <QtSql>
+
+#define TABLE_DAYS "days"
+#define TABLE_EVENTS "events"
 
 class CalendarSystem
 {
@@ -14,7 +18,7 @@ signals:
 
 private:
     QVector<Month*> *m_months;
-    QVector<Day*> *m_days;
+    QVector<DayOfWeek*> *m_days;
 
     quint16 m_secondsPerMinute = 60;
     quint16 m_minutesPerHour = 60;
@@ -23,10 +27,23 @@ private:
     quint16 m_daysInWeek = 0;
     quint16 m_monthsInYear = 0;
 
+    QSqlDatabase m_db;
+    QString m_dbName;
+
+    void setupDatabase();
+
 public:
     CalendarSystem();
     CalendarSystem(const CalendarSystem&) = delete;
     ~CalendarSystem();
+
+    // База данных
+    void setDatabase(const QString& name);
+    QString databaseName();
+    DayOfWeek fetchDay(quint32 id);
+    DayOfWeek fetchDay(const CustomDateTime& date);
+    Event fetchEvent(quint32 id);
+    Event fetchEvent(const CustomDateTime& date);
 
     // Настройки времени
     quint16 secondsPerMinute() const { return m_secondsPerMinute; }
@@ -36,9 +53,8 @@ public:
     // Настройки календаря
     quint16 daysInWeek() const { return m_days->size(); }
     quint16 monthsInYear() const { return m_months->size(); }
-
-    QVector<Month*>* months() const { return m_months; }
-    QVector<Day*>* days() const { return m_days; }
+    // void setDaysOfWeek(QVector<DayOfWeek> *days) { m_days = days; }
+    // void setMonths(QVector<Month*> months) { m_months = months; }
 
     bool setTimeSystem(quint16 secPerMin, quint16 minPerHour, quint16 hoursPerDay);
 
@@ -46,13 +62,13 @@ public:
     bool isValidDate(quint16 day, quint16 month, quint32 year) const;
 
     // Утилиты
-    Day* dayOfWeek(quint16 day) const;
-    Day* firstDayOfMonth(quint16 month, quint32 year) const;
+    DayOfWeek* dayOfWeek(quint16 day) const;
+    DayOfWeek* firstDayOfMonth(quint16 month, quint32 year) const;
     quint16 daysInMonth(quint16 month, quint32 year = 0) const;
     quint32 daysInYear(quint32 year = 0) const;
     quint16 weeksInMonth(quint16 month, quint32 year = 0) const;
 
-    bool addMonth(const QString &name, quint16 days, quint16 place = 0);
+    bool addMonth(const QString &name, quint32 id, quint16 days, quint16 place = 0);
     bool removeMonth(const QString &name);
     bool removeMonth(quint16 id);
 
@@ -63,13 +79,13 @@ public:
     bool moveMonth(const QString& name, quint16 newPlace);
     bool moveMonth(quint16 id, quint16 newPlace);
 
-    bool addDayOfWeek(const QString &name, quint16 place = 0);
+    bool addDayOfWeek(const QString &name, quint32 id, quint16 place = 0);
     bool removeDayOfWeek(const QString &name);
-    bool removeDayOfWeek(quint16 id);
+    bool removeDayOfWeek(quint32 id);
 
     bool editDayOfWeek(const QString& dayName, const QString& newName);
-    bool editDayOfWeek(quint16 day_id, const QString& newName);
-    bool moveDayOfWeek(quint16 day_id, quint16 newPlace);
+    bool editDayOfWeek(quint32 id, const QString& newName);
+    bool moveDayOfWeek(quint32 id, quint16 newPlace);
     bool moveDayOfWeek(const QString& dayName, quint16 newPlace);
 
 };

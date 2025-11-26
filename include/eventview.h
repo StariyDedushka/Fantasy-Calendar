@@ -14,13 +14,13 @@
 class CalendarScene;
 struct CalendarVisualData;
 
-class CalendarView : public QGraphicsView
+class EventView : public QGraphicsView
 {
     Q_OBJECT
 
 public:
-    explicit CalendarView(QWidget *parent = nullptr);
-    ~CalendarView();
+    explicit EventView(QWidget *parent = nullptr);
+    ~EventView();
 
     // Основной метод для отображения календаря
     void displayEvents(const EventVisualData& data);

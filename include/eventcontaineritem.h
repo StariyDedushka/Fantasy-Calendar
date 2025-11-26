@@ -1,18 +1,18 @@
-#ifndef EVENTCONTAINER_H
-#define EVENTCONTAINER_H
+#ifndef EVENTCONTAINERITEM_H
+#define EVENTCONTAINERITEM_H
 
 #include <QObject>
 #include "eventitem.h"
 
-class EventContainer : public AbstractItem
+class EventContainerItem : public AbstractItem
 {
     Q_OBJECT
 
 public:
-    EventContainer(const QRectF &rect, QString text = "", QColor colorPrimary = Qt::green, QColor colorSecondary = Qt::darkGreen,
+    EventContainerItem(const QRectF &rect, QString text = "", QColor colorPrimary = Qt::green, QColor colorSecondary = Qt::darkGreen,
                    QColor colorTertiary = Qt::yellow, bool enabled = true, QObject *parent = nullptr);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     virtual void addItem(AbstractItem *item) override;
 };
 
-#endif // EVENTCONTAINER_H
+#endif // EVENTCONTAINERITEM_H

@@ -4,19 +4,35 @@
 #include <QColor>
 #include "include/calendaritem.h"
 #include "include/eventitem.h"
+#include "include/eventcontaineritem.h"
 #include <QSize>
 
 struct Month {
     quint32 id;
     quint16 position;
-    quint16 days;
+    quint16 daysTotal;
+    QString name;
+    QVector<DayOfWeek*> days;
+};
+
+struct DayOfWeek {
+    quint32 id;
+    quint16 position;
     QString name;
 };
 
-struct Day {
-    quint16 id;
-    quint16 position;
+struct DayData {
+    quint32 id;
     QString name;
+    QList<Event> events;
+};
+
+struct Event {
+    quint32 id;
+    quint32 groupId;
+    CustomDateTime time;
+    QString name;
+    QString text;
 };
 
 struct CalendarDayData {
@@ -46,14 +62,22 @@ struct CalendarEventData {
     quint32 id;
     QString displayText;
     bool isEnabled;
-    bool isToday;
+    QColor backgroundColor;
+    QColor textColor;
+    QColor borderColor;
+};
+
+struct EventContainerData {
+    quint32 id;
+    QString headerText;
+    bool isEnabled;
     QColor backgroundColor;
     QColor textColor;
     QColor borderColor;
 };
 
 struct EventVisualData {
-    QVector<EventItem*> items;
+    QVector<EventContainerItem*> items;
     QString headerText;
     QSizeF cellSize;
     quint16 rows;

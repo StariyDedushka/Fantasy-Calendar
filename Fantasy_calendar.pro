@@ -9,6 +9,7 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    source/eventcontaineritem.cpp \
     source/eventpresenter.cpp \
     source/eventitem.cpp \
     source/eventitem.cpp \
@@ -22,7 +23,6 @@ SOURCES += \
     source/calendarscene.cpp \
     source/calendarsystem.cpp \
     source/customdatetime.cpp \
-    source/eventcontainer.cpp \
     source/calendaritem.cpp \
     source/eventscene.cpp \
     source/eventview.cpp \
@@ -41,7 +41,7 @@ HEADERS += \
     include/calendarsystem.h \
     include/calendarvisualstyle.h \
     include/customdatetime.h \
-    include/eventcontainer.h \
+    include/eventcontaineritem.h \
     include/eventitem.h \
     include/eventpresenter.h \
     include/eventscene.h \

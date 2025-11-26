@@ -34,6 +34,8 @@ signals:
     void btn_saveConfig_clicked(const QString& config);
     void btn_apply_clicked();
     void btn_cancel_clicked();
+    void btn_addDay_clicked();
+    void btn_addMonth_clicked();
 
 private:
     Ui::SettingsWindow *ui;
@@ -63,6 +65,7 @@ private slots:
     void on_cb_days_currentTextChanged(const QString &arg1);
     void on_cb_eventGroups_currentTextChanged(const QString &arg1);
     void on_cb_configs_currentTextChanged(const QString &arg1);
+    void on_btn_addDay_clicked();
 };
 
 #endif // SETTINGSWINDOW_H

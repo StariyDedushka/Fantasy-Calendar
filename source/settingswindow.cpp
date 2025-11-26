@@ -140,3 +140,9 @@ void SettingsWindow::on_cb_configs_currentTextChanged(const QString &arg1)
 
 }
 
+
+void SettingsWindow::on_btn_addDay_clicked()
+{
+    emit btn_addDay_clicked();
+}
+

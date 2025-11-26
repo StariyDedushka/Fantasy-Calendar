@@ -1,3 +1,3 @@
 #include "include/global_logger.h"
 
-Logger logger(INFO, "calendar_log");
+Logger logger("log");

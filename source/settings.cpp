@@ -5,7 +5,7 @@ Settings::Settings(CalendarSystem *system, CustomDateTime *globalTime, QObject *
     QObject(parent)
     , m_system(system)
     , m_globalTime(globalTime)
-    , m_days(new QVector<Day*>())
+    , m_days(new QVector<DayOfWeek*>())
     , m_months(new QVector<Month*>())
 {
     loadSettings();
@@ -17,13 +17,39 @@ Settings::~Settings()
     delete m_days;
     delete m_months;
     // writeSettings();
+    if(m_db.isOpen())
+        m_db.close();
+}
+
+void Settings::createDatabase(const QString& newConfig)
+{
+    m_db.addDatabase("QSQLITE");
+    m_db.setDatabaseName(newConfig.append(".sqlite"));
+    m_db.open();
+
+    QSqlQuery queryDaysTable("CREATE TABLE IF NOT EXISTS days("
+                            "id int not null primary key,"
+                            "date text,"
+                            "weekdayid int not null);");
+
+    QSqlQuery queryEventsTable("CREATE TABLE IF NOT EXISTS events("
+                               "id int not null primary key,"
+                               "dayid int not null,"
+                               "time text,"
+                               "groupid int not null);");
+
+    if(!queryDaysTable.exec() || !queryEventsTable.exec())
+    {
+        LOG(ERROR, logger, "Could not create a new database");
+        m_db.close();
+    }
 }
 
 bool Settings::loadSettings()
 {
     quint16 spm = 0, mph = 0, hpd = 0;
     QFile file;
-    file.setFileName(QString("../config_%1").arg(m_currentConfig));
+    file.setFileName(QString("../%1").arg(m_currentConfig));
 
     QXmlStreamReader reader(&file);
     while(!reader.atEnd())
@@ -33,16 +59,17 @@ bool Settings::loadSettings()
         switch(token)
         {
         case QXmlStreamReader::StartDocument:
-            qDebug() << "Xml document started";
+            LOG(INFO, logger, "Xml document reading started");
             break;
         //-------------------------------------------
         case QXmlStreamReader::EndDocument:
-            qDebug() << "Xml document ended";
+            LOG(INFO, logger, "Xml document reading ended");
             break;
         //-------------------------------------------
         case QXmlStreamReader::StartElement:
             QString elementName = reader.name().toString();
             qDebug() << "Xml element started:" << elementName << reader.namespaceUri();
+            LOG(INFO, logger, QString("Reading Xml element: %1, namespace %2").arg(elementName).arg(reader.namespaceUri()));
 
             if(elementName == "seconds per minute")
             {
@@ -61,7 +88,7 @@ bool Settings::loadSettings()
                 hpd = reader.readElementText().toUInt();
                 break;
             }
-            if(elementName == "m_days of week")
+            if(elementName == "days of week")
             {
                 reader.readNext();
                 while(!reader.isEndElement())
@@ -69,18 +96,20 @@ bool Settings::loadSettings()
                     if(reader.readElementText() == "day")
                     {
                         reader.readNext();
-                        Day *day = new Day();
+                        DayOfWeek *day = new DayOfWeek();
                         day->name = reader.readElementText();
                         reader.readNext();
                         day->id = reader.readElementText().toUInt();
-                        m_days->append(std::move(day));
+                        m_days->append(day);
+                        m_system->addDayOfWeek(day->name, day->id);
                     }
                     reader.readNext();
                 }
             }
         }
 }
-    m_system->setTimem_system(spm, mph, hpd);
+    m_system->setTimeSystem(spm, mph, hpd);
+    m_system->setDatabase(m_currentConfig);
     file.close();
     return true;
 }
@@ -91,19 +120,19 @@ bool Settings::writeSettings()
 
     QFile file;
     QXmlStreamWriter writer(&file);
-    file.setFileName(QString("../config_%1").arg(m_currentConfig));
+    file.setFileName(QString("../%1").arg(m_currentConfig));
     writer.writeStartDocument();
 //-----------------------------------------------------
     writer.writeStartElement("settings");
 
-    writer.writeStartElement("time m_system");
+    writer.writeStartElement("time system");
 
     writer.writeTextElement("seconds per minute", QString::number(m_system->m_secondsPerMinute()));
     writer.writeTextElement("minutes per hour", QString::number(m_system->m_minutesPerHour()));
     writer.writeTextElement("hours per day", QString::number(m_system->m_hoursPerDay()));
 
-    writer.writeStartElement("m_days of week");
-    for(Day *day : *m_days)
+    writer.writeStartElement("days of week");
+    for(DayOfWeek *day : *m_days)
     {
         writer.writeStartElement("day");
         writer.writeTextElement("day name", day->name);
@@ -112,7 +141,7 @@ bool Settings::writeSettings()
     }
     writer.writeEndElement();
 
-    writer.writeStartElement("m_months");
+    writer.writeStartElement("months");
     for(Month *month : *m_months)
     {
         writer.writeStartElement("month");
@@ -124,12 +153,12 @@ bool Settings::writeSettings()
 
     writer.writeEndElement();
 //-----------------------------------------------
-    writer.writeStartElement("event m_groups");
+    writer.writeStartElement("event groups");
 
     for(EventGroup *group : m_groups)
     {
-        writer.writeTextElement("group", group->name);
-        writer.writeAttribute("id", QString::number(group->id));
+        writer.writeTextElement("group name", group->name);
+        writer.writeAttribute("group id", QString::number(group->id));
     }
 
     writer.writeEndElement();
@@ -229,4 +258,11 @@ void Settings::apply_clicked()
 void Settings::cancel_clicked()
 {
 
+}
+
+void Settings::addDay_clicked()
+{
+    DayOfWeek *day = new DayOfWeek();
+    day->id = QRandomGenerator::generate();
+    day->name
 }

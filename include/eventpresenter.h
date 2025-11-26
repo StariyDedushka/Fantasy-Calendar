@@ -18,9 +18,9 @@ class EventPresenter : public QObject
 
 public:
     explicit EventPresenter(CalendarSystem* system,
-                           CustomDateTime* globalTime,
-                           EventView* view,
-                           QObject* parent = nullptr);
+                            CustomDateTime* globalTime,
+                            EventView* view,
+                            QObject* parent = nullptr);
     ~EventPresenter();
 
     void initialize();
@@ -48,6 +48,7 @@ private:
     void updateView(const EventVisualData& data);
     void validateCurrentDate();
     void calculateGridSize();
+    QVector<EventContainerData> generateContainers() const;
     QVector<CalendarEventData> generateEvents() const;
     // Методы для работы со стилями
     void applyVisualStyle();

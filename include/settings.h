@@ -7,6 +7,7 @@
 #include "calendarsystem.h"
 #include "customdatetime.h"
 #include "common/calendarstructures.h"
+#include <QRandomGenerator>
 
 
 class Settings : public QObject
@@ -33,6 +34,7 @@ public slots:
     void saveConfig_clicked(const QString& config);
     void apply_clicked();
     void cancel_clicked();
+    void addDay_clicked();
 
 signals:
     void eventGroups_changed();
@@ -43,10 +45,12 @@ private:
     CustomDateTime *m_globalTime;
     QVector<EventGroup*> m_groups;
     QMap<quint16, QColor*> groupColors;
-    QVector<Day*> *m_days;
+    QVector<DayOfWeek*> *m_days;
     QVector<Month*> *m_months;
     QVector<QString*> m_configs;
     QString m_currentConfig;
+
+    QSqlDatabase m_db;
 
     quint16 m_daysPerMonth;
     quint16 m_secondsPerMinute;
@@ -61,6 +65,7 @@ public:
 
     Settings(CalendarSystem *system, CustomDateTime *globalTime, QObject *parent = nullptr);
     virtual ~Settings() override;
+    void createDatabase();
 };
 
 #endif // SETTINGS_H

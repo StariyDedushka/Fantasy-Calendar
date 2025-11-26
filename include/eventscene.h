@@ -4,7 +4,7 @@
 #include <QGraphicsScene>
 #include <QObject>
 #include "eventitem.h"
-#include "common/eventstructures.h"
+#include "common/calendarstructures.h"
 
 
 class EventScene : public QGraphicsScene

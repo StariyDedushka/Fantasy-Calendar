@@ -12,13 +12,13 @@ class EventItem : public AbstractItem
 public:
     EventItem();
     EventItem(CustomDateTime startTime, CustomDateTime endTime,
-                  const QRectF &rect, QString text, QColor colorPrimary = Qt::green,
-                  QColor colorSecondary = Qt::darkGreen, QColor colorTertiary = Qt::yellow,
-                  bool enabled = true, QObject *parent = nullptr);
+              const QRectF &rect, QString text, QColor colorPrimary = Qt::green,
+              QColor colorSecondary = Qt::darkGreen, QColor colorTertiary = Qt::yellow,
+              bool enabled = true, QObject *parent = nullptr);
 
     EventItem(CustomDateTime startTime, const QRectF &rect, QString text,
-                  QColor colorPrimary = Qt::green, QColor colorSecondary = Qt::darkGreen, QColor colorTertiary = Qt::yellow,
-                  bool enabled = true, QObject *parent = nullptr);
+              QColor colorPrimary = Qt::green, QColor colorSecondary = Qt::darkGreen,
+              QColor colorTertiary = Qt::yellow, bool enabled = true, QObject *parent = nullptr);
 
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
