@@ -10,29 +10,25 @@ cmake_minimum_required(VERSION 3.1.0)
      set(CMAKE_INCLUDE_CURRENT_DIR ON)
  endif()
 
- find_package(Qt5 COMPONENTS Widgets REQUIRED)
- find_package(Qt5 COMPONENTS SQLite3 REQUIRED)
+ find_package(Qt5 REQUIRED COMPONENTS Widgets Core Sql)
+
+ file(GLOB_RECURSE SOURCE_FILES "source/*.cpp")
+ file(GLOB_RECURSE HEADER_FILES "include/*.h")
 
  add_executable(gurps_calendar
-     mainwindow.ui
-     settings.ui
-     mainwindow.cpp
-     settingswindow.cpp
-
-     abstractitem.cpp
-     abstractscene.cpp
-     calendarevent.cpp
-     calendaritem.cpp
-     calendarscene.cpp
-     calendarsystem.cpp
-     calendarview.cpp
-     customdatetime.cpp
-     eventcontainer.cpp
-     eventscene.cpp
-     eventview.cpp
-     settings.cpp
-     main.cpp
+     ${HEADER_FILES}
+     ${SOURCE_FILES}
      # resources.qrc
  )
 
- target_link_libraries(gurps_calendar Qt5::Widgets)
+ target_include_directories(gurps_calendar PRIVATE
+                           ${CMAKE_CURRENT_SOURCE_DIR}
+			   ${CMAKE_CURRENT_SOURCE_DIR}/include
+			   ${CMAKE_CURRENT_SOURCE_DIR}/include/common)
+
+ file(GLOB UI_FILES "ui/*.ui")
+ qt5_wrap_ui(UI_HEADERS ${UI_FILES})
+
+ target_sources(gurps_calendar PRIVATE ${UI_HEADERS})
+
+ target_link_libraries(gurps_calendar Qt5::Core Qt5::Widgets Qt5::Sql)
