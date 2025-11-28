@@ -22,11 +22,11 @@ cmake_minimum_required(VERSION 3.1.0)
  )
 
  target_include_directories(gurps_calendar PRIVATE
-                           ${CMAKE_CURRENT_SOURCE_DIR}
-			   ${CMAKE_CURRENT_SOURCE_DIR}/include
-			   ${CMAKE_CURRENT_SOURCE_DIR}/include/common)
+                            ${CMAKE_CURRENT_SOURCE_DIR}
+			    ${CMAKE_CURRENT_SOURCE_DIR}/include
+			    ${CMAKE_CURRENT_SOURCE_DIR}/include/common)
 
- file(GLOB UI_FILES "ui/*.ui")
+ file(GLOB_RECURSE UI_FILES "ui/*.ui")
  qt5_wrap_ui(UI_HEADERS ${UI_FILES})
 
  target_sources(gurps_calendar PRIVATE ${UI_HEADERS})

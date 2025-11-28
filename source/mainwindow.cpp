@@ -1,5 +1,4 @@
 #include "include/mainwindow.h"
-#include "ui_mainwindow.h"
 
 MainWindow::MainWindow(CalendarSystem *system, CustomDateTime *globalTime, QWidget *parent)
     : QMainWindow(parent)

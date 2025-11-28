@@ -2,7 +2,6 @@
 #define SETTINGSWINDOW_H
 
 #include <QWidget>
-#include "ui_settings.h"
 #include "settings.h"
 #include <QColorDialog>
 

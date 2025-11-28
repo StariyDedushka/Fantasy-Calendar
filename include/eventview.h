@@ -11,7 +11,7 @@
 #include "eventscene.h"
 
 
-class CalendarScene;
+class EventScene;
 struct CalendarVisualData;
 
 class EventView : public QGraphicsView
