@@ -9,11 +9,11 @@ CustomDateTime::CustomDateTime()
     m_minute(0),
     m_second(0)
 {
-
+    LOG(INFO, logger, "Constructor without parameters called");
 }
 
-CustomDateTime::CustomDateTime(quint16 day, quint16 month, quint32 year,
-                               quint16 hour, quint16 minute, quint16 second)
+CustomDateTime::CustomDateTime(quint32 day, quint32 month, quint32 year,
+                               quint32 hour, quint32 minute, quint32 second)
     : m_day(day),
     m_month(month),
     m_year(year),
@@ -27,21 +27,22 @@ CustomDateTime::CustomDateTime(quint16 day, quint16 month, quint32 year,
         day = 1;
         month = 1;
     }
+    LOG(INFO, logger, "Constructor with parameters called");
 }
 
-void CustomDateTime::setDate(quint16 day, quint16 month, quint32 year)
+void CustomDateTime::setDate(quint32 day, quint32 month, quint32 year)
 {
     m_day = day;
     m_month = month;
     m_year = year;
 }
 
-void CustomDateTime::setDay(quint16 day)
+void CustomDateTime::setDay(quint32 day)
 {
     m_day = day;
 }
 
-void CustomDateTime::setMonth(quint16 month)
+void CustomDateTime::setMonth(quint32 month)
 {
     m_month = month;
 }
@@ -62,14 +63,14 @@ void CustomDateTime::addMonths(qint32 months)
     m_month += months;
 }
 
-void CustomDateTime::setTime(quint16 hour, quint16 minute, quint16 second)
+void CustomDateTime::setTime(quint32 hour, quint32 minute, quint32 second)
 {
     m_hour = hour;
     m_minute = minute;
     m_second = second;
 }
 
-void CustomDateTime::setDateTime(quint16 day, quint16 month, quint32 year, quint16 hour, quint16 minute, quint16 second)
+void CustomDateTime::setDateTime(quint32 day, quint32 month, quint32 year, quint32 hour, quint32 minute, quint32 second)
 {
     m_day = day;
     m_month = month;
@@ -82,6 +83,7 @@ void CustomDateTime::setDateTime(quint16 day, quint16 month, quint32 year, quint
 
 bool CustomDateTime::isValid() const
 {
+    // пока нет доступной логики валидации из-за отсутствия указателя на систему
     return true;
 }
 
@@ -96,11 +98,11 @@ QString CustomDateTime::toString() const
 bool CustomDateTime::operator==(const CustomDateTime& other) const
 {
     if(this->m_second == other.m_second
-        && this->m_minute == other.m_minute
-        && this->m_hour == other.m_hour
-        && this->m_day == other.m_day
-        && this->m_month == other.m_month
-        && this->m_year == other.m_year)
+    && this->m_minute == other.m_minute
+    && this->m_hour == other.m_hour
+    && this->m_day == other.m_day
+    && this->m_month == other.m_month
+    && this->m_year == other.m_year)
         return true;
     else return false;
 }

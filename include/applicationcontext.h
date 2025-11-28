@@ -2,7 +2,7 @@
 #ifndef APPLICATIONCONTEXT_H
 #define APPLICATIONCONTEXT_H
 
-#include <memory>
+#include <QScopedPointer>
 #include "calendarsystem.h"
 #include "customdatetime.h"
 #include "settings.h"
@@ -10,9 +10,9 @@
 class ApplicationContext
 {
 private:
-    std::unique_ptr<CalendarSystem> m_calendarSystem;
-    std::unique_ptr<CustomDateTime> m_globalTime;
-    std::unique_ptr<Settings> m_settings;
+    QScopedPointer<CalendarSystem> m_calendarSystem;
+    QScopedPointer<CustomDateTime> m_globalTime;
+    QScopedPointer<Settings> m_settings;
 
 public:
     ApplicationContext();

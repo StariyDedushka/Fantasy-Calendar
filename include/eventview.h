@@ -9,10 +9,9 @@
 #include <QWheelEvent>
 #include <QScrollBar>
 #include "eventscene.h"
+#include "structs.h"
 
 
-class EventScene;
-struct CalendarVisualData;
 
 class EventView : public QGraphicsView
 {

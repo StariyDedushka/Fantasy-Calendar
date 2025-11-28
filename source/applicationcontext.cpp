@@ -3,15 +3,12 @@
 
 ApplicationContext::ApplicationContext()
 {
-    m_calendarSystem = std::make_unique<CalendarSystem>();
-    m_globalTime = std::make_unique<CustomDateTime>(m_calendarSystem.get());
-    m_settings = std::make_unique<Settings>(m_calendarSystem.get(), m_globalTime.get());
+    m_calendarSystem = QScopedPointer<CalendarSystem>();
+    m_globalTime = QScopedPointer<CustomDateTime>(m_calendarSystem.get());
+    m_settings = QScopedPointer<Settings>(m_calendarSystem.get(), m_globalTime.get());
 }
 
 void ApplicationContext::initializeBasicSystems()
 {
-    m_calendarSystem->addDayOfWeek("Monday");
-    m_calendarSystem->addDayOfWeek("Tuesday");
-    m_calendarSystem->addDayOfWeek("Wednesday");
     // ... остальная инициализация
 }

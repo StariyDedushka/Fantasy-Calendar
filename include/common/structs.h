@@ -1,5 +1,5 @@
-#ifndef CALENDARSTRUCTURES_H
-#define CALENDARSTRUCTURES_H
+#ifndef STRUCTS_H
+#define STRUCTS_H
 #include <QObject>
 #include <QColor>
 #include "include/calendaritem.h"
@@ -7,24 +7,18 @@
 #include "include/eventcontaineritem.h"
 #include <QSize>
 
-struct Month {
-    quint32 id;
-    quint16 position;
-    quint16 daysTotal;
-    QString name;
-    QVector<DayOfWeek*> days;
-};
-
 struct DayOfWeek {
     quint32 id;
-    quint16 position;
+    quint32 position;
     QString name;
 };
 
-struct DayData {
+struct Month {
     quint32 id;
+    quint32 position;
+    quint32 daysTotal;
     QString name;
-    QList<Event> events;
+    QVector<quint32> days;
 };
 
 struct Event {
@@ -33,6 +27,12 @@ struct Event {
     CustomDateTime time;
     QString name;
     QString text;
+};
+
+struct DayData {
+    quint32 id;
+    QString name;
+    QList<quint32> events;
 };
 
 struct CalendarDayData {
@@ -50,7 +50,7 @@ struct CalendarDayData {
 };
 
 struct CalendarVisualData {
-    QVector<CalendarItem*> items;
+    QVector<CalendarDayData*> items;
     QString headerText;
     QString weekDaysHeader;
     QSizeF cellSize;

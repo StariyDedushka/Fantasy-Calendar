@@ -27,7 +27,6 @@ public:
     void setHasEvents(bool hasEvents);
     void setToday(bool today);
 
-    // QGraphicsItem interface
     virtual void paint(QPainter *painter,
                        const QStyleOptionGraphicsItem *option,
                        QWidget *widget) override;

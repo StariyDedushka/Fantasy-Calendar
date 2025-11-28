@@ -6,7 +6,7 @@
 #include <QtXml>
 #include "calendarsystem.h"
 #include "customdatetime.h"
-#include "common/calendarstructures.h"
+#include "structs.h"
 #include <QRandomGenerator>
 
 

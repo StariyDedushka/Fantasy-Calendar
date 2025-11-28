@@ -32,6 +32,7 @@ protected:
     // Визуальные состояния
     bool m_highlighted;
     bool m_hovered;
+    bool m_selected;
 
     quint16 m_groupId;
     QString m_text;
@@ -73,15 +74,14 @@ public:
     virtual bool isSelected() const;
     virtual bool isEnabled() const;
 
-    // static void setSelectedItem(AbstractItem *item);
     virtual void setHighlighted(bool highlighted);
     virtual void setEnabled(bool enabled);
+    virtual void setSelected(bool selected);
     // virtual void addItem(AbstractItem *item);
     // virtual QVector<AbstractItem*>& getItems();
-    // virtual QSharedPointer<QPolygon> buildTriangle(const QRectF &parentRect, double scale, qint16 rotation);
 
-    virtual void collapse();
-    virtual void expand();
+    // virtual void collapse();
+    // virtual void expand();
 
     AbstractItem* operator=(AbstractItem&& other);
     bool operator==(const AbstractItem& other);

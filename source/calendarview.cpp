@@ -185,7 +185,6 @@ void CalendarView::handleSceneItemClicked(CalendarItem* item)
     if (item && item->isEnabled()) {
         // Пробрасываем сигнал с данными даты
         emit dateClicked(CustomDateTime(item->day, item->month(), item->year()));
-);
     }
 }
 

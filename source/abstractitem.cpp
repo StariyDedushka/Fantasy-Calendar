@@ -1,13 +1,13 @@
 #include "include/abstractitem.h"
 
 AbstractItem::AbstractItem(const QRectF &rect,
-                           const QString &text = "",
-                           const QColor &colorPrimary = Qt::white,
-                           const QColor &colorSecondary = Qt::gray,
-                           const QColor &colorTertiary = Qt::darkGray,
-                           bool enabled = true,
-                           QObject *parent = nullptr) :
-    QGraphicsItem(parent)
+                           const QString &text,
+                           const QColor &colorPrimary,
+                           const QColor &colorSecondary,
+                           const QColor &colorTertiary,
+                           bool enabled,
+                           QObject *parent) :
+    QObject(parent)
     , m_enabled(enabled)
     , m_colorPrimary(colorPrimary)
     , m_colorSecondary(colorSecondary)
@@ -21,15 +21,6 @@ AbstractItem::AbstractItem(const QRectF &rect,
     setFlag(QGraphicsItem::ItemIsSelectable, true);
 }
 
-
-AbstractItem::~AbstractItem()
-{
-    for(AbstractItem *item : m_items)
-    {
-        delete item;
-    }
-    m_items.clear();
-}
 
 void AbstractItem::setHighlighted(bool highlighted)
 {
@@ -122,74 +113,13 @@ void AbstractItem::setRect(quint16 posX, quint16 posY, quint16 sizeX, quint16 si
     m_rect.setTopLeft(point);
 }
 
-void AbstractItem::expand()
-{
-    m_expanded = true;
-    quint32 height = 0;
-    for(AbstractItem *item : m_items)
-    {
-        height += item->m_rect.height();
-        height += 10;
-    }
-
-    height *= m_items.size();
-    m_rect.setHeight(height);
-
-    for(AbstractItem *item : m_items)
-    {
-        item->show();
-    }
-    update();
-}
-
-void AbstractItem::collapse()
-{
-    m_expanded = false;
-    qreal height = 50;
-    m_rect.setHeight(height);
-    for(AbstractItem *item : m_items)
-    {
-        item->hide();
-    }
-    update();
-}
 
 void AbstractItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
 
-    if(m_expandable)
-    {
-        if(m_selected) collapse();
-        else expand();
-    }
-
-    if (!m_enabled) {
-        qDebug() << "Item disabled, ignoring";
-        event->ignore();
-        return;
-    }
-    if(!m_items.empty()) {
-        QPointF scenePos = event->scenePos();
-
-        for (AbstractItem *child : m_items) {
-            if (child->isEnabled() && child->isVisible()) {
-                // Преобразуем позицию в координаты дочернего элемента
-                QPointF childPos = child->mapFromScene(scenePos);
-                if (child->contains(childPos)) {
-                    qDebug() << "Event should go to child:" << static_cast<void*>(child);
-                    event->ignore(); // Позволяем событию пройти к дочернему элементу
-                    return;
-                }
-            }
-        }
-    }
-    // Если дочерних элементов нет или событие не над ними - обрабатываем сами
-    qDebug() << "Handling event in parent";
-    toggleClicked();
     emit itemClicked(this);
     event->accept();
     update();
-
 }
 
 void AbstractItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
@@ -227,21 +157,25 @@ AbstractItem* AbstractItem::operator=(AbstractItem&& other)
     m_expandable = std::move(other.m_expandable);
     m_groupId = std::move(other.m_groupId);
     m_text = std::move(other.m_text);
-    m_parentScene = std::move(other.m_parentScene);
 
     m_colorPrimary = std::move(other.m_colorPrimary);
     m_colorSecondary = std::move(other.m_colorSecondary);
     m_colorTertiary = std::move(other.m_colorTertiary);
 
     m_rect = std::move(other.m_rect);
-    m_selectedItem = std::move(other.m_selectedItem);
     return this;
 }
 
 
 bool AbstractItem::operator==(const AbstractItem& other)
 {
-    return m_enabled == other.m_enabled && m_selected == other.m_selected && m_expandable == other.m_expandable && m_groupId == other.m_groupId
-           && m_text == other.m_text && m_parentScene == other.m_parentScene && m_colorPrimary == other.m_colorPrimary
-           && m_colorSecondary == other.m_colorSecondary && m_colorTertiary == other.m_colorTertiary && m_rect == other.m_rect;
+    return m_enabled == other.m_enabled
+           && m_selected == other.m_selected
+           && m_expandable == other.m_expandable
+           && m_groupId == other.m_groupId
+           && m_text == other.m_text
+           && m_colorPrimary == other.m_colorPrimary
+           && m_colorSecondary == other.m_colorSecondary
+           && m_colorTertiary == other.m_colorTertiary
+           && m_rect == other.m_rect;
 }

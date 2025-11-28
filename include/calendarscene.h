@@ -4,7 +4,7 @@
 #include <QGraphicsScene>
 #include <QObject>
 #include "calendaritem.h"
-#include "common/calendarstructures.h"
+#include "structs.h"
 
 
 class CalendarScene : public QGraphicsScene
@@ -32,7 +32,7 @@ public:
     CalendarItem* itemAtPos(const QPointF& pos) const;
 
 signals:
-    void itemClicked(CalendarItem* item);
+    void itemClicked(AbstractItem* item);
     void sceneReady();
 
 public slots:
@@ -49,6 +49,7 @@ private:
     void createHeader();
     void createWeekDaysHeader();
 
+    QVector<CalendarDayData*> m_dataItems;
     QVector<CalendarItem*> m_calendarItems;
     QSizeF m_cellSize;
     quint16 m_columns;

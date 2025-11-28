@@ -41,11 +41,11 @@ void EventScene::setCalendarData(const CalendarVisualData& data)
     m_rows = data.rows;
 
     // Добавляем элементы на сцену
-    for (CalendarItem* item : m_calendarItems) {
+    for (EventItem* item : m_calendarItems) {
         addItem(item);
 
         // Подключаем сигналы от каждого элемента
-        connect(item, &CalendarItem::itemClicked,
+        connect(item, &EventItem::itemClicked,
                 this, &EventScene::handleItemClick);
     }
 
@@ -67,7 +67,7 @@ void EventScene::setCalendarData(const CalendarVisualData& data)
 void EventScene::clearCalendar()
 {
     // Отключаем все соединения
-    for (CalendarItem* item : m_calendarItems) {
+    for (EventItem* item : m_calendarItems) {
         item->disconnect(this);
     }
 
@@ -150,7 +150,7 @@ void EventScene::repositionItems()
     qreal x = 0;
     qreal y = startY;
 
-    for (CalendarItem* item : m_calendarItems) {
+    for (EventItem* item : m_calendarItems) {
         // Устанавливаем позицию и размер
         item->setPos(x, y);
         item->setRect(0, 0, m_cellSize.width(), m_cellSize.height());
@@ -212,12 +212,12 @@ void EventScene::createWeekDaysHeader()
 void EventScene::highlightDate(quint16 day, quint16 month, quint32 year)
 {
     // Снимаем выделение со всех элементов
-    for (CalendarItem* item : m_calendarItems) {
+    for (EventItem* item : m_calendarItems) {
         item->setSelected(false);
     }
 
     // Находим и выделяем нужный элемент
-    for (CalendarItem* item : m_calendarItems) {
+    for (EventItem* item : m_calendarItems) {
         if (item->day() == day && item->month() == month && item->year() == year) {
             item->setSelected(true);
             break;
@@ -227,15 +227,15 @@ void EventScene::highlightDate(quint16 day, quint16 month, quint32 year)
 
 void EventScene::clearHighlights()
 {
-    for (CalendarItem* item : m_calendarItems) {
+    for (EventItem* item : m_calendarItems) {
         item->setSelected(false);
     }
 }
 
-CalendarItem* EventScene::itemAtPos(const QPointF& pos) const
+EventItem* EventScene::itemAtPos(const QPointF& pos) const
 {
     QGraphicsItem* item = itemAt(pos, QTransform());
-    return qgraphicsitem_cast<CalendarItem*>(item);
+    return qgraphicsitem_cast<EventItem*>(item);
 }
 
 void EventScene::handleItemClick(AbstractItem* item)

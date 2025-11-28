@@ -108,7 +108,7 @@ QVector<CalendarDayData> CalendarPresenter::generateMonthDays() const
                                                 m_currentDisplayDate.year());
 
     // Определяем день недели первого дня месяца
-    DayOfWeek *day = m_system.firstDayOfMonth(m_currentDisplayDate.month(), m_currentDisplayDate.year());
+    DayOfWeek *day = m_system->firstDayOfMonth(m_currentDisplayDate.month(), m_currentDisplayDate.year());
     quint16 firstDayOfWeek = day->position; // 1,2 .. x
 
     // Добавляем пустые дни в начале (для выравнивания)

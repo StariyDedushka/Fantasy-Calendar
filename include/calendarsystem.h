@@ -2,7 +2,7 @@
 #define TimeSystem_H
 
 #include <QObject>
-#include "include/common/calendarstructures.h"
+#include "structs.h"
 #include "global_logger.h"
 #include <QtSql>
 

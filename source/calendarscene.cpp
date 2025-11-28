@@ -29,7 +29,7 @@ void CalendarScene::setCalendarData(const CalendarVisualData& data)
 {
     clearCalendar();
 
-    m_calendarItems = data.items;
+    m_dataItems = data.items;
     m_headerText = data.headerText;
     m_weekDaysHeader = data.weekDaysHeader;
     m_cellSize = data.cellSize;
@@ -71,7 +71,7 @@ void CalendarScene::clearCalendar()
     clear();
 
     // Очищаем списки
-    m_calendarItems.clear();
+    m_dataItems.clear();
     m_headerItem = nullptr;
     m_weekDaysItem = nullptr;
 }
@@ -124,7 +124,7 @@ void CalendarScene::updateLayout()
 
 void CalendarScene::repositionItems()
 {
-    if (m_calendarItems.isEmpty()) return;
+    if (m_dataItems.isEmpty()) return;
 
     qreal startY = 0;
 

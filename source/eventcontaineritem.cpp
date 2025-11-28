@@ -26,6 +26,6 @@ void EventContainerItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
     painter->drawPolygon(*triangle);
 }
 
-void EventContainerItem::addItem(EventItem *item)
-{
-}
+// void EventContainerItem::addItem(EventItem *item)
+// {
+// }
