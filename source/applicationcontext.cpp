@@ -3,9 +3,9 @@
 
 ApplicationContext::ApplicationContext()
 {
-    m_calendarSystem = QScopedPointer<CalendarSystem>();
-    m_globalTime = QScopedPointer<CustomDateTime>(m_calendarSystem.get());
-    m_settings = QScopedPointer<Settings>(m_calendarSystem.get(), m_globalTime.get());
+    m_calendarSystem = std::make_unique<CalendarSystem>();
+    m_globalTime = std::unique_ptr<CustomDateTime>();
+    m_settings = std::unique_ptr<Settings>(m_calendarSystem, m_globalTime);
 }
 
 void ApplicationContext::initializeBasicSystems()

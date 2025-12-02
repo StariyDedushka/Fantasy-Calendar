@@ -127,9 +127,9 @@ bool Settings::writeSettings()
 
     writer.writeStartElement("time system");
 
-    writer.writeTextElement("seconds per minute", QString::number(m_system->m_secondsPerMinute()));
-    writer.writeTextElement("minutes per hour", QString::number(m_system->m_minutesPerHour()));
-    writer.writeTextElement("hours per day", QString::number(m_system->m_hoursPerDay()));
+    writer.writeTextElement("seconds per minute", QString::number(m_system->secondsPerMinute()));
+    writer.writeTextElement("minutes per hour", QString::number(m_system->minutesPerHour()));
+    writer.writeTextElement("hours per day", QString::number(m_system->hoursPerDay()));
 
     writer.writeStartElement("days of week");
     for(DayOfWeek *day : *m_days)
@@ -170,19 +170,6 @@ bool Settings::writeSettings()
     return true;
 }
 
-void Settings::setGlobalTime(CustomDateTime *globalTime)
-{
-    this->globalTime = globalTime;
-}
-// quint16 Settings::countFiles()
-// {
-//     QDir saveDir("../m_configs");
-//     QFileInfoList list = saveDir.entryInfoList();
-//     for(int i = 0; i < m_configs.size(); i++)
-//     {
-
-//     }
-// }
 
 
 void Settings::dpm_valueChanged(int m_days, const QString &month)
@@ -262,7 +249,4 @@ void Settings::cancel_clicked()
 
 void Settings::addDay_clicked()
 {
-    DayOfWeek *day = new DayOfWeek();
-    day->id = QRandomGenerator::generate();
-    day->name
 }

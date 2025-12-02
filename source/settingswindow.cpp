@@ -5,7 +5,6 @@ SettingsWindow::SettingsWindow(QWidget *parent) :
     , ui(new Ui::SettingsWindow)
 {
     ui->setupUi(this);
-    settings = Settings::getInstance();
 }
 
 
@@ -100,10 +99,6 @@ void SettingsWindow::on_btn_saveConfig_clicked()
     emit btn_saveConfig_clicked(ui->cb_configs->currentText());
 }
 
-void SettingsWindow::setGlobalTime(CustomDateTime *globalTime)
-{
-    settings->setGlobalTime(globalTime);
-}
 
 void SettingsWindow::on_btn_apply_clicked()
 {

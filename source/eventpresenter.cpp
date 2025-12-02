@@ -4,9 +4,6 @@ EventPresenter::EventPresenter(CalendarSystem* system,
                                CustomDateTime* globalTime,
                                EventView* view,
                                QObject* parent)
-                                     CustomDateTime* globalTime,
-                                     EventView* view,
-                                     QObject* parent)
     : QObject(parent)
     , m_system(system)
     , m_globalTime(globalTime)

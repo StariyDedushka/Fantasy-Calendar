@@ -10,9 +10,9 @@
 class ApplicationContext
 {
 private:
-    QScopedPointer<CalendarSystem> m_calendarSystem;
-    QScopedPointer<CustomDateTime> m_globalTime;
-    QScopedPointer<Settings> m_settings;
+    std::unique_ptr<CalendarSystem> m_calendarSystem;
+    std::unique_ptr<CustomDateTime> m_globalTime;
+    std::unique_ptr<Settings> m_settings;
 
 public:
     ApplicationContext();

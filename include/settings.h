@@ -65,7 +65,7 @@ public:
 
     Settings(CalendarSystem *system, CustomDateTime *globalTime, QObject *parent = nullptr);
     virtual ~Settings() override;
-    void createDatabase();
+    void createDatabase(const QString& newConfig);
 };
 
 #endif // SETTINGS_H

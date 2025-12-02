@@ -1,7 +1,5 @@
 #ifndef EVENTPRESENTER_H
 #define EVENTPRESENTER_H
-#ifndef CALENDARPRESENTER_H
-#define CALENDARPRESENTER_H
 
 #include <QObject>
 #include <QSize>
