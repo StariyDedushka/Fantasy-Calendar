@@ -1,17 +1,31 @@
 #include "include/eventpresenter.h"
 
 EventPresenter::EventPresenter(CalendarSystem* system,
+<<<<<<< HEAD
                                CustomDateTime* globalTime,
                                EventView* view,
                                QObject* parent)
+=======
+                                     CustomDateTime* globalTime,
+                                     EventView* view,
+                                     QObject* parent)
+>>>>>>> main
     : QObject(parent)
     , m_system(system)
     , m_globalTime(globalTime)
     , m_view(view)
     , m_columns(1)
+<<<<<<< HEAD
     , m_rows(0)
     , m_zoomLevel(1.0)
 {
+=======
+    , m_rows(system->weeksInMonth(globalTime->month(), globalTime->year()))
+    , m_zoomLevel(1.0)
+{
+    // Устанавливаем начальную дату
+
+>>>>>>> main
     initialize();
 }
 
@@ -52,6 +66,10 @@ void EventPresenter::setupConnections()
     connect(m_view, &EventView::zoomChanged,
             this, &EventPresenter::handleWheelZoom);
 
+<<<<<<< HEAD
+=======
+    // Подключаемся к моделям (если они имеют сигналы)
+>>>>>>> main
     // connect(m_system, &CalendarSystem::systemChanged,
     //         this, &EventPresenter::onSystemChanged);
     // connect(m_globalTime, &CustomDateTime::timeChanged,
@@ -62,7 +80,10 @@ void EventPresenter::refreshEvents()
 {
     if (!m_system || !m_view) return;
 
+<<<<<<< HEAD
     LOG(INFO, logger, "Refreshing events, generating visual data");
+=======
+>>>>>>> main
     // Генерируем визуальные данные
     EventVisualData visualData = generateVisualData();
 
@@ -74,9 +95,16 @@ EventVisualData EventPresenter::generateVisualData() const
 {
     EventVisualData data;
 
+<<<<<<< HEAD
     // Генерируем данные контейнеров событий
     data.items = generateContainers();
     data.headerText = generateHeaderText();
+=======
+    // Генерируем данные дней
+    data.items = generateEvents();
+    data.headerText = generateHeaderText();
+    data.columns = m_columns;
+>>>>>>> main
     data.rows = m_rows;
     // Рассчитываем размер ячейки на основе размера View
     if (m_viewSize.isValid()) {
@@ -89,6 +117,7 @@ EventVisualData EventPresenter::generateVisualData() const
     return data;
 }
 
+<<<<<<< HEAD
 QVector<EventContainerData> EventPresenter::generateContainers() const
 {
     QVector<EventContainerData> containers;
@@ -121,14 +150,41 @@ QVector<EventContainerData> EventPresenter::generateContainers() const
     return days;
 }
 
+=======
+>>>>>>> main
 QVector<CalendarEventData> EventPresenter::generateEvents() const
 {
     QVector<CalendarEventData> events;
 
     if (!m_system) return events;
 
+<<<<<<< HEAD
 
     for (quint16 i = 0; i <= day; ++i) {
+=======
+    // Получаем информацию о текущем месяце
+    quint16 daysInMonth = m_system->currentDay(m_currentDisplayDate.month(),
+                                                m_currentDisplayDate.year());
+
+    // Определяем день недели первого дня месяца
+    Day *day = m_system.firstDayOfMonth(m_currentDisplayDate.month(), m_currentDisplayDate.year());
+    quint16 firstDayOfWeek = day->position; // 1,2 .. x
+
+    // Добавляем пустые дни в начале (для выравнивания)
+    for (int i = 1; i < firstDayOfWeek; ++i) {
+        CalendarEventData emptyDay;
+        emptyDay.isEnabled = false;
+        emptyDay.displayText = "";
+        days.append(emptyDay);
+    }
+
+    // Добавляем дни месяца
+    CustomDateTime today = m_globalTime ?
+                           CustomDateTime(m_globalTime->day(), m_globalTime->month(), m_globalTime->year()) :
+                           CustomDateTime(1, 1, 2000);
+
+    for (quint16 day = 1; day <= daysInMonth; ++day) {
+>>>>>>> main
         CalendarEventData dayData;
         dayData.day = day;
         dayData.month = m_currentDisplayDate.month();
@@ -168,7 +224,11 @@ QString EventPresenter::generateWeekDaysHeader() const
     // Генерируем заголовок с днями недели
     QStringList weekDays;
     for (int i = 1; i <= m_columns; ++i) {
+<<<<<<< HEAD
         DayOfWeek* dayInfo = m_system->dayOfWeek(i);
+=======
+        Day* dayInfo = m_system->dayOfWeek(i);
+>>>>>>> main
         if (dayInfo) {
             weekDays.append(dayInfo->name.left(2)); // Сокращенные названия
         } else {

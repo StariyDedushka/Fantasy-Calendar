@@ -1,7 +1,6 @@
 #ifndef AbstractItem_H
 #define AbstractItem_H
 
-#include <QDate>
 #include <QWidget>
 #include <QRectF>
 #include <QVector>

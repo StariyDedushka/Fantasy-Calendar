@@ -14,6 +14,7 @@ find_package(Qt5 REQUIRED COMPONENTS Widgets Core Sql Xml)
 
 file(GLOB_RECURSE SOURCE_FILES "source/*.cpp")
 file(GLOB_RECURSE HEADER_FILES "include/*.h")
+file(GLOB_RECURSE UI_FILES "ui/*.ui")
 
 file(GLOB_RECURSE ALL_INCLUDE_DIRS LIST_DIRECTORIES true "include/*")
 
@@ -33,7 +34,6 @@ foreach(dir ${ALL_INCLUDE_DIRS})
     endif()
 endforeach()
 
-file(GLOB_RECURSE UI_FILES "ui/*.ui")
 
 qt5_wrap_ui(UI_HEADERS ${UI_FILES})
 
@@ -53,8 +53,7 @@ if(COMMON_HEADERS)
 endif()
 
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_GLOBAL_SOURCE_DIRS
- "${CMAKE_CURRENT_SOURCE_DIR}/include"
- "${CMAKE_CURRENT_SOURCE_DIR}/include/common"
+ "${ALL_INCLUDE_DIRS}"
  "${CMAKE_CURRENT_SOURCE_DIR}/source"
  "${CMAKE_CURRENT_SOURCE_DIR}/ui"
 )

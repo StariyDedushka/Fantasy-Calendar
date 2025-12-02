@@ -11,9 +11,7 @@ EventScene::EventScene(QObject *parent)
     , m_rows(6)
     , m_backgroundColor(Qt::lightGray)
     , m_showHeader(true)
-    , m_showWeekDays(true)
     , m_headerItem(nullptr)
-    , m_weekDaysItem(nullptr)
 {
     setBackgroundBrush(QBrush(m_backgroundColor));
     setupConnections();
@@ -21,7 +19,7 @@ EventScene::EventScene(QObject *parent)
 
 EventScene::~EventScene()
 {
-    clearCalendar();
+    clearEvents();
 }
 
 void EventScene::setupConnections()
@@ -31,17 +29,16 @@ void EventScene::setupConnections()
 
 void EventScene::setCalendarData(const CalendarVisualData& data)
 {
-    clearCalendar();
+    clearEvents();
 
-    m_calendarItems = data.items;
+    m_eventItems = data.items;
     m_headerText = data.headerText;
-    m_weekDaysHeader = data.weekDaysHeader;
     m_cellSize = data.cellSize;
     m_columns = data.columns;
     m_rows = data.rows;
 
     // Добавляем элементы на сцену
-    for (EventItem* item : m_calendarItems) {
+    for (EventItem* item : m_eventItems) {
         addItem(item);
 
         // Подключаем сигналы от каждого элемента
@@ -64,10 +61,10 @@ void EventScene::setCalendarData(const CalendarVisualData& data)
     emit sceneReady();
 }
 
-void EventScene::clearCalendar()
+void EventScene::clearEvents()
 {
     // Отключаем все соединения
-    for (EventItem* item : m_calendarItems) {
+    for (EventItem* item : m_eventItems) {
         item->disconnect(this);
     }
 
@@ -75,9 +72,8 @@ void EventScene::clearCalendar()
     clear();
 
     // Очищаем списки
-    m_calendarItems.clear();
+    m_eventItems.clear();
     m_headerItem = nullptr;
-    m_weekDaysItem = nullptr;
 }
 
 void EventScene::setCellSize(const QSizeF& size)
@@ -121,36 +117,28 @@ void EventScene::updateLayout()
     if (m_headerItem) {
         m_headerItem->setVisible(m_showHeader);
     }
-    if (m_weekDaysItem) {
-        m_weekDaysItem->setVisible(m_showWeekDays);
-    }
 }
 
 void EventScene::repositionItems()
 {
-    if (m_calendarItems.isEmpty()) return;
+    if (m_eventItems.isEmpty()) return;
 
     qreal startY = 0;
 
-    // Место для заголовка месяца
+    // Место для заголовка дня
     if (m_showHeader && m_headerItem) {
         m_headerItem->setPos(0, startY);
         startY += m_cellSize.height();
     }
 
-    // Место для заголовка дней недели
-    if (m_showWeekDays && m_weekDaysItem) {
-        m_weekDaysItem->setPos(0, startY);
-        startY += m_cellSize.height();
-    }
 
-    // Расставляем дни в сетке
+    // Расставляем события в сетке
     int currentColumn = 0;
     int currentRow = 0;
     qreal x = 0;
     qreal y = startY;
 
-    for (EventItem* item : m_calendarItems) {
+    for (EventItem* item : m_eventItems) {
         // Устанавливаем позицию и размер
         item->setPos(x, y);
         item->setRect(0, 0, m_cellSize.width(), m_cellSize.height());
@@ -192,32 +180,16 @@ void EventScene::createHeader()
     m_headerItem->setVisible(m_showHeader);
 }
 
-void EventScene::createWeekDaysHeader()
-{
-    if (m_weekDaysHeader.isEmpty()) return;
 
-    if (!m_weekDaysItem) {
-        m_weekDaysItem = new QGraphicsTextItem();
-        m_weekDaysItem->setDefaultTextColor(Qt::darkBlue);
-        QFont weekDaysFont;
-        weekDaysFont.setPointSize(9);
-        m_weekDaysItem->setFont(weekDaysFont);
-        addItem(m_weekDaysItem);
-    }
-
-    m_weekDaysItem->setPlainText(m_weekDaysHeader);
-    m_weekDaysItem->setVisible(m_showWeekDays);
-}
-
-void EventScene::highlightDate(quint16 day, quint16 month, quint32 year)
+void EventScene::highlightItem(quint32 item)
 {
     // Снимаем выделение со всех элементов
-    for (EventItem* item : m_calendarItems) {
+    for (AbstractItem* item : m_eventItems) {
         item->setSelected(false);
     }
 
     // Находим и выделяем нужный элемент
-    for (EventItem* item : m_calendarItems) {
+    for (EventItem* item : m_eventItems) {
         if (item->day() == day && item->month() == month && item->year() == year) {
             item->setSelected(true);
             break;
@@ -227,7 +199,7 @@ void EventScene::highlightDate(quint16 day, quint16 month, quint32 year)
 
 void EventScene::clearHighlights()
 {
-    for (EventItem* item : m_calendarItems) {
+    for (EventItem* item : m_eventItems) {
         item->setSelected(false);
     }
 }
@@ -248,4 +220,5 @@ void EventScene::handleItemClick(AbstractItem* item)
         emit itemClicked(item);
     }
 }
-#include <QObject>
+
+#endif

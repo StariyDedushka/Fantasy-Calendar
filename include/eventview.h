@@ -34,7 +34,7 @@ public:
     void setViewportUpdateMode(ViewportUpdateMode mode);
 
 public slots:
-    void clearCalendar();
+    void clearEvents();
     void updateView();
 
 signals:

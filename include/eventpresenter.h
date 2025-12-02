@@ -1,11 +1,20 @@
+<<<<<<< HEAD
 #ifndef EVENTPRESENTER_H
 #define EVENTPRESENTER_H
+=======
+#ifndef CALENDARPRESENTER_H
+#define CALENDARPRESENTER_H
+>>>>>>> main
 
 #include <QObject>
 #include <QSize>
 #include "calendarsystem.h"
 #include "customdatetime.h"
 #include "eventvisualstyle.h"
+<<<<<<< HEAD
+=======
+#include "eventitem.h"
+>>>>>>> main
 #include "eventview.h"
 #include "global_logger.h"
 
@@ -18,9 +27,15 @@ class EventPresenter : public QObject
 
 public:
     explicit EventPresenter(CalendarSystem* system,
+<<<<<<< HEAD
                             CustomDateTime* globalTime,
                             EventView* view,
                             QObject* parent = nullptr);
+=======
+                           CustomDateTime* globalTime,
+                           EventView* view,
+                           QObject* parent = nullptr);
+>>>>>>> main
     ~EventPresenter();
 
     void initialize();
@@ -48,14 +63,24 @@ private:
     void updateView(const EventVisualData& data);
     void validateCurrentDate();
     void calculateGridSize();
+<<<<<<< HEAD
     QVector<EventContainerData> generateContainers() const;
     QVector<CalendarEventData> generateEvents() const;
+=======
+    QVector<CalendarEventData> generateEvents() const;
+    QString generateHeaderText() const;
+    QString generateWeekDaysHeader() const;
+>>>>>>> main
     // Методы для работы со стилями
     void applyVisualStyle();
     void updateColorsFromSettings();
 
     // Визуальные настройки
+<<<<<<< HEAD
     QColor getEventColor(const CalendarEventData& dayData) const;
+=======
+    QColor getDayColor(const CalendarEventData& dayData) const;
+>>>>>>> main
     QColor getTextColor(const CalendarEventData& dayData) const;
     QColor getBorderColor(const CalendarEventData& dayData) const;
 
@@ -71,4 +96,8 @@ private:
     qreal m_zoomLevel;
 };
 
+<<<<<<< HEAD
 #endif // EVENTPRESENTER_H
+=======
+#endif // CALENDARPRESENTER_H
+>>>>>>> main

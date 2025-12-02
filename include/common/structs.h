@@ -35,51 +35,32 @@ struct DayData {
     QList<quint32> events;
 };
 
-struct CalendarDayData {
-    quint16 day;
-    quint16 month;
-    quint32 year;
+struct ItemData {
     QString displayText;
     bool isEnabled;
+    QColor backgroundColor;
+    QColor textColor;
+    QColor borderColor;
+};
+
+struct CalendarDayData : public ItemData {
+    quint32 day;
+    quint32 month;
+    quint32 year;
     bool isCurrentDay;
     bool isToday;
     bool hasEvents;
-    QColor backgroundColor;
-    QColor textColor;
-    QColor borderColor;
 };
 
-struct CalendarVisualData {
-    QVector<CalendarDayData*> items;
+struct CalendarEventData : public ItemData {
+    quint32 id;
+};
+
+struct SceneVisualData {
+    QVector<ItemData*> items;
     QString headerText;
-    QString weekDaysHeader;
     QSizeF cellSize;
     quint16 columns;
-    quint16 rows;
-};
-
-struct CalendarEventData {
-    quint32 id;
-    QString displayText;
-    bool isEnabled;
-    QColor backgroundColor;
-    QColor textColor;
-    QColor borderColor;
-};
-
-struct EventContainerData {
-    quint32 id;
-    QString headerText;
-    bool isEnabled;
-    QColor backgroundColor;
-    QColor textColor;
-    QColor borderColor;
-};
-
-struct EventVisualData {
-    QVector<EventContainerItem*> items;
-    QString headerText;
-    QSizeF cellSize;
     quint16 rows;
 };
 

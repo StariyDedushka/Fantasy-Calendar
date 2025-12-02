@@ -37,7 +37,7 @@ signals:
 
 public slots:
     void updateLayout();
-    void highlightDate(quint16 day, quint16 month, quint32 year);
+    void highlightItem(quint16 day, quint16 month, quint32 year);
     void clearHighlights();
 
 private slots:

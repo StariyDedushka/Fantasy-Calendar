@@ -92,10 +92,10 @@ void EventView::setAntialiasingEnabled(bool enabled)
     setRenderHint(QPainter::TextAntialiasing, enabled);
 }
 
-void EventView::clearCalendar()
+void EventView::clearEvents()
 {
     if (m_scene) {
-        m_scene->clearCalendar();
+        m_scene->clearEvents();
     }
 }
 

@@ -1,6 +1,10 @@
 #include "include/logger.h"
 
+<<<<<<< HEAD
 Logger::Logger(const QString& filename)
+=======
+Logger::Logger(LogLevel l, const QString& filename) : m_level(l)
+>>>>>>> main
 {
     QString fullName = "../logs/";
     fullName.append(filename);
@@ -8,7 +12,13 @@ Logger::Logger(const QString& filename)
     fullName.append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm:ss"));
     logFile.setFileName(fullName);
     if(!logFile.open(QIODevice::WriteOnly))
+<<<<<<< HEAD
         throw std::runtime_error("Could not open log file");
+=======
+    {
+        qDebug() << "Could not open log file" << fullName;
+    }
+>>>>>>> main
 }
 
 void Logger::operator()(LogLevel level,
@@ -28,7 +38,11 @@ void Logger::operator()(LogLevel level,
         lvlStr = "INFO";
         break;
     case WARN:
+<<<<<<< HEAD
         lvlStr = "WARNING";
+=======
+        lvlStr = "WARN";
+>>>>>>> main
         break;
     case ERROR:
         lvlStr = "ERROR";
