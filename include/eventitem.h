@@ -36,7 +36,6 @@ public:
     bool isAllDay() const;
 
 private:
-    quint16 m_time;
     CustomDateTime m_startTime;
     CustomDateTime m_endTime;
     bool m_isAllDay;

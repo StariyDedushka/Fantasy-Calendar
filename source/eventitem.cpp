@@ -47,8 +47,8 @@ void EventItem::calculateAutoEndTime()
 {
     // Автоматически устанавливаем конец события через 1 час
     m_endTime = m_startTime;
-    m_endTime.setTime((m_startTime.hour() + 1) % m_startTime.m_calendarSystem->hoursPerDay(),
-                      m_startTime.minute(), m_startTime.second());
+    // m_endTime.setTime((m_startTime.hour() + 1) % m_startTime.m_calendarSystem->hoursPerDay(),
+    //                   m_startTime.minute(), m_startTime.second());
 }
 
 bool EventItem::isValid() const
@@ -63,9 +63,9 @@ quint32 EventItem::durationInMinutes() const
     if (m_startTime.day() == m_endTime.day() &&
         m_startTime.month() == m_endTime.month() &&
         m_startTime.year() == m_endTime.year()) {
-        totalMinutes = (m_endTime.hour() - m_startTime.hour()) *
-                           m_startTime.m_calendarSystem->minutesPerHour() +
-                       (m_endTime.minute() - m_startTime.minute());
+        // totalMinutes = (m_endTime.hour() - m_startTime.hour()) *
+        //                    m_startTime.m_calendarSystem->minutesPerHour() +
+        //                (m_endTime.minute() - m_startTime.minute());
     }
     return totalMinutes;
 }
@@ -112,7 +112,7 @@ void EventItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     }
 
     // Индикатор событий
-    if (m_hasEvents && m_enabled) {
+    if (m_enabled) {
         painter->setBrush(Qt::red);
         painter->setPen(Qt::NoPen);
         painter->drawEllipse(rect.topRight() - QPointF(8, -4), 3, 3);

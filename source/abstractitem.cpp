@@ -142,11 +142,10 @@ QRectF AbstractItem::boundingRect() const
     return m_rect;
 }
 
-void AbstractItem::setSelectedItem(AbstractItem *item)
+quint32 AbstractItem::id()
 {
-    m_selectedItem = item;
+    return m_id;
 }
-
 
 AbstractItem* AbstractItem::operator=(AbstractItem&& other)
 {

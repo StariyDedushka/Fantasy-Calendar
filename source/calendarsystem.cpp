@@ -28,8 +28,8 @@ void CalendarSystem::setupDatabase()
 
 void CalendarSystem::setDatabase(const QString &name)
 {
-    db.close();
-    db.addDatabase("QSQLITE");
+    m_db.close();
+    m_db.addDatabase("QSQLITE");
     if(db.setDatabaseName(QString(name).append(".sqlite")))
     {
         db.open();
@@ -42,7 +42,7 @@ void CalendarSystem::setDatabase(const QString &name)
 
 QString CalendarSystem::databaseName()
 {
-    return dbName;
+    return m_dbName;
 }
 
 DayData CalendarSystem::fetchDay(quint32 id)
@@ -56,7 +56,7 @@ DayData CalendarSystem::fetchDay(quint32 id)
         day.id = id;
         day.name = query.value("name").toString();
         day.position = query.value("weekdayid").toUInt();
-        db.
+
 
     }
 }
@@ -85,7 +85,7 @@ bool CalendarSystem::setTimeSystem(quint16 secPerMin, quint16 minPerHour, quint1
         m_minutesPerHour = minPerHour;
         m_hoursPerDay = hoursPerDay;
         LOG(INFO, logger, QString("Set time system to spm: %1, mph: %2, hpd: %3")
-                                  .arg(secPerMin).arg(minPerHour).arg(hoursPerDay);
+                                  .arg(secPerMin).arg(minPerHour).arg(hoursPerDay));
         return true;
     }
     LOG(WARN, logger, "Couldn't set time system");
@@ -111,7 +111,7 @@ quint16 CalendarSystem::daysInMonth(quint16 month, quint32 year) const
 {
     Q_UNUSED(year)
     if(!m_months->empty())
-    return m_months->at(month - 1)->days;
+    return m_months->at(month - 1)->daysTotal;
     else return 0;
 }
 
@@ -121,7 +121,7 @@ quint32 CalendarSystem::daysInYear(quint32 year) const
     Q_UNUSED(year);
     quint32 daysInYear = 0;
     for(Month *month : *m_months)
-        daysInYear += month->days;
+        daysInYear += month->daysTotal;
 
     return daysInYear;
 }
@@ -132,7 +132,7 @@ DayOfWeek* CalendarSystem::firstDayOfMonth(quint16 month, quint32 year) const
     days = daysInYear() * year;
     for(int i = 0; i < month; i++)
     {
-        days += months()->at(i)->days;
+        days += m_months->at(i)->daysTotal;
     }
     return dayOfWeek(days % daysInWeek());
 
@@ -142,7 +142,7 @@ quint16 CalendarSystem::weeksInMonth(quint16 month, quint32 year) const
 {
     Q_UNUSED(year)
     if(m_months)
-        return m_months->at(month - 1)->days / daysInWeek();
+        return m_months->at(month - 1)->daysTotal / daysInWeek();
     return 0;
 }
 
@@ -186,7 +186,7 @@ bool CalendarSystem::addMonth(const QString &name, quint32 id, quint16 days, qui
 
     Month *month = new Month();
     month->name = name;
-    month->days = days;
+    month->daysTotal = days;
     month->id = m_months->size() + 1;
 
     m_months->insert(place, month);
@@ -201,10 +201,11 @@ bool CalendarSystem::removeMonth(const QString &name)
     {
         if(month->name == name)
         {
-            try
+            try {
                 delete month;
-            catch
+            } catch(std::runtime_error) {
                 LOG(FATAL, logger, QString("Trying to free unallocated memory").arg(name));
+            }
             LOG(INFO, logger, QString("Deleted month %1 succesfully").arg(name));
             return true;
         }

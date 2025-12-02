@@ -15,21 +15,14 @@ class CalendarScene : public AbstractScene
 public:
     explicit CalendarScene(QObject *parent = nullptr);
     ~CalendarScene();
-    virtual setSceneData(const SceneVisualData &data) override;
+    virtual void setSceneData(const SceneVisualData &data) override;
 
 public slots:
-    virtual updateLayout() override;
+    virtual void updateLayout() override;
 
 private:
     void repositionItems();
-    void createHeader();
-    void createWeekDaysHeader();
-
-    QString m_weekDaysHeader;
-    bool m_showWeekDays;
-
-    // Графические элементы заголовков
-    QGraphicsTextItem* m_weekDaysItem;
+    virtual void createHeader(const QString& key) override;
 };
 
 #endif // CALENDARSCENE_H

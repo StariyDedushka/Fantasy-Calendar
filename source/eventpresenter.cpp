@@ -1,31 +1,25 @@
 #include "include/eventpresenter.h"
 
 EventPresenter::EventPresenter(CalendarSystem* system,
-<<<<<<< HEAD
                                CustomDateTime* globalTime,
                                EventView* view,
                                QObject* parent)
-=======
                                      CustomDateTime* globalTime,
                                      EventView* view,
                                      QObject* parent)
->>>>>>> main
     : QObject(parent)
     , m_system(system)
     , m_globalTime(globalTime)
     , m_view(view)
     , m_columns(1)
-<<<<<<< HEAD
     , m_rows(0)
     , m_zoomLevel(1.0)
 {
-=======
     , m_rows(system->weeksInMonth(globalTime->month(), globalTime->year()))
     , m_zoomLevel(1.0)
 {
     // Устанавливаем начальную дату
 
->>>>>>> main
     initialize();
 }
 
@@ -66,45 +60,36 @@ void EventPresenter::setupConnections()
     connect(m_view, &EventView::zoomChanged,
             this, &EventPresenter::handleWheelZoom);
 
-<<<<<<< HEAD
-=======
     // Подключаемся к моделям (если они имеют сигналы)
->>>>>>> main
     // connect(m_system, &CalendarSystem::systemChanged,
     //         this, &EventPresenter::onSystemChanged);
     // connect(m_globalTime, &CustomDateTime::timeChanged,
-    //         this, &EventPresenter::refreshCalendar);
+    //         this, &EventPresenter::refreshEvent);
 }
 
 void EventPresenter::refreshEvents()
 {
     if (!m_system || !m_view) return;
 
-<<<<<<< HEAD
     LOG(INFO, logger, "Refreshing events, generating visual data");
-=======
->>>>>>> main
     // Генерируем визуальные данные
-    EventVisualData visualData = generateVisualData();
+    SceneVisualData visualData = generateVisualData();
 
     // Обновляем View
     updateView(visualData);
 }
 
-EventVisualData EventPresenter::generateVisualData() const
+SceneVisualData EventPresenter::generateVisualData() const
 {
-    EventVisualData data;
+    SceneVisualData data;
 
-<<<<<<< HEAD
     // Генерируем данные контейнеров событий
     data.items = generateContainers();
     data.headerText = generateHeaderText();
-=======
     // Генерируем данные дней
     data.items = generateEvents();
     data.headerText = generateHeaderText();
     data.columns = m_columns;
->>>>>>> main
     data.rows = m_rows;
     // Рассчитываем размер ячейки на основе размера View
     if (m_viewSize.isValid()) {
@@ -117,7 +102,6 @@ EventVisualData EventPresenter::generateVisualData() const
     return data;
 }
 
-<<<<<<< HEAD
 QVector<EventContainerData> EventPresenter::generateContainers() const
 {
     QVector<EventContainerData> containers;
@@ -150,18 +134,14 @@ QVector<EventContainerData> EventPresenter::generateContainers() const
     return days;
 }
 
-=======
->>>>>>> main
 QVector<CalendarEventData> EventPresenter::generateEvents() const
 {
     QVector<CalendarEventData> events;
 
     if (!m_system) return events;
 
-<<<<<<< HEAD
 
     for (quint16 i = 0; i <= day; ++i) {
-=======
     // Получаем информацию о текущем месяце
     quint16 daysInMonth = m_system->currentDay(m_currentDisplayDate.month(),
                                                 m_currentDisplayDate.year());
@@ -184,7 +164,6 @@ QVector<CalendarEventData> EventPresenter::generateEvents() const
                            CustomDateTime(1, 1, 2000);
 
     for (quint16 day = 1; day <= daysInMonth; ++day) {
->>>>>>> main
         CalendarEventData dayData;
         dayData.day = day;
         dayData.month = m_currentDisplayDate.month();
@@ -224,11 +203,8 @@ QString EventPresenter::generateWeekDaysHeader() const
     // Генерируем заголовок с днями недели
     QStringList weekDays;
     for (int i = 1; i <= m_columns; ++i) {
-<<<<<<< HEAD
         DayOfWeek* dayInfo = m_system->dayOfWeek(i);
-=======
         Day* dayInfo = m_system->dayOfWeek(i);
->>>>>>> main
         if (dayInfo) {
             weekDays.append(dayInfo->name.left(2)); // Сокращенные названия
         } else {
@@ -238,12 +214,12 @@ QString EventPresenter::generateWeekDaysHeader() const
     return weekDays.join(" ");
 }
 
-void EventPresenter::updateView(const EventVisualData& data)
+void EventPresenter::updateView(const SceneVisualData& data)
 {
     if (!m_view) return;
 
     // Передаем данные в View
-    m_view->displayCalendar(data);
+    m_view->displayEvent(data);
 
     // // Можно добавить дополнительные обновления UI
     // emit calendarUpdated(m_currentDisplayDate);
@@ -256,7 +232,7 @@ void EventPresenter::onNextDay()
 
     m_globalTime->addDays(1);
     m_currentDisplayDate = m_currentDisplayDate.addDays(1);
-    refreshCalendar();
+    refreshEvent();
 }
 
 void EventPresenter::onPrevDay()
@@ -265,21 +241,21 @@ void EventPresenter::onPrevDay()
 
     m_globalTime->addDays(-1);
     m_currentDisplayDate = m_currentDisplayDate.addDays(-1);
-    refreshCalendar();
+    refreshEvent();
 }
 
 void EventPresenter::onNextMonth()
 {
     m_currentDisplayDate = m_currentDisplayDate.addMonths(1);
     validateCurrentDate();
-    refreshCalendar();
+    refreshEvent();
 }
 
 void EventPresenter::onPrevMonth()
 {
     m_currentDisplayDate = m_currentDisplayDate.addMonths(-1);
     validateCurrentDate();
-    refreshCalendar();
+    refreshEvent();
 }
 
 void EventPresenter::onToday()
@@ -291,7 +267,7 @@ void EventPresenter::onToday()
     } else {
         m_currentDisplayDate = CustomDateTime(1, 1, 2000);
     }
-    refreshCalendar();
+    refreshEvent();
 }
 
 void EventPresenter::onDateSelected(const CustomDateTime& date)
@@ -307,23 +283,23 @@ void EventPresenter::onDateSelected(const CustomDateTime& date)
         }
     }
 
-    refreshCalendar();
+    refreshEvent();
 }
 
 // Обработчики внешних событий
 void EventPresenter::onSystemChanged()
 {
-    refreshCalendar();
+    refreshEvent();
 }
 
 void EventPresenter::onSettingsChanged()
 {
-    refreshCalendar();
+    refreshEvent();
 }
 
 void EventPresenter::onEventsUpdated()
 {
-    refreshCalendar();
+    refreshEvent();
 }
 
 // Обработчики сигналов от View
@@ -335,7 +311,7 @@ void EventPresenter::handleDateClicked(const CustomDateTime& date)
 void EventPresenter::handleViewResized(const QSize& size)
 {
     m_viewSize = size;
-    refreshCalendar();
+    refreshEvent();
 }
 
 void EventPresenter::handleItemClicked(EventItem* item)

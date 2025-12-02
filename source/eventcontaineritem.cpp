@@ -15,7 +15,7 @@ EventContainerItem::EventContainerItem(const QRectF &rect,
                    colorTertiary,
                    enabled,
                    parent)
-    , m_expandable(true)
+    // , m_expandable(true)
 {
 }
 

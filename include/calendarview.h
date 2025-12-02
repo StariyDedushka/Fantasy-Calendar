@@ -1,22 +1,15 @@
 #ifndef CALENDARVIEW_H
 #define CALENDARVIEW_H
 
-#include <QGraphicsView>
-#include <QObject>
-#include <QWidget>
-#include <QResizeEvent>
-#include <QMouseEvent>
-#include <QWheelEvent>
-#include <QScrollBar>
-#include <QTimer>
 #include "calendarscene.h"
 #include "calendaritem.h"
+#include "abstractview.h"
 
 
 class CalendarScene;
 struct CalendarVisualData;
 
-class CalendarView : public QGraphicsView
+class CalendarView : public AbstractView
 {
     Q_OBJECT
 
@@ -24,47 +17,12 @@ public:
     explicit CalendarView(QWidget *parent = nullptr);
     ~CalendarView();
 
-    // Основной метод для отображения календаря
-    void displayCalendar(const CalendarVisualData& data);
-
-    // Управление отображением
-    void setZoomLevel(qreal level);
-    void fitToView();
-    void setInteractive(bool interactive);
-
-    // Настройки View
-    void setAntialiasingEnabled(bool enabled);
-    void setViewportUpdateMode(ViewportUpdateMode mode);
-
-public slots:
-    void clearCalendar();
-    void updateView();
-
-signals:
-    // Сигналы пользовательских действий
-    void dateClicked(CustomDateTime time);
-    void viewResized(const QSize& size);
-    void zoomChanged(qreal zoomLevel);
-    void itemClicked(CalendarItem *item);
-
 protected:
     void resizeEvent(QResizeEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
-
-private slots:
-    void handleSceneItemClicked(class CalendarItem* item);
-
-private:
-    void setupView();
-    void calculateOptimalZoom();
-
-    CalendarScene *m_scene;
-    qreal m_zoomLevel;
-    bool m_isPanning;
-    QPoint m_panStartPos;
 };
 
 #endif // CALENDARVIEW_H

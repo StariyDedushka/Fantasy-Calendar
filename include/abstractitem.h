@@ -37,6 +37,8 @@ protected:
     QString m_text;
     QVector<quint32> m_item_ids;
 
+    quint32 m_id;
+
     QColor m_colorPrimary;
     QColor m_colorSecondary;
     QColor m_colorTertiary;
@@ -76,6 +78,7 @@ public:
     virtual void setHighlighted(bool highlighted);
     virtual void setEnabled(bool enabled);
     virtual void setSelected(bool selected);
+    quint32 id();
     // virtual void addItem(AbstractItem *item);
     // virtual QVector<AbstractItem*>& getItems();
 

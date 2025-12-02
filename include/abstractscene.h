@@ -1,5 +1,5 @@
-#ifndef ABSTRACTPAINTER_H
-#define ABSTRACTPAINTER_H
+#ifndef ABSTRACTSCENE_H
+#define ABSTRACTSCENE_H
 
 #include <QObject>
 #include <QGraphicsScene>
@@ -9,7 +9,6 @@
 
 #include "abstractitem.h"
 #include "structs.h"
-
 
 class AbstractScene : public QGraphicsScene
 {
@@ -29,7 +28,7 @@ public:
     void setCellSize(const QSizeF& size);
     void setGridSize(quint16 columns, quint16 rows);
     void setBackgroundColor(const QColor& color);
-    void setHeaderVisible(bool visible);
+    void setHeaderVisible(const QString& key, bool visible);
 
     // Получение элементов
     QVector<AbstractItem*> items() const { return m_items; }
@@ -49,25 +48,29 @@ protected slots:
 
 protected:
     void setupConnections();
-    void repositionItems();
-    void createHeader();
-    void createWeekDaysHeader();
+    virtual void repositionItems() = 0;
+    // Общий метод для создания всех заголовков
+    virtual void createHeader(const QString& key);
 
     QVector<ItemData*> m_dataItems;
     QVector<AbstractItem*> m_items;
+
+    // Следующий сегмент позволяет свободно расширять количество заголовков на сцене
+    // С помощью карты можно именовать заголовки и вызывать прямо в коде
+    // Отображение заголовков
+    QMap<QString, bool> m_showHeaders;
+    // Тексты заголовков
+    QMap<QString, QString> m_headerTexts;
+    // Графические элементы заголовков
+    QMap<QString, QGraphicsTextItem*> m_headerItems;
 
 private:
     QSizeF m_cellSize;
     quint16 m_columns;
     quint16 m_rows;
-    QString m_headerText;
     QColor m_backgroundColor;
-    bool m_showHeader;
 
-    // Графические элементы заголовков
-    QGraphicsTextItem* m_headerItem;
 };
 
-#endif // CALENDARSCENE_H
+#endif // ABSTRACTSCENE_H
 
-#endif // ABSTRACTPAINTER_H

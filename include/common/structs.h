@@ -43,7 +43,7 @@ struct ItemData {
     QColor borderColor;
 };
 
-struct CalendarDayData : public ItemData {
+struct CalendarDayData : ItemData {
     quint32 day;
     quint32 month;
     quint32 year;
@@ -52,17 +52,18 @@ struct CalendarDayData : public ItemData {
     bool hasEvents;
 };
 
-struct CalendarEventData : public ItemData {
+struct CalendarEventData : ItemData {
     quint32 id;
 };
 
 struct SceneVisualData {
     QVector<ItemData*> items;
-    QString headerText;
     QSizeF cellSize;
     quint16 columns;
     quint16 rows;
+    QMap<QString, QString> headers;
 };
+
 
 struct EventGroup {
     quint16 id;

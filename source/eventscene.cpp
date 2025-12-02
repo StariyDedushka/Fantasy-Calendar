@@ -1,224 +1,33 @@
-#ifndef EVENTSCENE_H
-#define EVENTSCENE_H
-
-#include <QGraphicsScene>
 #include "include/eventscene.h"
 
 EventScene::EventScene(QObject *parent)
-    : QGraphicsScene(parent)
-    , m_cellSize(50, 50)
-    , m_columns(7)
-    , m_rows(6)
-    , m_backgroundColor(Qt::lightGray)
-    , m_showHeader(true)
-    , m_headerItem(nullptr)
+    : AbstractScene(parent)
 {
-    setBackgroundBrush(QBrush(m_backgroundColor));
-    setupConnections();
 }
 
-EventScene::~EventScene()
+
+
+void EventScene::setSceneData(const SceneVisualData& data)
 {
-    clearEvents();
-}
+    AbstractScene::setSceneData(data);
 
-void EventScene::setupConnections()
-{
-    // Соединения будут устанавливаться при добавлении элементов
-}
-
-void EventScene::setCalendarData(const CalendarVisualData& data)
-{
-    clearEvents();
-
-    m_eventItems = data.items;
-    m_headerText = data.headerText;
-    m_cellSize = data.cellSize;
-    m_columns = data.columns;
-    m_rows = data.rows;
-
-    // Добавляем элементы на сцену
-    for (EventItem* item : m_eventItems) {
-        addItem(item);
-
-        // Подключаем сигналы от каждого элемента
-        connect(item, &EventItem::itemClicked,
-                this, &EventScene::handleItemClick);
-    }
-
-    // Создаем заголовки
-    if (m_showHeader) {
-        createHeader();
-    }
-
-    if (m_showWeekDays) {
-        createWeekDaysHeader();
-    }
-
-    // Расставляем элементы
+    // Расставляем ячейки
     repositionItems();
-
     emit sceneReady();
 }
 
-void EventScene::clearEvents()
-{
-    // Отключаем все соединения
-    for (EventItem* item : m_eventItems) {
-        item->disconnect(this);
-    }
-
-    // Удаляем все элементы со сцены
-    clear();
-
-    // Очищаем списки
-    m_eventItems.clear();
-    m_headerItem = nullptr;
-}
-
-void EventScene::setCellSize(const QSizeF& size)
-{
-    if (m_cellSize != size) {
-        m_cellSize = size;
-        updateLayout();
-    }
-}
-
-void EventScene::setGridSize(quint16 columns, quint16 rows)
-{
-    if (m_columns != columns || m_rows != rows) {
-        m_columns = columns;
-        m_rows = rows;
-        updateLayout();
-    }
-}
-
-void EventScene::setBackgroundColor(const QColor& color)
-{
-    if (m_backgroundColor != color) {
-        m_backgroundColor = color;
-        setBackgroundBrush(QBrush(m_backgroundColor));
-    }
-}
-
-void EventScene::setHeaderVisible(bool visible)
-{
-    if (m_showHeader != visible) {
-        m_showHeader = visible;
-        updateLayout();
-    }
-}
 
 void EventScene::updateLayout()
 {
-    repositionItems();
-
-    // Обновляем заголовки
-    if (m_headerItem) {
-        m_headerItem->setVisible(m_showHeader);
-    }
+    AbstractScene::updateLayout();
 }
 
 void EventScene::repositionItems()
 {
-    if (m_eventItems.isEmpty()) return;
-
-    qreal startY = 0;
-
-    // Место для заголовка дня
-    if (m_showHeader && m_headerItem) {
-        m_headerItem->setPos(0, startY);
-        startY += m_cellSize.height();
-    }
-
-
-    // Расставляем события в сетке
-    int currentColumn = 0;
-    int currentRow = 0;
-    qreal x = 0;
-    qreal y = startY;
-
-    for (EventItem* item : m_eventItems) {
-        // Устанавливаем позицию и размер
-        item->setPos(x, y);
-        item->setRect(0, 0, m_cellSize.width(), m_cellSize.height());
-
-        // Переходим к следующей ячейке
-        currentColumn++;
-        x += m_cellSize.width();
-
-        // Переход на новую строку
-        if (currentColumn >= m_columns) {
-            currentColumn = 0;
-            currentRow++;
-            x = 0;
-            y += m_cellSize.height();
-        }
-
-        // Защита от бесконечного цикла
-        if (currentRow >= m_rows) {
-            break;
-        }
-    }
+    AbstractScene::repositionItems();
 }
 
-void EventScene::createHeader()
+void EventScene::createHeader(const QString& key)
 {
-    if (m_headerText.isEmpty()) return;
-
-    if (!m_headerItem) {
-        m_headerItem = new QGraphicsTextItem();
-        m_headerItem->setDefaultTextColor(Qt::black);
-        QFont headerFont;
-        headerFont.setPointSize(12);
-        headerFont.setBold(true);
-        m_headerItem->setFont(headerFont);
-        addItem(m_headerItem);
-    }
-
-    m_headerItem->setPlainText(m_headerText);
-    m_headerItem->setVisible(m_showHeader);
+    AbstractScene::createHeader(key);
 }
-
-
-void EventScene::highlightItem(quint32 item)
-{
-    // Снимаем выделение со всех элементов
-    for (AbstractItem* item : m_eventItems) {
-        item->setSelected(false);
-    }
-
-    // Находим и выделяем нужный элемент
-    for (EventItem* item : m_eventItems) {
-        if (item->day() == day && item->month() == month && item->year() == year) {
-            item->setSelected(true);
-            break;
-        }
-    }
-}
-
-void EventScene::clearHighlights()
-{
-    for (EventItem* item : m_eventItems) {
-        item->setSelected(false);
-    }
-}
-
-EventItem* EventScene::itemAtPos(const QPointF& pos) const
-{
-    QGraphicsItem* item = itemAt(pos, QTransform());
-    return qgraphicsitem_cast<EventItem*>(item);
-}
-
-void EventScene::handleItemClick(AbstractItem* item)
-{
-    if (item && item->isEnabled()) {
-        // Можно добавить дополнительную логику выделения
-        clearHighlights();
-        item->setSelected(true);
-
-        emit itemClicked(item);
-    }
-}
-
-#endif

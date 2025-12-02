@@ -307,7 +307,7 @@ void CalendarPresenter::validateCurrentDate()
                                                   m_globalTime->year());
         } else {
             m_currentDisplayDate = CustomDateTime(1, 1, 2000);
-            qDebug() << "CalendarPresenter::validateCurrentDate"
+            qDebug() << "CalendarPresenter::validateCurrentDate";
         }
     }
 }
