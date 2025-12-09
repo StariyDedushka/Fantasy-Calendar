@@ -11,7 +11,6 @@ EventPresenter::EventPresenter(CalendarSystem* system,
     , m_columns(1)
     , m_rows(0)
     , m_zoomLevel(1.0)
-{
     , m_rows(system->weeksInMonth(globalTime->month(), globalTime->year()))
     , m_zoomLevel(1.0)
 {
@@ -143,24 +142,10 @@ QVector<CalendarEventData> EventPresenter::generateEvents() const
     quint16 daysInMonth = m_system->currentDay(m_currentDisplayDate.month(),
                                                 m_currentDisplayDate.year());
 
-    // Определяем день недели первого дня месяца
-    Day *day = m_system.firstDayOfMonth(m_currentDisplayDate.month(), m_currentDisplayDate.year());
-    quint16 firstDayOfWeek = day->position; // 1,2 .. x
 
-    // Добавляем пустые дни в начале (для выравнивания)
-    for (int i = 1; i < firstDayOfWeek; ++i) {
-        CalendarEventData emptyDay;
-        emptyDay.isEnabled = false;
-        emptyDay.displayText = "";
-        days.append(emptyDay);
-    }
 
-    // Добавляем дни месяца
-    CustomDateTime today = m_globalTime ?
-                           CustomDateTime(m_globalTime->day(), m_globalTime->month(), m_globalTime->year()) :
-                           CustomDateTime(1, 1, 2000);
-
-    for (quint16 day = 1; day <= daysInMonth; ++day) {
+    // Добавляем события
+    for (quint16 event = 1; event <= m_system->fetchEvent(); ++day) {
         CalendarEventData dayData;
         dayData.day = day;
         dayData.month = m_currentDisplayDate.month();

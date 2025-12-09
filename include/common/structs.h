@@ -23,6 +23,7 @@ struct Month {
 
 struct Event {
     quint32 id;
+    quint32 dayId;
     quint32 groupId;
     CustomDateTime time;
     QString name;
@@ -32,7 +33,8 @@ struct Event {
 struct DayData {
     quint32 id;
     QString name;
-    QList<quint32> events;
+    bool hasEvents;
+    // QList<quint32> events;
 };
 
 struct ItemData {

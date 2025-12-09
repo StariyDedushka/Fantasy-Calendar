@@ -42,8 +42,10 @@ public:
     QString databaseName();
     DayOfWeek fetchDay(quint32 id);
     DayOfWeek fetchDay(const CustomDateTime& date);
-    Event fetchEvent(quint32 id);
-    Event fetchEvent(const CustomDateTime& date);
+    DayOfWeek writeToDay(const QSqlQuery& query);
+
+    QVector<Event> fetchEvents(const CustomDateTime& date);
+    quint32 fetchEventsCount();
 
     // Настройки времени
     quint16 secondsPerMinute() const { return m_secondsPerMinute; }

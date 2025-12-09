@@ -89,7 +89,7 @@ bool CustomDateTime::isValid() const
 
 QString CustomDateTime::toString() const
 {
-    return QString("%1/%2/%3 - %4:%5:%6")
+    return QString("%1/%2/%3-%4:%5:%6")
                     .arg(m_day).arg(m_month).arg(m_year)
                     .arg(m_hour).arg(m_minute).arg(m_second);
 }

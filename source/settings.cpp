@@ -35,8 +35,10 @@ void Settings::createDatabase(const QString& newConfig)
     QSqlQuery queryEventsTable("CREATE TABLE IF NOT EXISTS events("
                                "id int not null primary key,"
                                "dayid int not null,"
-                               "time text,"
                                "groupid int not null);");
+                               "time text,"
+                               "name text,"
+                               "contents text,"
 
     if(!queryDaysTable.exec() || !queryEventsTable.exec())
     {

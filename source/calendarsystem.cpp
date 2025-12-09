@@ -45,35 +45,90 @@ QString CalendarSystem::databaseName()
     return m_dbName;
 }
 
+DayData CalendarSystem::writeToDay(const QSqlQuery &query)
+{
+    return day;
+}
+
 DayData CalendarSystem::fetchDay(quint32 id)
 {
     QSqlQuery query;
-    query.prepare("SELECT (id) FROM PRIMARY KEY id");
+    query.prepare("SELECT (id) FROM days "
+                  "VALUES (:id)");
     query.bindValue(0, id);
-    while(query.next())
-    {
-        DayData day;
-        day.id = id;
-        day.name = query.value("name").toString();
-        day.position = query.value("weekdayid").toUInt();
+    query.setForwardOnly(true);
+    query.exec();
 
-
-    }
+    return writeToDay(query);
 }
 
 DayData CalendarSystem::fetchDay(const CustomDateTime& date)
 {
+    QSqlQuery query;
+    DayData day;
+    QString dateConverted = date.toString().section('-', 0, 0);
 
+    query.prepare("SELECT (date) FROM days "
+                  "VALUES (:date)");
+    query.bindValue(0, dateConverted);
+    query.setForwardOnly(true);
+    query.exec();
+
+    day.id = id;
+    day.name = query.value("name").toString();
+    day.position = query.value("weekdayid").toUInt();
+    day.hasEvents = !fetchEvents(date).isEmpty();
+
+    return day;
 }
 
-Event CalendarSystem::fetchEvent(quint32 id)
+QVector<Event> CalendarSystem::fetchEvents(const CustomDateTime& date)
 {
+    QSqlQuery query;
+    QVector<Event> events;
 
+    QString dateConverted = date.toString().section('-', 0, 0);
+    query.prepare("SELECT (date) FROM events "
+                  "VALUES (:date)");
+    query.bindValue(0, dateConverted);
+    query.setForwardOnly(true);
+    query.exec();
+
+    while(query.next())
+    {
+        Event event;
+        event.id = query.value(0).toUInt();
+        event.dayId = query.value(1).toUInt();
+        event.groupId = query.value(2).toUInt();
+
+        QStringList sectionsDateTime = query.value(2).toString().split('-');
+        QStringList sectionsDate = sectionsDateTime[0].split('/');
+        QStringList sectionsTime = sectionsDateTime[1].split(':');
+
+        event.time = CustomDateTime(QString::number(sectionsDate.value(0)),
+                                    QString::number(sectionsDate.value(1)),
+                                    QString::number(sectionsDate.value(2)),
+                                    QString::number(sectionsTime.value(0)),
+                                    QString::number(sectionsTime.value(1)),
+                                    QString::number(sectionsTime.value(2)));
+
+        event.name = query.value(4).toString();
+        event.text = query.value(5).toString();
+
+        events.append(event);
+    }
+    return events;
 }
 
-Event CalendarSystem::fetchEvent(const CustomDateTime& date)
+quint32 CalendarSystem::fetchEventsCount()
 {
+    QSqlQuery query;
 
+    query.prepare("SELECT * FROM events");
+    query.setForwardOnly(true);
+    query.exec();
+
+    return query.size();
 }
 
 bool CalendarSystem::setTimeSystem(quint16 secPerMin, quint16 minPerHour, quint16 hoursPerDay)
