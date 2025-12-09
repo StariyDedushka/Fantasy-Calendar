@@ -30,7 +30,9 @@ void CalendarSystem::setDatabase(const QString &name)
 {
     m_db.close();
     m_db.addDatabase("QSQLITE");
-    if(db.setDatabaseName(QString(name).append(".sqlite")))
+    QString fullName = name;
+    fullName.append(".db");
+    if(db.setDatabaseName(fullName))
     {
         db.open();
         LOG(INFO, logger, QString("Database with name %1 is opened").arg(name));
@@ -45,39 +47,30 @@ QString CalendarSystem::databaseName()
     return m_dbName;
 }
 
-DayData CalendarSystem::writeToDay(const QSqlQuery &query)
-{
-    return day;
-}
 
-DayData CalendarSystem::fetchDay(quint32 id)
+DayOfWeek CalendarSystem::fetchDay(const CustomDateTime& date)
 {
     QSqlQuery query;
-    query.prepare("SELECT (id) FROM days "
-                  "VALUES (:id)");
-    query.bindValue(0, id);
-    query.setForwardOnly(true);
-    query.exec();
-
-    return writeToDay(query);
-}
-
-DayData CalendarSystem::fetchDay(const CustomDateTime& date)
-{
-    QSqlQuery query;
-    DayData day;
+    DayOfWeek day;
     QString dateConverted = date.toString().section('-', 0, 0);
 
-    query.prepare("SELECT (date) FROM days "
+    query.prepare("SELECT (date) FROM daysTotal "
                   "VALUES (:date)");
     query.bindValue(0, dateConverted);
     query.setForwardOnly(true);
     query.exec();
 
-    day.id = id;
-    day.name = query.value("name").toString();
+    day.id = query.value(0).toUInt();
     day.position = query.value("weekdayid").toUInt();
     day.hasEvents = !fetchEvents(date).isEmpty();
+
+    LOG(INFO, logger, QString("Fetched day from database: \n"
+                              "id: %2\n"
+                              "weekdayid: %3\n"
+                              "hasEvents: %4\n")
+                              .arg(day.id)
+                              .arg(day.position)
+                              .arg(day.hasEvents));
 
     return day;
 }
@@ -105,18 +98,29 @@ QVector<Event> CalendarSystem::fetchEvents(const CustomDateTime& date)
         QStringList sectionsDate = sectionsDateTime[0].split('/');
         QStringList sectionsTime = sectionsDateTime[1].split(':');
 
-        event.time = CustomDateTime(QString::number(sectionsDate.value(0)),
-                                    QString::number(sectionsDate.value(1)),
-                                    QString::number(sectionsDate.value(2)),
-                                    QString::number(sectionsTime.value(0)),
-                                    QString::number(sectionsTime.value(1)),
-                                    QString::number(sectionsTime.value(2)));
+        event.time = CustomDateTime(sectionsDate.value(0).toUInt(),
+                                    sectionsDate.value(1).toUInt(),
+                                    sectionsDate.value(2).toUInt(),
+                                    sectionsTime.value(0).toUInt(),
+                                    sectionsTime.value(1).toUInt(),
+                                    sectionsTime.value(2).toUInt());
 
         event.name = query.value(4).toString();
         event.text = query.value(5).toString();
 
         events.append(event);
+        LOG(INFO, logger, QString("Fetched event from database: %1:\n"
+                                  "id: %2\n"
+                                  "dayId: %3\n"
+                                  "groupId: %4\n")
+                                  .arg(event.name)
+                                  .arg(event.id)
+                                  .arg(event.dayId)
+                                  .arg(event.groupId));
     }
+    if(events.isEmpty())
+        LOG(WARN, logger, QString("No events for date %1 found").arg(dateConverted));
+
     return events;
 }
 
@@ -131,7 +135,7 @@ quint32 CalendarSystem::fetchEventsCount()
     return query.size();
 }
 
-bool CalendarSystem::setTimeSystem(quint16 secPerMin, quint16 minPerHour, quint16 hoursPerDay)
+bool CalendarSystem::setTimeSystem(quint32 secPerMin, quint32 minPerHour, quint32 hoursPerDay)
 {
     if(secPerMin < UINT16_MAX && minPerHour < UINT16_MAX && hoursPerDay < UINT16_MAX
        && (secPerMin > 0 && minPerHour > 0 && hoursPerDay > 0))
@@ -147,22 +151,28 @@ bool CalendarSystem::setTimeSystem(quint16 secPerMin, quint16 minPerHour, quint1
     return false;
 }
 
-
-bool CalendarSystem::isValidDate(quint16 day, quint16 month, quint32 year) const
+bool CalendarSystem::isValidDate(quint32 day, quint32 month, quint32 year) const
 {
     return (day >= 1 && day <= daysInMonth(month, year)) &&
            (month >= 1 && month <= m_monthsInYear) &&
            (year >= 1);
 }
 
-DayOfWeek* CalendarSystem::dayOfWeek(quint16 day) const
+bool CalendarSystem::isValidTime(quint32 hour, quint32 minute, quint32 second) const
+{
+    return (hour >= 0 && hour <= hoursPerDay() &&
+            minute >= 0 && minute <= minutesPerHour() &&
+            second >= 0 && second <= secondsPerMinute());
+}
+
+DayOfWeek* CalendarSystem::dayOfWeek(quint32 day) const
 {
     if(day > 0)
         return m_days->at(day - 1);
     else return nullptr;
 }
 
-quint16 CalendarSystem::daysInMonth(quint16 month, quint32 year) const
+quint32 CalendarSystem::daysInMonth(quint32 month, quint32 year) const
 {
     Q_UNUSED(year)
     if(!m_months->empty())
@@ -181,19 +191,19 @@ quint32 CalendarSystem::daysInYear(quint32 year) const
     return daysInYear;
 }
 
-DayOfWeek* CalendarSystem::firstDayOfMonth(quint16 month, quint32 year) const
+DayOfWeek* CalendarSystem::firstDayOfMonth(quint32 month, quint32 year) const
 {
-    quint32 days = 0;
-    days = daysInYear() * year;
+    quint32 daysTotal = 0;
+    daysTotal = daysInYear() * year;
     for(int i = 0; i < month; i++)
     {
-        days += m_months->at(i)->daysTotal;
+        daysTotal += m_months->at(i)->daysTotal;
     }
-    return dayOfWeek(days % daysInWeek());
+    return dayOfWeek(daysTotal % daysInWeek());
 
 }
 
-quint16 CalendarSystem::weeksInMonth(quint16 month, quint32 year) const
+quint32 CalendarSystem::weeksInMonth(quint32 month, quint32 year) const
 {
     Q_UNUSED(year)
     if(m_months)
@@ -201,7 +211,7 @@ quint16 CalendarSystem::weeksInMonth(quint16 month, quint32 year) const
     return 0;
 }
 
-bool CalendarSystem::addDayOfWeek(const QString &name, quint32 id, quint16 place)
+bool CalendarSystem::addDayOfWeek(const QString &name, quint32 id, quint32 place)
 {
 
     DayOfWeek *day = new DayOfWeek();
@@ -224,7 +234,7 @@ bool CalendarSystem::addDayOfWeek(const QString &name, quint32 id, quint16 place
     return true;
 }
 
-bool CalendarSystem::addMonth(const QString &name, quint32 id, quint16 days, quint16 place)
+bool CalendarSystem::addMonth(const QString &name, quint32 id, quint32 daysTotal, quint32 place)
 {
     if(place > m_months->size())
         place = m_months->size();
@@ -233,15 +243,15 @@ bool CalendarSystem::addMonth(const QString &name, quint32 id, quint16 days, qui
         LOG(ERROR, logger, "Tried adding a month with an empty name");
         return false;
     }
-    if(!(days > 0))
+    if(!(daysTotal > 0))
     {
-        LOG(ERROR, logger, "Tried adding a month with zero days");
+        LOG(ERROR, logger, "Tried adding a month with zero daysTotal");
         return false;
     }
 
     Month *month = new Month();
     month->name = name;
-    month->daysTotal = days;
+    month->daysTotal = daysTotal;
     month->id = m_months->size() + 1;
 
     m_months->insert(place, month);
@@ -269,29 +279,33 @@ bool CalendarSystem::removeMonth(const QString &name)
     return false;
 }
 
-bool CalendarSystem::removeMonth(quint16 id)
+bool CalendarSystem::removeMonth(quint32 id)
 {
     for(Month *month : *m_months)
     {
         if(month->id == id)
         {
             try
+            {
                 delete month;
-            catch
+            }
+            catch(std::runtime_error)
+            {
                 LOG(FATAL, logger, QString("Trying to free unallocated memory").arg(id));
+            }
             LOG(INFO, logger, QString("Deleted month with id %1 succesfully").arg(id));
             return true;
         }
     }
-    LOG(ERROR, logger, QString("Couldn't delete month with id %1").arg(name));
+    LOG(ERROR, logger, QString("Couldn't delete month with id %1").arg(id));
     return false;
 }
 
-bool CalendarSystem::editMonth(const QString name, quint16 newDays)
+bool CalendarSystem::editMonth(const QString& name, quint32 newDays)
 {
     if(newDays == 0)
     {
-        LOG(ERROR, logger, QString("Tried to change month %1's total days to 0").arg(name));
+        LOG(ERROR, logger, QString("Tried to change month %1's total daysTotal to 0").arg(name));
         return false;
     }
 
@@ -299,8 +313,8 @@ bool CalendarSystem::editMonth(const QString name, quint16 newDays)
     {
         if(month->name == name)
         {
-            month->days = newDays;
-            LOG(INFO, logger, QString("Changed month %1's total days to %2").arg(name).arg(newDays));
+            month->daysTotal = newDays;
+            LOG(INFO, logger, QString("Changed month %1's total daysTotal to %2").arg(name).arg(newDays));
             return true;
         }
     }
@@ -308,15 +322,18 @@ bool CalendarSystem::editMonth(const QString name, quint16 newDays)
     return false;
 }
 
-bool CalendarSystem::editMonth(quint16 id, const QString& newName)
+bool CalendarSystem::editMonth(quint32 id, const QString& newName)
 {
     for(Month *month : *m_months)
     {
         if(month->id == id)
         {
             try
+            {
                 month->name = newName;
-            catch {
+            }
+            catch(std::runtime_error)
+            {
                 LOG(FATAL, logger, QString("Trying to change month %1's name to undefined").arg(id));
                 return false;
             }
@@ -327,11 +344,11 @@ bool CalendarSystem::editMonth(quint16 id, const QString& newName)
     return false;
 }
 
-bool CalendarSystem::editMonth(quint16 id, quint16 newDays)
+bool CalendarSystem::editMonth(quint32 id, quint32 newDays)
 {
     if(newDays == 0)
     {
-        LOG(ERROR, logger, QString("Tried to change month with id %1's total days to 0").arg(id));
+        LOG(ERROR, logger, QString("Tried to change month with id %1's total daysTotal to 0").arg(id));
         return false;
     }
 
@@ -339,8 +356,8 @@ bool CalendarSystem::editMonth(quint16 id, quint16 newDays)
     {
         if(month->id == id)
         {
-            month->days = newDays;
-            LOG(INFO, logger, QString("Changed month with id %1's total days to %2").arg(id).arg(newDays));
+            month->daysTotal = newDays;
+            LOG(INFO, logger, QString("Changed month with id %1's total daysTotal to %2").arg(id).arg(newDays));
             return true;
         }
     }
@@ -348,7 +365,7 @@ bool CalendarSystem::editMonth(quint16 id, quint16 newDays)
     return false;
 }
 
-bool CalendarSystem::moveMonth(const QString& name, quint16 newPlace)
+bool CalendarSystem::moveMonth(const QString& name, quint32 newPlace)
 {
     if(newPlace > m_months->size())
     {
@@ -369,7 +386,7 @@ bool CalendarSystem::moveMonth(const QString& name, quint16 newPlace)
     return false;
 }
 
-bool CalendarSystem::moveMonth(quint16 id, quint16 newPlace)
+bool CalendarSystem::moveMonth(quint32 id, quint32 newPlace)
 {
     if(newPlace > m_months->size())
     {
@@ -386,7 +403,7 @@ bool CalendarSystem::moveMonth(quint16 id, quint16 newPlace)
             return true;
         }
     }
-    LOG(ERROR, logger, QString("Couldn't find month named %1").arg(name));
+    LOG(ERROR, logger, QString("Couldn't find month with id %1").arg(id));
     return false;
 }
 
@@ -397,27 +414,28 @@ bool CalendarSystem::removeDayOfWeek(const QString &name)
     for(DayOfWeek *day : *m_days)
     {
         i++;
-        if(day->id == id)
+        if(day->name == name)
         {
             try
             {
                 delete m_days->at(i);
                 m_days->remove(i);
-            } catch ()
+            }
+            catch(std::runtime_error)
             {
                 LOG(FATAL, logger, "Trying to free unallocated memory");
                 return false;
             }
-            LOG(INFO, logger, QString("Deleted day %1 succesfully").arg(id));
+            LOG(INFO, logger, QString("Deleted day %1 succesfully").arg(name));
             return true;
         }
     }
-    LOG(ERROR, logger, QString("Couldn't delete month with id %1").arg(name));
+    LOG(ERROR, logger, QString("Couldn't delete month %1").arg(name));
     return false;
 
 }
 
-bool CalendarSystem::removeDayOfWeek(quint16 id)
+bool CalendarSystem::removeDayOfWeek(quint32 id)
 {
     int i = 0;
     for(DayOfWeek *day : *m_days)
@@ -429,7 +447,7 @@ bool CalendarSystem::removeDayOfWeek(quint16 id)
             {
                 delete m_days->at(i);
                 m_days->remove(i);
-            } catch ()
+            } catch(std::runtime_error)
             {
                 LOG(FATAL, logger, "Trying to free unallocated memory");
                 return false;
@@ -438,7 +456,7 @@ bool CalendarSystem::removeDayOfWeek(quint16 id)
             return true;
         }
     }
-    LOG(ERROR, logger, QString("Couldn't delete month with id %1").arg(name));
+    LOG(ERROR, logger, QString("Couldn't delete month with id %1").arg(id));
     return false;
 }
 
@@ -455,7 +473,7 @@ bool CalendarSystem::editDayOfWeek(const QString& dayName, const QString& newNam
     return false;
 }
 
-bool CalendarSystem::editDayOfWeek(quint16 day_id, const QString& newName)
+bool CalendarSystem::editDayOfWeek(quint32 day_id, const QString& newName)
 {
     for(DayOfWeek *day : *m_days)
     {
@@ -468,7 +486,7 @@ bool CalendarSystem::editDayOfWeek(quint16 day_id, const QString& newName)
     return false;
 }
 
-bool CalendarSystem::moveDayOfWeek(quint16 day_id, quint16 newPlace)
+bool CalendarSystem::moveDayOfWeek(quint32 day_id, quint32 newPlace)
 {
     for(DayOfWeek *day : *m_days)
     {
@@ -481,7 +499,7 @@ bool CalendarSystem::moveDayOfWeek(quint16 day_id, quint16 newPlace)
     return false;
 }
 
-bool CalendarSystem::moveDayOfWeek(const QString& dayName, quint16 newPlace)
+bool CalendarSystem::moveDayOfWeek(const QString& dayName, quint32 newPlace)
 {
     for(DayOfWeek *day : *m_days)
     {

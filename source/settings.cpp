@@ -24,7 +24,9 @@ Settings::~Settings()
 void Settings::createDatabase(const QString& newConfig)
 {
     m_db.addDatabase("QSQLITE");
-    m_db.setDatabaseName(newConfig.append(".sqlite"));
+    QString name = newConfig;
+    name.append(".db");
+    m_db.setDatabaseName(name);
     m_db.open();
 
     QSqlQuery queryDaysTable("CREATE TABLE IF NOT EXISTS days("
@@ -35,10 +37,10 @@ void Settings::createDatabase(const QString& newConfig)
     QSqlQuery queryEventsTable("CREATE TABLE IF NOT EXISTS events("
                                "id int not null primary key,"
                                "dayid int not null,"
-                               "groupid int not null);");
+                               "groupid int not null);"
                                "time text,"
                                "name text,"
-                               "contents text,"
+                               "contents text);");
 
     if(!queryDaysTable.exec() || !queryEventsTable.exec())
     {

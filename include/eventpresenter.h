@@ -58,10 +58,9 @@ private:
     void updateColorsFromSettings();
 
     // Визуальные настройки
-    QColor getEventColor(const CalendarEventData& dayData) const;
-    QColor getDayColor(const CalendarEventData& dayData) const;
-    QColor getTextColor(const CalendarEventData& dayData) const;
-    QColor getBorderColor(const CalendarEventData& dayData) const;
+    QColor getEventColor(const CalendarEventData& CalendarEventData) const;
+    QColor getTextColor(const CalendarEventData& CalendarEventData) const;
+    QColor getBorderColor(const CalendarEventData& CalendarEventData) const;
 
     CalendarSystem* m_system;
     CustomDateTime* m_globalTime;

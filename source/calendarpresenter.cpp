@@ -49,8 +49,6 @@ void CalendarPresenter::setupConnections()
     if (!m_view || !m_system || !m_globalTime) return;
 
     // Подключаем сигналы от View
-    connect(m_view, &CalendarView::dateClicked,
-            this, &CalendarPresenter::handleDateClicked);
     connect(m_view, &CalendarView::viewResized,
             this, &CalendarPresenter::handleViewResized);
     connect(m_view, &CalendarView::itemClicked,
@@ -70,7 +68,7 @@ void CalendarPresenter::refreshCalendar()
     if (!m_system || !m_view) return;
 
     // Генерируем визуальные данные
-    CalendarVisualData visualData = generateVisualData();
+    SceneVisualData visualData = generateVisualData();
 
     // Обновляем View
     updateView(visualData);
@@ -78,7 +76,7 @@ void CalendarPresenter::refreshCalendar()
 
 CalendarVisualData CalendarPresenter::generateVisualData() const
 {
-    CalendarVisualData data;
+    SceneVisualData data;
 
     // Генерируем данные дней
     data.items = generateMonthDays();
@@ -115,7 +113,7 @@ QVector<CalendarDayData> CalendarPresenter::generateMonthDays() const
     for (int i = 1; i < firstDayOfWeek; ++i) {
         CalendarDayData emptyDay;
         emptyDay.isEnabled = false;
-        emptyDay.displayText = "";
+        emptyDay.displayText["dayNum"] = "";
         days.append(emptyDay);
     }
 
@@ -129,7 +127,7 @@ QVector<CalendarDayData> CalendarPresenter::generateMonthDays() const
         dayData.day = day;
         dayData.month = m_currentDisplayDate.month();
         dayData.year = m_currentDisplayDate.year();
-        dayData.displayText = QString::number(day);
+        dayData.displayText["dayNum"] = QString::number(day);
         dayData.isEnabled = m_system->isValidDate(day, dayData.month, dayData.year);
         dayData.isCurrentDay = (day == m_currentDisplayDate.day() &&
                                 dayData.month == m_currentDisplayDate.month());
@@ -174,12 +172,12 @@ QString CalendarPresenter::generateWeekDaysHeader() const
     return weekDays.join(" ");
 }
 
-void CalendarPresenter::updateView(const CalendarVisualData& data)
+void CalendarPresenter::updateView(const SceneVisualData& data)
 {
     if (!m_view) return;
 
     // Передаем данные в View
-    m_view->displayCalendar(data);
+    m_view->displayScene(data);
 
     // // Можно добавить дополнительные обновления UI
     // emit calendarUpdated(m_currentDisplayDate);
@@ -191,7 +189,7 @@ void CalendarPresenter::onNextDay()
     if (!m_globalTime) return;
 
     m_globalTime->addDays(1);
-    m_currentDisplayDate = m_currentDisplayDate.addDays(1);
+    m_currentDisplayDate.addDays(1);
     refreshCalendar();
 }
 
@@ -200,20 +198,20 @@ void CalendarPresenter::onPrevDay()
     if (!m_globalTime) return;
 
     m_globalTime->addDays(-1);
-    m_currentDisplayDate = m_currentDisplayDate.addDays(-1);
+    m_currentDisplayDate.addDays(-1);
     refreshCalendar();
 }
 
 void CalendarPresenter::onNextMonth()
 {
-    m_currentDisplayDate = m_currentDisplayDate.addMonths(1);
+    m_currentDisplayDate.addMonths(1);
     validateCurrentDate();
     refreshCalendar();
 }
 
 void CalendarPresenter::onPrevMonth()
 {
-    m_currentDisplayDate = m_currentDisplayDate.addMonths(-1);
+    m_currentDisplayDate.addMonths(-1);
     validateCurrentDate();
     refreshCalendar();
 }

@@ -47,8 +47,9 @@ void EventItem::calculateAutoEndTime()
 {
     // Автоматически устанавливаем конец события через 1 час
     m_endTime = m_startTime;
-    // m_endTime.setTime((m_startTime.hour() + 1) % m_startTime.m_calendarSystem->hoursPerDay(),
-    //                   m_startTime.minute(), m_startTime.second());
+    m_endTime.setTime(m_startTime.hour() + 1,
+                      m_startTime.minute(),
+                      m_startTime.second());
 }
 
 bool EventItem::isValid() const

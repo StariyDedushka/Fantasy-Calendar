@@ -14,7 +14,10 @@ find_package(Qt5 REQUIRED COMPONENTS Widgets Core Sql Xml)
 
 file(GLOB_RECURSE SOURCE_FILES "source/*.cpp")
 file(GLOB_RECURSE HEADER_FILES "include/*.h")
-file(GLOB_RECURSE UI_FILES "ui/*.ui")
+# file(GLOB_RECURSE UI_FILES "ui/*.ui")
+set(UI_FILES
+    ui/settingswindow.ui
+    ui/mainwindow.ui)
 
 file(GLOB_RECURSE ALL_INCLUDE_DIRS LIST_DIRECTORIES true "include/*")
 
@@ -23,8 +26,17 @@ add_executable(gurps_calendar
 	       ${SOURCE_FILES}
 	       # resources.qrc
 	       )
+
+qt5_wrap_ui(UI_HEADERS ${UI_FILES})
+
+message(STATUS "UI_FILES: ${UI_FILES}")
+message(STATUS "UI_HEADERS will be generated in: ${CMAKE_CURRENT_BINARY_DIR}")
+message(STATUS "Binary dir: ${CMAKE_CURRENT_BINARY_DIR}")
+message(STATUS "Source dir: ${CMAKE_CURRENT_SOURCE_DIR}")
+
 target_include_directories(gurps_calendar PRIVATE
                            ${CMAKE_CURRENT_SOURCE_DIR}
+			   ${CMAKE_CURRENT_BINARY_DIR}
 		            )
 
 foreach(dir ${ALL_INCLUDE_DIRS})
@@ -35,7 +47,6 @@ foreach(dir ${ALL_INCLUDE_DIRS})
 endforeach()
 
 
-qt5_wrap_ui(UI_HEADERS ${UI_FILES})
 
 target_sources(gurps_calendar PRIVATE ${UI_HEADERS})
 

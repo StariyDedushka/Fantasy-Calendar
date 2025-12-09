@@ -57,20 +57,6 @@ void AbstractItem::setHighlighted(bool highlighted)
 //     }
 // }
 
-// QSharedPointer<QPolygon> AbstractItem::buildTriangle(const QRectF &parentRect, double scale, qint16 rotation)
-// {
-//     QSharedPointer<QPolygon> triangle(new QPolygon);
-//     double modifier = scale / 100.0;
-//     quint8 width = 15, height = 15;
-//     QPoint center(parentRect.x() + width, parentRect.y() + parentRect.height() / 2);
-//     // qDebug() << "ParentPos x:" << parentRect.x() << "ParentPos y:" << parentRect.y();
-//     QPoint point1(center.x() - (width/2) * modifier, center.y() + (height/2) * modifier);
-//     QPoint point2(center.x() - (width/2) * modifier, center.y() - (height/2) * modifier);
-//     QPoint point3(center.x() + (width/2) * modifier, center.y());
-//     *triangle << point1 << point2 << point3;
-//     *triangle = QTransform().translate(center.x(), center.y()).rotate(rotation).translate(-center.x(), -center.y()).map(*triangle);
-//     return triangle;
-// }
 
 
 void AbstractItem::/*slot_*/onItemClicked(AbstractItem *item)

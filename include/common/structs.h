@@ -8,41 +8,42 @@
 #include <QSize>
 
 struct DayOfWeek {
+    QString name;
     quint32 id;
     quint32 position;
-    QString name;
+    bool hasEvents;
 };
 
 struct Month {
+    QString name;
+    // QVector<quint32> days;
     quint32 id;
     quint32 position;
     quint32 daysTotal;
-    QString name;
-    QVector<quint32> days;
 };
 
 struct Event {
-    quint32 id;
-    quint32 dayId;
-    quint32 groupId;
     CustomDateTime time;
     QString name;
     QString text;
+    quint32 id;
+    quint32 dayId;
+    quint32 groupId;
 };
 
 struct DayData {
-    quint32 id;
     QString name;
+    quint32 id;
     bool hasEvents;
     // QList<quint32> events;
 };
 
 struct ItemData {
-    QString displayText;
-    bool isEnabled;
+    QMap<QString, QString> displayText;
     QColor backgroundColor;
     QColor textColor;
     QColor borderColor;
+    bool isEnabled;
 };
 
 struct CalendarDayData : ItemData {
@@ -56,6 +57,9 @@ struct CalendarDayData : ItemData {
 
 struct CalendarEventData : ItemData {
     quint32 id;
+    quint32 hour;
+    quint32 minute;
+    quint32 second;
 };
 
 struct SceneVisualData {

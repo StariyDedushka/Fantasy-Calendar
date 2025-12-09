@@ -60,7 +60,7 @@ void EventPresenter::setupConnections()
     // connect(m_system, &CalendarSystem::systemChanged,
     //         this, &EventPresenter::onSystemChanged);
     // connect(m_globalTime, &CustomDateTime::timeChanged,
-    //         this, &EventPresenter::refreshEvent);
+    //         this, &EventPresenter::refreshEvents);
 }
 
 void EventPresenter::refreshEvents()
@@ -106,25 +106,25 @@ QVector<EventContainerData> EventPresenter::generateContainers() const
 
 
     for (quint16 i = 0; i <= day; ++i) {
-        CalendarEventData dayData;
-        dayData.day = day;
-        dayData.month = m_currentDisplayDate.month();
-        dayData.year = m_currentDisplayDate.year();
-        dayData.displayText = QString::number(day);
-        dayData.isEnabled = m_system->isValidDate(day, dayData.month, dayData.year);
-        dayData.isCurrentDay = (day == m_currentDisplayDate.day() &&
-                                dayData.month == m_currentDisplayDate.month());
-        dayData.isToday = (day == today.day() &&
-                           dayData.month == today.month() &&
-                           dayData.year == today.year());
-        dayData.hasEvents = false; // Здесь можно добавить проверку событий
+        CalendarEventData eventData;
+        eventData.day = day;
+        eventData.month = m_currentDisplayDate.month();
+        eventData.year = m_currentDisplayDate.year();
+        eventData.displayText = QString::number(day);
+        eventData.isEnabled = m_system->isValidDate(day, eventData.month, eventData.year);
+        eventData.isCurrentDay = (day == m_currentDisplayDate.day() &&
+                                eventData.month == m_currentDisplayDate.month());
+        eventData.isToday = (day == today.day() &&
+                           eventData.month == today.month() &&
+                           eventData.year == today.year());
+        eventData.hasEvents = false; // Здесь можно добавить проверку событий
 
         // Устанавливаем цвета
-        dayData.backgroundColor = getDayColor(dayData);
-        dayData.textColor = getTextColor(dayData);
-        dayData.borderColor = getBorderColor(dayData);
+        eventData.backgroundColor = getDayColor(eventData);
+        eventData.textColor = getTextColor(eventData);
+        eventData.borderColor = getBorderColor(eventData);
 
-        days.append(dayData);
+        days.append(eventData);
     }
 
     return days;
@@ -136,172 +136,72 @@ QVector<CalendarEventData> EventPresenter::generateEvents() const
 
     if (!m_system) return events;
 
-
-    for (quint16 i = 0; i <= day; ++i) {
-    // Получаем информацию о текущем месяце
-    quint16 daysInMonth = m_system->currentDay(m_currentDisplayDate.month(),
-                                                m_currentDisplayDate.year());
-
-
-
     // Добавляем события
-    for (quint16 event = 1; event <= m_system->fetchEvent(); ++day) {
-        CalendarEventData dayData;
-        dayData.day = day;
-        dayData.month = m_currentDisplayDate.month();
-        dayData.year = m_currentDisplayDate.year();
-        dayData.displayText = QString::number(day);
-        dayData.isEnabled = m_system->isValidDate(day, dayData.month, dayData.year);
-        dayData.isCurrentDay = (day == m_currentDisplayDate.day() &&
-                                dayData.month == m_currentDisplayDate.month());
-        dayData.isToday = (day == today.day() &&
-                           dayData.month == today.month() &&
-                           dayData.year == today.year());
-        dayData.hasEvents = false; // Здесь можно добавить проверку событий
+    for(Event event : m_system->fetchEvents(*m_globalTime))
+    {
+        CalendarEventData eventData;
+        eventData.hour = event.time.hour();
+        eventData.minute = event.time.minute();
+        eventData.second = event.time.second();
+        eventData.displayText["name"] = event.name;
+        eventData.displayText["text"] = event.text;
+        eventData.isEnabled = m_system->isValidTime(event.time.hour(), event.time.minute(), event.time.second());
 
         // Устанавливаем цвета
-        dayData.backgroundColor = getDayColor(dayData);
-        dayData.textColor = getTextColor(dayData);
-        dayData.borderColor = getBorderColor(dayData);
+        eventData.backgroundColor = getEventColor(eventData);
+        eventData.textColor = getTextColor(eventData);
+        eventData.borderColor = getBorderColor(eventData);
 
-        days.append(dayData);
+        events.append(eventData);
     }
 
-    return days;
+    return events;
 }
 
-QString EventPresenter::generateHeaderText() const
-{
-    // Генерируем заголовок "Месяц Год"
-    return QString("%1 %2")
-        .arg(m_currentDisplayDate.month())
-        .arg(m_currentDisplayDate.year());
-}
-
-QString EventPresenter::generateWeekDaysHeader() const
-{
-    if (!m_system) return "";
-
-    // Генерируем заголовок с днями недели
-    QStringList weekDays;
-    for (int i = 1; i <= m_columns; ++i) {
-        DayOfWeek* dayInfo = m_system->dayOfWeek(i);
-        Day* dayInfo = m_system->dayOfWeek(i);
-        if (dayInfo) {
-            weekDays.append(dayInfo->name.left(2)); // Сокращенные названия
-        } else {
-            weekDays.append("--");
-        }
-    }
-    return weekDays.join(" ");
-}
 
 void EventPresenter::updateView(const SceneVisualData& data)
 {
     if (!m_view) return;
 
     // Передаем данные в View
-    m_view->displayEvent(data);
+    m_view->displayScene(data);
 
     // // Можно добавить дополнительные обновления UI
     // emit calendarUpdated(m_currentDisplayDate);
 }
 
-// Обработчики навигации
-void EventPresenter::onNextDay()
-{
-    if (!m_globalTime) return;
 
-    m_globalTime->addDays(1);
-    m_currentDisplayDate = m_currentDisplayDate.addDays(1);
-    refreshEvent();
-}
-
-void EventPresenter::onPrevDay()
-{
-    if (!m_globalTime) return;
-
-    m_globalTime->addDays(-1);
-    m_currentDisplayDate = m_currentDisplayDate.addDays(-1);
-    refreshEvent();
-}
-
-void EventPresenter::onNextMonth()
-{
-    m_currentDisplayDate = m_currentDisplayDate.addMonths(1);
-    validateCurrentDate();
-    refreshEvent();
-}
-
-void EventPresenter::onPrevMonth()
-{
-    m_currentDisplayDate = m_currentDisplayDate.addMonths(-1);
-    validateCurrentDate();
-    refreshEvent();
-}
-
-void EventPresenter::onToday()
-{
-    if (m_globalTime) {
-        m_currentDisplayDate = CustomDateTime(m_globalTime->day(),
-                                              m_globalTime->month(),
-                                              m_globalTime->year());
-    } else {
-        m_currentDisplayDate = CustomDateTime(1, 1, 2000);
-    }
-    refreshEvent();
-}
-
-void EventPresenter::onDateSelected(const CustomDateTime& date)
-{
-    if (!date.isValid()) return;
-
-    m_currentDisplayDate = date;
-
-    // Обновляем глобальное время, если нужно
-    if (m_globalTime && m_system) {
-        if (m_system->isValidDate(date.day(), date.month(), date.year())) {
-            m_globalTime->setDate(date.day(), date.month(), date.year());
-        }
-    }
-
-    refreshEvent();
-}
 
 // Обработчики внешних событий
 void EventPresenter::onSystemChanged()
 {
-    refreshEvent();
+    refreshEvents();
 }
 
 void EventPresenter::onSettingsChanged()
 {
-    refreshEvent();
+    refreshEvents();
 }
 
 void EventPresenter::onEventsUpdated()
 {
-    refreshEvent();
+    refreshEvents();
 }
 
-// Обработчики сигналов от View
-void EventPresenter::handleDateClicked(const CustomDateTime& date)
-{
-    onDateSelected(date);
 }
 
 void EventPresenter::handleViewResized(const QSize& size)
 {
     m_viewSize = size;
-    refreshEvent();
+    refreshEvents();
 }
 
 void EventPresenter::handleItemClicked(EventItem* item)
 {
     if (!item) return;
 
-    CustomDateTime selectedDate(item->day(), item->month(), item->year());
-    onDateSelected(selectedDate);
+    // CustomDateTime selectedDate(item->day(), item->month(), item->year());
+    // onDateSelected(selectedDate);
 }
 
 void EventPresenter::handleWheelZoom(qreal factor)
@@ -314,46 +214,43 @@ void EventPresenter::handleWheelZoom(qreal factor)
     }
 }
 
-void EventPresenter::validateCurrentDate()
-{
-    if (!m_system) return;
+// void EventPresenter::validateCurrentDate()
+// {
+//     if (!m_system) return;
 
-    // Проверяем валидность даты в текущей календарной системе
-    if (!m_system->isValidDate(m_currentDisplayDate.day(),
-                               m_currentDisplayDate.month(),
-                               m_currentDisplayDate.year())) {
-        // Корректируем на сегодняшнюю дату
-        if (m_globalTime) {
-            m_currentDisplayDate = CustomDateTime(m_globalTime->day(),
-                                                  m_globalTime->month(),
-                                                  m_globalTime->year());
-        } else {
-            m_currentDisplayDate = CustomDateTime(1, 1, 2000);
-            qDebug() << "EventPresenter::validateCurrentDate"
-        }
-    }
-}
+//     // Проверяем валидность даты в текущей календарной системе
+//     if (!m_system->isValidDate(m_currentDisplayDate.day(),
+//                                m_currentDisplayDate.month(),
+//                                m_currentDisplayDate.year())) {
+//         // Корректируем на сегодняшнюю дату
+//         if (m_globalTime) {
+//             m_currentDisplayDate = CustomDateTime(m_globalTime->day(),
+//                                                   m_globalTime->month(),
+//                                                   m_globalTime->year());
+//         } else {
+//             m_currentDisplayDate = CustomDateTime(1, 1, 2000);
+//             qDebug() << "EventPresenter::validateCurrentDate"
+//         }
+//     }
+// }
 
 // Методы для визуальных настроек
-QColor EventPresenter::getDayColor(const CalendarEventData& dayData) const
+QColor EventPresenter::getEventColor(const CalendarEventData& eventData) const
 {
-    if (!dayData.isEnabled) return Qt::lightGray;
-    if (dayData.isToday) return QColor(255, 255, 200); // светло-желтый
-    if (dayData.isCurrentDay) return QColor(200, 230, 255); // светло-голубой
-    if (dayData.hasEvents) return QColor(255, 230, 200); // светло-оранжевый
+    if (!eventData.isEnabled) return Qt::lightGray;
 
-    return Qt::white;
+    return Qt::blue;
 }
 
-QColor EventPresenter::getTextColor(const CalendarEventData& dayData) const
+QColor EventPresenter::getTextColor(const CalendarEventData& eventData) const
 {
-    if (!dayData.isEnabled) return Qt::darkGray;
+    if (!eventData.isEnabled) return Qt::darkGray;
     return Qt::black;
 }
 
-QColor EventPresenter::getBorderColor(const CalendarEventData& dayData) const
+QColor EventPresenter::getBorderColor(const CalendarEventData& eventData) const
 {
-    if (dayData.isToday) return Qt::red;
-    if (dayData.isCurrentDay) return Qt::blue;
-    return Qt::gray;
+    // if (eventData.isToday) return Qt::red;
+    // if (eventData.isCurrentDay) return Qt::blue;
+    return Qt::red;
 }

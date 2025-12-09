@@ -9,7 +9,7 @@ CustomDateTime::CustomDateTime()
     m_minute(0),
     m_second(0)
 {
-    LOG(INFO, logger, "Constructor without parameters called");
+    LOG(INFO, logger, "Default constructor called");
 }
 
 CustomDateTime::CustomDateTime(quint32 day, quint32 month, quint32 year,
@@ -24,8 +24,8 @@ CustomDateTime::CustomDateTime(quint32 day, quint32 month, quint32 year,
     if(day == 0 || month == 0)
     {
         LOG(WARN, logger, "Tried constructing with invalid day/month, defaulting to 1/1");
-        day = 1;
-        month = 1;
+        m_day = 1;
+        m_month = 1;
     }
     LOG(INFO, logger, "Constructor with parameters called");
 }
@@ -35,6 +35,7 @@ void CustomDateTime::setDate(quint32 day, quint32 month, quint32 year)
     m_day = day;
     m_month = month;
     m_year = year;
+    LOG(INFO, logger, QString("Set date to %1/%2/%3").arg(day).arg(month).arg(year));
 }
 
 void CustomDateTime::setDay(quint32 day)
@@ -68,6 +69,7 @@ void CustomDateTime::setTime(quint32 hour, quint32 minute, quint32 second)
     m_hour = hour;
     m_minute = minute;
     m_second = second;
+    LOG(INFO, logger, QString("Set time to %1:%2:%3").arg(hour).arg(minute).arg(second));
 }
 
 void CustomDateTime::setDateTime(quint32 day, quint32 month, quint32 year, quint32 hour, quint32 minute, quint32 second)
@@ -75,10 +77,12 @@ void CustomDateTime::setDateTime(quint32 day, quint32 month, quint32 year, quint
     m_day = day;
     m_month = month;
     m_year = year;
+    LOG(INFO, logger, QString("Set date to %1/%2/%3").arg(day).arg(month).arg(year));
 
     m_hour = hour;
     m_minute = minute;
     m_second = second;
+    LOG(INFO, logger, QString("Set time to %1:%2:%3").arg(hour).arg(minute).arg(second));
 }
 
 bool CustomDateTime::isValid() const

@@ -12,7 +12,7 @@ public:
                        QColor colorTertiary = Qt::yellow, bool enabled = true, QObject *parent = nullptr);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     // virtual void addItem(AbstractItem *item) override;
-    QSharedPointer<QPolygon> buildTriangle(const QRectF &parentRect, double scale, qint16 rotation);
+    std::unique_ptr<QPolygon> buildTriangle(const QRectF &parentRect, double scale, qint16 rotation);
 };
 
 #endif // EVENTCONTAINERITEM_H
