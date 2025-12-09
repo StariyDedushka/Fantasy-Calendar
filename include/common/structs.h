@@ -31,12 +31,12 @@ struct Event {
     quint32 groupId;
 };
 
-struct DayData {
-    QString name;
-    quint32 id;
-    bool hasEvents;
-    // QList<quint32> events;
-};
+// struct DayData {
+//     QString name;
+//     quint32 id;
+//     bool hasEvents;
+//     // QList<quint32> events;
+// };
 
 struct ItemData {
     QMap<QString, QString> displayText;
@@ -62,6 +62,10 @@ struct CalendarEventData : ItemData {
     quint32 second;
 };
 
+struct EventContainerData : ItemData {
+    quint32 id;
+};
+
 struct SceneVisualData {
     QVector<ItemData*> items;
     QSizeF cellSize;
@@ -71,15 +75,5 @@ struct SceneVisualData {
 };
 
 
-struct EventGroup {
-    quint16 id;
-    QString name;
-    QColor color;
-    // enum position {
-    //     First,
-    //     Middle,
-    //     Last
-    // };
-};
 
 #endif

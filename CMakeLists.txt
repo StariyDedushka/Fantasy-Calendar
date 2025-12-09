@@ -13,10 +13,7 @@ find_package(Qt5 REQUIRED COMPONENTS Widgets Core Sql Xml)
 
 file(GLOB_RECURSE SOURCE_FILES "source/*.cpp")
 file(GLOB_RECURSE HEADER_FILES "include/*.h")
-# file(GLOB_RECURSE UI_FILES "ui/*.ui")
-set(UI_FILES
-    ui/settingswindow.ui
-    ui/mainwindow.ui)
+file(GLOB_RECURSE UI_FILES "ui/*.ui")
 
 file(GLOB_RECURSE ALL_INCLUDE_DIRS LIST_DIRECTORIES true "include/*")
 

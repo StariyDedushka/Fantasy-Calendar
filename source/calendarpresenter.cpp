@@ -74,7 +74,7 @@ void CalendarPresenter::refreshCalendar()
     updateView(visualData);
 }
 
-CalendarVisualData CalendarPresenter::generateVisualData() const
+SceneVisualData CalendarPresenter::generateVisualData() const
 {
     SceneVisualData data;
 

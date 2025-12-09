@@ -5,8 +5,6 @@ Settings::Settings(CalendarSystem *system, CustomDateTime *globalTime, QObject *
     QObject(parent)
     , m_system(system)
     , m_globalTime(globalTime)
-    , m_days(new QVector<DayOfWeek*>())
-    , m_months(new QVector<Month*>())
 {
     loadSettings();
 }
@@ -14,11 +12,28 @@ Settings::Settings(CalendarSystem *system, CustomDateTime *globalTime, QObject *
 
 Settings::~Settings()
 {
-    delete m_days;
-    delete m_months;
     // writeSettings();
     if(m_db.isOpen())
         m_db.close();
+}
+
+const EventContainerData& Settings::getContainer(quint32 id) const
+{
+    EventContainerData data;
+    for(EventContainerData data : m_containers)
+    {
+        if(data.id == id)
+        {
+            LOG(INFO, logger, QString("Retrieved container with id %1").arg(id));
+            return data;
+        }
+    }
+
+    LOG(WARN, logger, QString("Couldn't retrieve container with id %1").arg(id));
+
+    data.id = 0;
+    data.displayText["name"] = "NULL";
+    return data;
 }
 
 void Settings::createDatabase(const QString& newConfig)
@@ -100,12 +115,12 @@ bool Settings::loadSettings()
                     if(reader.readElementText() == "day")
                     {
                         reader.readNext();
-                        DayOfWeek *day = new DayOfWeek();
-                        day->name = reader.readElementText();
+                        DayOfWeek day;
+                        day.name = reader.readElementText();
                         reader.readNext();
-                        day->id = reader.readElementText().toUInt();
-                        m_days->append(day);
-                        m_system->addDayOfWeek(day->name, day->id);
+                        day.id = reader.readElementText().toUInt();
+                        m_days.append(day);
+                        m_system->addDayOfWeek(day.name, day.id);
                     }
                     reader.readNext();
                 }
@@ -136,33 +151,33 @@ bool Settings::writeSettings()
     writer.writeTextElement("hours per day", QString::number(m_system->hoursPerDay()));
 
     writer.writeStartElement("days of week");
-    for(DayOfWeek *day : *m_days)
+    for(DayOfWeek day : m_days)
     {
         writer.writeStartElement("day");
-        writer.writeTextElement("day name", day->name);
-        writer.writeTextElement("day id", QString::number(day->id));
+        writer.writeTextElement("day name", day.name);
+        writer.writeTextElement("day id", QString::number(day.id));
         writer.writeEndElement();
     }
     writer.writeEndElement();
 
     writer.writeStartElement("months");
-    for(Month *month : *m_months)
+    for(Month month : m_months)
     {
         writer.writeStartElement("month");
-        writer.writeTextElement("month name", month->name);
-        writer.writeTextElement("month id", QString::number(month->id));
+        writer.writeTextElement("month name", month.name);
+        writer.writeTextElement("month id", QString::number(month.id));
         writer.writeEndElement();
     }
     writer.writeEndElement();
 
     writer.writeEndElement();
 //-----------------------------------------------
-    writer.writeStartElement("event groups");
+    writer.writeStartElement("event containers");
 
-    for(EventGroup *group : m_groups)
+    for(EventContainerData container : m_containers)
     {
-        writer.writeTextElement("group name", group->name);
-        writer.writeAttribute("group id", QString::number(group->id));
+        writer.writeTextElement("container name", container.displayText["name"]);
+        writer.writeAttribute("container id", QString::number(container.id));
     }
 
     writer.writeEndElement();

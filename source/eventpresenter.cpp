@@ -12,7 +12,6 @@ EventPresenter::EventPresenter(CalendarSystem* system,
     , m_rows(0)
     , m_zoomLevel(1.0)
     , m_rows(system->weeksInMonth(globalTime->month(), globalTime->year()))
-    , m_zoomLevel(1.0)
 {
     // Устанавливаем начальную дату
 
@@ -47,8 +46,6 @@ void EventPresenter::setupConnections()
     if (!m_view || !m_system || !m_globalTime) return;
 
     // Подключаем сигналы от View
-    connect(m_view, &EventView::eventClicked,
-            this, &EventPresenter::handleDateClicked);
     connect(m_view, &EventView::viewResized,
             this, &EventPresenter::handleViewResized);
     connect(m_view, &EventView::itemClicked,
@@ -104,30 +101,13 @@ QVector<EventContainerData> EventPresenter::generateContainers() const
 
     if (!m_system) return containers;
 
+    for(Event event : m_system->fetchEvents(*m_globalTime))
+    {
 
-    for (quint16 i = 0; i <= day; ++i) {
-        CalendarEventData eventData;
-        eventData.day = day;
-        eventData.month = m_currentDisplayDate.month();
-        eventData.year = m_currentDisplayDate.year();
-        eventData.displayText = QString::number(day);
-        eventData.isEnabled = m_system->isValidDate(day, eventData.month, eventData.year);
-        eventData.isCurrentDay = (day == m_currentDisplayDate.day() &&
-                                eventData.month == m_currentDisplayDate.month());
-        eventData.isToday = (day == today.day() &&
-                           eventData.month == today.month() &&
-                           eventData.year == today.year());
-        eventData.hasEvents = false; // Здесь можно добавить проверку событий
-
-        // Устанавливаем цвета
-        eventData.backgroundColor = getDayColor(eventData);
-        eventData.textColor = getTextColor(eventData);
-        eventData.borderColor = getBorderColor(eventData);
-
-        days.append(eventData);
     }
 
-    return days;
+
+    return containers;
 }
 
 QVector<CalendarEventData> EventPresenter::generateEvents() const

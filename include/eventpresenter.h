@@ -40,7 +40,7 @@ public slots:
 private slots:
     // Обработка сигналов от View
     void handleViewResized(const QSize& size);
-    void handleItemClicked(EventItem* item);
+    void handleItemClicked(AbstractItem* item);
     void handleWheelZoom(qreal factor);
 
 private:
@@ -49,7 +49,7 @@ private:
     void updateView(const SceneVisualData& data);
     void validateCurrentDate();
     void calculateGridSize();
-    QVector<ItemData> generateContainers() const;
+    QVector<EventContainerData> generateContainers() const;
     QVector<CalendarEventData> generateEvents() const;
     QString generateHeaderText() const;
     QString generateWeekDaysHeader() const;

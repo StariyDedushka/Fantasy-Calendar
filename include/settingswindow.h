@@ -38,7 +38,6 @@ signals:
 
 private:
     Ui::SettingsWindow *ui;
-    Settings *settings;
 public:
     SettingsWindow(QWidget *parent = nullptr);
     void setGlobalTime(CustomDateTime *globalTime);

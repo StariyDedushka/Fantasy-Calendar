@@ -43,19 +43,19 @@ private:
 
     CalendarSystem *m_system;
     CustomDateTime *m_globalTime;
-    QVector<EventGroup*> m_groups;
-    QMap<quint16, QColor*> groupColors;
-    QVector<DayOfWeek*> *m_days;
-    QVector<Month*> *m_months;
+    QVector<EventContainerData> m_containers;
+    QMap<quint16, QColor> groupColors;
+    QVector<DayOfWeek> m_days;
+    QVector<Month> m_months;
     QVector<QString*> m_configs;
     QString m_currentConfig;
 
     QSqlDatabase m_db;
 
-    quint16 m_daysPerMonth;
-    quint16 m_secondsPerMinute;
-    quint16 m_minutesPerHour;
-    quint16 m_hoursPerDay;
+    quint32 m_daysPerMonth;
+    quint32 m_secondsPerMinute;
+    quint32 m_minutesPerHour;
+    quint32 m_hoursPerDay;
 
 public:
     // Удаляем конструктор копирования и оператор присваивания
@@ -66,6 +66,7 @@ public:
     Settings(CalendarSystem *system, CustomDateTime *globalTime, QObject *parent = nullptr);
     virtual ~Settings() override;
     void createDatabase(const QString& newConfig);
+    const EventContainerData& getContainer(quint32 id) const;
 };
 
 #endif // SETTINGS_H

@@ -45,13 +45,13 @@ private slots:
     // Обработка сигналов от View
     void handleDateClicked(const CustomDateTime& date);
     void handleViewResized(const QSize& size);
-    void handleItemClicked(CalendarItem* item);
+    void handleItemClicked(AbstractItem* item);
     void handleWheelZoom(qreal factor);
 
 private:
     void setupConnections();
-    CalendarVisualData generateVisualData() const;
-    void updateView(const CalendarVisualData& data);
+    SceneVisualData generateVisualData() const;
+    void updateView(const SceneVisualData& data);
     void validateCurrentDate();
     void calculateGridSize();
     QVector<CalendarDayData> generateMonthDays() const;

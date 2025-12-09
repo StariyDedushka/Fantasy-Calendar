@@ -32,9 +32,9 @@ void CalendarSystem::setDatabase(const QString &name)
     m_db.addDatabase("QSQLITE");
     QString fullName = name;
     fullName.append(".db");
-    if(db.setDatabaseName(fullName))
+    m_db.setDatabaseName(fullName);
+    if(m_db.open())
     {
-        db.open();
         LOG(INFO, logger, QString("Database with name %1 is opened").arg(name));
     } else {
         LOG(ERROR, logger, QString("Could not open database with name %1").arg(name));
@@ -377,7 +377,7 @@ bool CalendarSystem::moveMonth(const QString& name, quint32 newPlace)
     {
         if(month->name == name)
         {
-            m_months->move(m_months->indexOf(month), newPlace));
+            m_months->move(m_months->indexOf(month), newPlace);
             LOG(INFO, logger, QString("Moved month %1 to position %2").arg(name).arg(newPlace));
             return true;
         }

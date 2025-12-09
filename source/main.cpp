@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 
     ApplicationContext context;
     context.initializeBasicSystems();
-    SettingsWindow settingsWindow(context.settings());
+    SettingsWindow settingsWindow();
 
     MainWindow w(context.calendarSystem(), context.globalTime(), context.settings());
     w.initialize();
