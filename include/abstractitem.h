@@ -58,7 +58,6 @@ private slots:
     virtual void /*slot_*/onItemClicked(AbstractItem *item);
 
 public:
-    virtual ~AbstractItem();
     AbstractItem(const QRectF &rect,
                  const QString &text = "",
                  const QColor &colorPrimary = Qt::white,
@@ -72,12 +71,12 @@ public:
     virtual void setRect(quint16 posX, quint16 posY, quint16 sizeX, quint16 sizeY);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override = 0;
 
-    virtual bool isSelected() const;
-    virtual bool isEnabled() const;
+    bool isSelected() const;
+    bool isEnabled() const;
 
-    virtual void setHighlighted(bool highlighted);
-    virtual void setEnabled(bool enabled);
-    virtual void setSelected(bool selected);
+    void setHighlighted(bool highlighted);
+    void setEnabled(bool enabled);
+    void setSelected(bool selected);
     quint32 id();
     // virtual void addItem(AbstractItem *item);
     // virtual QVector<AbstractItem*>& getItems();

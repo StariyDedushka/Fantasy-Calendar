@@ -16,6 +16,10 @@ EventView::EventView(QWidget *parent)
     //         this, &EventView::handleSceneItemClicked);
 }
 
+EventView::~EventView()
+{
+    AbstractView::~AbstractView();
+}
 
 void EventView::wheelEvent(QWheelEvent *event)
 {

@@ -3,9 +3,16 @@
 
 ApplicationContext::ApplicationContext()
 {
-    m_calendarSystem = std::make_unique<CalendarSystem>();
-    m_globalTime = std::unique_ptr<CustomDateTime>();
-    m_settings = std::unique_ptr<Settings>(m_calendarSystem, m_globalTime);
+    m_calendarSystem = new CalendarSystem();
+    m_globalTime = new CustomDateTime();
+    m_settings = new Settings(m_calendarSystem, m_globalTime);
+}
+
+ApplicationContext::~ApplicationContext()
+{
+    delete m_calendarSystem;
+    delete m_globalTime;
+    delete m_settings;
 }
 
 void ApplicationContext::initializeBasicSystems()

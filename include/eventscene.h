@@ -1,5 +1,5 @@
-#ifndef CALENDARSCENE_H
-#define CALENDARSCENE_H
+#ifndef EVENTSCENE_H
+#define EVENTSCENE_H
 
 #include <QGraphicsScene>
 #include <QObject>
@@ -15,7 +15,6 @@ class EventScene : public AbstractScene
 public:
 public:
     explicit EventScene(QObject *parent = nullptr);
-    ~EventScene();
     virtual void setSceneData(const SceneVisualData &data) override;
 
 public slots:
@@ -23,8 +22,7 @@ public slots:
 
 private:
     void repositionItems();
-    virtual void createHeader(const QString& key) override;
 
 };
 
-#endif // CALENDARSCENE_H
+#endif // EVENTSCENE_H

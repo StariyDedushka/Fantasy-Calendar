@@ -34,6 +34,8 @@ void CalendarScene::setSceneData(const SceneVisualData& data)
 
 
 
+
+
 void CalendarScene::updateLayout()
 {
     AbstractScene::updateLayout();

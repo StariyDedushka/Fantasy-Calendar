@@ -22,7 +22,6 @@ public slots:
 
 private:
     void repositionItems();
-    virtual void createHeader(const QString& key) override;
 };
 
 #endif // CALENDARSCENE_H

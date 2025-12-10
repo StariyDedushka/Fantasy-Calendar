@@ -60,7 +60,7 @@ void AbstractScene::clearScene()
     clear();
 
     // Очищаем списки
-    m_dataItems.clear();
+    m_dataItems->clear();
 
     for(QGraphicsTextItem *item : m_headerItems)
         delete item;
@@ -112,7 +112,7 @@ void AbstractScene::updateLayout()
 
 void AbstractScene::repositionItems()
 {
-    if (m_dataItems.isEmpty()) return;
+    if (m_dataItems->isEmpty()) return;
 
     qreal startY = 0;
 

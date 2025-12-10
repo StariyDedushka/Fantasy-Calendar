@@ -4,11 +4,8 @@
 #include <QMainWindow>
 #include <QDebug>
 #include <QTimer>
-#include "abstractscene.h"
-#include "abstractitem.h"
 #include "calendarview.h"
 #include "eventview.h"
-#include "settings.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -22,7 +19,7 @@ class MainWindow : public QMainWindow
     
 
 public:
-    MainWindow(CalendarSystem *system, CustomDateTime *globalTime, Settings *settings, QWidget *parent = nullptr);
+    MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void initialize();
 
@@ -33,9 +30,6 @@ private:
     Ui::MainWindow *ui;
     CalendarView *calendarWindow;
     EventView *eventsWindow;
-    CalendarSystem *m_system;
-    CustomDateTime *m_globalTime;
-    Settings *settings;
 
     void setupLayouts();
     void setupCalendarLayout();

@@ -13,6 +13,11 @@ CalendarView::CalendarView(QWidget *parent)
     //         this, &CalendarView::handleSceneItemClicked);
 }
 
+CalendarView::~CalendarView()
+{
+    AbstractView::~AbstractView();
+}
+
 
 void CalendarView::wheelEvent(QWheelEvent *event)
 {

@@ -1,9 +1,8 @@
 #include "include/mainwindow.h"
+#include "ui_mainwindow.h"
 
-MainWindow::MainWindow(CalendarSystem *system, CustomDateTime *globalTime, QWidget *parent)
+MainWindow::MainWindow( QWidget *parent)
     : QMainWindow(parent)
-    , m_system(system)
-    , m_globalTime(globalTime)
     , ui(new Ui::MainWindow)
 
 {
@@ -13,7 +12,7 @@ MainWindow::MainWindow(CalendarSystem *system, CustomDateTime *globalTime, QWidg
     setupLayouts();
 
     // 2. Инициализация календаря
-    calendarWindow = new CalendarView(m_system, m_globalTime);
+    calendarWindow = new CalendarView();
     calendarWindow->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     calendarWindow->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
@@ -23,7 +22,7 @@ MainWindow::MainWindow(CalendarSystem *system, CustomDateTime *globalTime, QWidg
     }
 
     // 3. Инициализация events window
-    eventsWindow = new EventView(m_system);
+    eventsWindow = new EventView();
     eventsWindow->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     eventsWindow->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 

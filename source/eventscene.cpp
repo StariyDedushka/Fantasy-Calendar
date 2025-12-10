@@ -27,7 +27,3 @@ void EventScene::repositionItems()
     AbstractScene::repositionItems();
 }
 
-void EventScene::createHeader(const QString& key)
-{
-    AbstractScene::createHeader(key);
-}

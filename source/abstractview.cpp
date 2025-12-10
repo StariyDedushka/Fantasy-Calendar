@@ -8,8 +8,8 @@ AbstractView::AbstractView(QWidget *parent)
     setupView();
 
     // Подключаем сигналы от сцены
-    connect(m_scene, &AbstractScene::itemClicked,
-            this, &AbstractView::handleSceneItemClicked);
+    // connect(m_scene, &AbstractScene::itemClicked,
+    //         this, &AbstractView::handleSceneItemClicked);
 }
 
 AbstractView::~AbstractView()

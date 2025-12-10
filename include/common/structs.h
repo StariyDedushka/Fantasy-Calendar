@@ -67,7 +67,7 @@ struct EventContainerData : ItemData {
 };
 
 struct SceneVisualData {
-    QVector<ItemData*> items;
+    QVector<ItemData> *items;
     QSizeF cellSize;
     quint16 columns;
     quint16 rows;

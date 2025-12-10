@@ -11,10 +11,7 @@ EventPresenter::EventPresenter(CalendarSystem* system,
     , m_columns(1)
     , m_rows(0)
     , m_zoomLevel(1.0)
-    , m_rows(system->weeksInMonth(globalTime->month(), globalTime->year()))
 {
-    // Устанавливаем начальную дату
-
     initialize();
 }
 
@@ -76,12 +73,9 @@ SceneVisualData EventPresenter::generateVisualData() const
 {
     SceneVisualData data;
 
-    // Генерируем данные контейнеров событий
-    data.items = generateContainers();
-    data.headerText = generateHeaderText();
-    // Генерируем данные дней
-    data.items = generateEvents();
-    data.headerText = generateHeaderText();
+    // Генерируем данные событий
+    data.items = reinterpret_cast<QVector<ItemData>*>(generateEvents());
+    data.headers["main"] = generateHeaderText();
     data.columns = m_columns;
     data.rows = m_rows;
     // Рассчитываем размер ячейки на основе размера View
@@ -110,9 +104,9 @@ QVector<EventContainerData> EventPresenter::generateContainers() const
     return containers;
 }
 
-QVector<CalendarEventData> EventPresenter::generateEvents() const
+QVector<CalendarEventData>* EventPresenter::generateEvents() const
 {
-    QVector<CalendarEventData> events;
+    QVector<CalendarEventData> *events = new QVector<CalendarEventData>();
 
     if (!m_system) return events;
 
@@ -132,12 +126,16 @@ QVector<CalendarEventData> EventPresenter::generateEvents() const
         eventData.textColor = getTextColor(eventData);
         eventData.borderColor = getBorderColor(eventData);
 
-        events.append(eventData);
+        events->append(eventData);
     }
 
     return events;
 }
 
+QString EventPresenter::generateHeaderText() const
+{
+    return QString("text");
+}
 
 void EventPresenter::updateView(const SceneVisualData& data)
 {
@@ -168,7 +166,6 @@ void EventPresenter::onEventsUpdated()
     refreshEvents();
 }
 
-}
 
 void EventPresenter::handleViewResized(const QSize& size)
 {
@@ -176,7 +173,7 @@ void EventPresenter::handleViewResized(const QSize& size)
     refreshEvents();
 }
 
-void EventPresenter::handleItemClicked(EventItem* item)
+void EventPresenter::handleItemClicked(AbstractItem* item)
 {
     if (!item) return;
 

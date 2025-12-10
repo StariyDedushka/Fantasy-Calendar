@@ -28,8 +28,8 @@ public:
     void refreshEvents();
 
 public slots:
-    void onNextDay();
-    void onPrevDay();
+    // void onNextDay();
+    // void onPrevDay();
     // void onDateSelected(const CustomDateTime& date);
 
     // Обработка внешних событий
@@ -50,9 +50,8 @@ private:
     void validateCurrentDate();
     void calculateGridSize();
     QVector<EventContainerData> generateContainers() const;
-    QVector<CalendarEventData> generateEvents() const;
+    QVector<CalendarEventData> *generateEvents() const;
     QString generateHeaderText() const;
-    QString generateWeekDaysHeader() const;
     // Методы для работы со стилями
     void applyVisualStyle();
     void updateColorsFromSettings();

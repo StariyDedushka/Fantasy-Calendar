@@ -52,7 +52,7 @@ protected:
     // Общий метод для создания всех заголовков
     virtual void createHeader(const QString& key);
 
-    QVector<ItemData*> m_dataItems;
+    QVector<ItemData>* m_dataItems;
     QVector<AbstractItem*> m_items;
 
     // Следующий сегмент позволяет свободно расширять количество заголовков на сцене

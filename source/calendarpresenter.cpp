@@ -79,9 +79,9 @@ SceneVisualData CalendarPresenter::generateVisualData() const
     SceneVisualData data;
 
     // Генерируем данные дней
-    data.items = generateMonthDays();
-    data.headerText = generateHeaderText();
-    data.weekDaysHeader = generateWeekDaysHeader();
+    data.items = reinterpret_cast<QVector<ItemData>*>(generateMonthDays());
+    data.headers["main"] = generateHeaderText();
+    data.headers["weekdays"] = generateWeekDaysHeader();
     data.columns = m_columns;
     data.rows = m_rows;
     // Рассчитываем размер ячейки на основе размера View
@@ -95,9 +95,9 @@ SceneVisualData CalendarPresenter::generateVisualData() const
     return data;
 }
 
-QVector<CalendarDayData> CalendarPresenter::generateMonthDays() const
+QVector<CalendarDayData>* CalendarPresenter::generateMonthDays() const
 {
-    QVector<CalendarDayData> days;
+    QVector<CalendarDayData> *days = new QVector<CalendarDayData>();
 
     if (!m_system) return days;
 
@@ -114,7 +114,7 @@ QVector<CalendarDayData> CalendarPresenter::generateMonthDays() const
         CalendarDayData emptyDay;
         emptyDay.isEnabled = false;
         emptyDay.displayText["dayNum"] = "";
-        days.append(emptyDay);
+        days->append(emptyDay);
     }
 
     // Добавляем дни месяца
@@ -141,7 +141,7 @@ QVector<CalendarDayData> CalendarPresenter::generateMonthDays() const
         dayData.textColor = getTextColor(dayData);
         dayData.borderColor = getBorderColor(dayData);
 
-        days.append(dayData);
+        days->append(dayData);
     }
 
     return days;
@@ -272,11 +272,11 @@ void CalendarPresenter::handleViewResized(const QSize& size)
     refreshCalendar();
 }
 
-void CalendarPresenter::handleItemClicked(CalendarItem* item)
+void CalendarPresenter::handleItemClicked(AbstractItem* item)
 {
     if (!item) return;
-
-    CustomDateTime selectedDate(item->day(), item->month(), item->year());
+    CalendarItem *itemCast = static_cast<CalendarItem*>(item);
+    CustomDateTime selectedDate(itemCast->day(), itemCast->month(), itemCast->year());
     onDateSelected(selectedDate);
 }
 

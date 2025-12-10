@@ -23,7 +23,6 @@ public:
     quint32 year() const { return m_dateTime.year(); }
 
     // Визуальные состояния
-    void setHighlighted(bool highlighted);
     void setHasEvents(bool hasEvents);
     void setToday(bool today);
 

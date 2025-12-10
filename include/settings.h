@@ -41,8 +41,8 @@ signals:
 
 private:
 
-    CalendarSystem *m_system;
-    CustomDateTime *m_globalTime;
+    CalendarSystem* m_system;
+    CustomDateTime* m_globalTime;
     QVector<EventContainerData> m_containers;
     QMap<quint16, QColor> groupColors;
     QVector<DayOfWeek> m_days;
@@ -63,7 +63,7 @@ public:
     Settings& operator=(const Settings&) = delete;
     Settings() = delete;
 
-    Settings(CalendarSystem *system, CustomDateTime *globalTime, QObject *parent = nullptr);
+    Settings(CalendarSystem* system, CustomDateTime* globalTime, QObject *parent = nullptr);
     virtual ~Settings() override;
     void createDatabase(const QString& newConfig);
     const EventContainerData& getContainer(quint32 id) const;

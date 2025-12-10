@@ -24,7 +24,7 @@ public:
     ~AbstractView();
 
     // Основной метод для отображения календаря
-    virtual void displayScene(const SceneVisualData& data) = 0;
+    virtual void displayScene(const SceneVisualData& data);
 
     // Управление отображением
     void setZoomLevel(qreal level);
@@ -33,7 +33,7 @@ public:
 
     // Настройки View
     void setAntialiasingEnabled(bool enabled);
-    void setViewportUpdateMode(ViewportUpdateMode mode);
+    // void setViewportUpdateMode(ViewportUpdateMode mode);
 
 public slots:
     void clearScene();
@@ -52,8 +52,8 @@ protected:
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
 
-private slots:
-    virtual void handleSceneItemClicked(AbstractItem* item);
+// private slots:
+//     virtual void handleSceneItemClicked(AbstractItem* item);
 
 private:
     void setupView();

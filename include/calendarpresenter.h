@@ -54,7 +54,7 @@ private:
     void updateView(const SceneVisualData& data);
     void validateCurrentDate();
     void calculateGridSize();
-    QVector<CalendarDayData> generateMonthDays() const;
+    QVector<CalendarDayData>* generateMonthDays() const;
     QString generateHeaderText() const;
     QString generateWeekDaysHeader() const;
     // Методы для работы со стилями

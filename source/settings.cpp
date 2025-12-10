@@ -1,7 +1,7 @@
 #include "include/settings.h"
 
 
-Settings::Settings(CalendarSystem *system, CustomDateTime *globalTime, QObject *parent) :
+Settings::Settings(CalendarSystem* system, CustomDateTime* globalTime, QObject *parent) :
     QObject(parent)
     , m_system(system)
     , m_globalTime(globalTime)

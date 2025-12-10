@@ -2,16 +2,14 @@
 
 Logger::Logger(const QString& filename)
 {
-    QString fullName = "../logs/";
+    QString fullName = "./";
     fullName.append(filename);
     fullName.append("-");
     fullName.append(QDateTime::currentDateTime().toString("dd-MM-yyyy hh:mm:ss"));
+    fullName.append(".log");
     logFile.setFileName(fullName);
     if(!logFile.open(QIODevice::WriteOnly))
         throw std::runtime_error("Could not open log file");
-    {
-        qDebug() << "Could not open log file" << fullName;
-    }
 }
 
 void Logger::operator()(LogLevel level,
