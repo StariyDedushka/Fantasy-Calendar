@@ -7,7 +7,6 @@
 #include "calendarsystem.h"
 #include "customdatetime.h"
 #include "structs.h"
-#include <QRandomGenerator>
 
 
 class Settings : public QObject
@@ -19,19 +18,19 @@ signals:
 public slots:
     bool loadSettings();
     bool writeSettings();
+
     void dpm_valueChanged(int m_days, const QString& month);
-    void days_editTextChanged(quint16 id, const QString &newName);
-    void months_editTextChanged(quint16 id, const QString &newName);
     void secPerMin_valueChanged(int spm);
     void minPerHour_valueChanged(int mph);
     void hourPerDay_valueChanged(int hpd);
-    void eventGroups_currentIndexChanged(quint16 id, const QString &group);
-    void eventGroups_editTextChanged(quint16 id, const QString &newGroup);
+    void eventGroups_currentIndexChanged(const QString &group);
     void colorSelected(QColor color);
-    void configs_currentIndexChanged(QString &config);
-    void configs_editTextChanged(quint16 id, const QString &newConfig);
+    void configs_currentIndexChanged(const QString& config);
     void loadConfig_clicked(const QString& config);
     void saveConfig_clicked(const QString& config);
+    void btn_addConfig_clicked(const QString& config);
+    void btn_removeConfig_clicked(const QString& config);
+
     void apply_clicked();
     void cancel_clicked();
     void addDay_clicked();
@@ -44,15 +43,15 @@ private:
     CalendarSystem* m_system;
     CustomDateTime* m_globalTime;
     QVector<EventContainerData> m_containers;
-    QMap<quint16, QColor> groupColors;
+    QMap<quint16, QColor> containerColors;
     QVector<DayOfWeek> m_days;
     QVector<Month> m_months;
-    QVector<QString*> m_configs;
+    QVector<QString> m_configs;
     QString m_currentConfig;
+    QString m_configsPath;
 
     QSqlDatabase m_db;
 
-    quint32 m_daysPerMonth;
     quint32 m_secondsPerMinute;
     quint32 m_minutesPerHour;
     quint32 m_hoursPerDay;

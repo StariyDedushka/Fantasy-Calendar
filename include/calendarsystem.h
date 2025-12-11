@@ -1,12 +1,12 @@
-#ifndef TimeSystem_H
-#define TimeSystem_H
+#ifndef CALENDARSYSTEM_H
+#define CALENDARSYSTEM_H
 
 #include <QObject>
 #include "structs.h"
 #include "global_logger.h"
 #include <QtSql>
 
-#define TABLE_DAYS "daysTotal"
+#define TABLE_DAYS "days"
 #define TABLE_EVENTS "events"
 
 class CalendarSystem

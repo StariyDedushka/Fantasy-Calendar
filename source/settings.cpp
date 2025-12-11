@@ -196,15 +196,6 @@ void Settings::dpm_valueChanged(int m_days, const QString &month)
 
 }
 
-void Settings::days_editTextChanged(quint16 id, const QString &newName)
-{
-
-}
-
-void Settings::months_editTextChanged(quint16 id, const QString &newName)
-{
-
-}
 
 void Settings::secPerMin_valueChanged(int spm)
 {
@@ -221,12 +212,7 @@ void Settings::hourPerDay_valueChanged(int hpd)
 
 }
 
-void Settings::eventGroups_currentIndexChanged(quint16 id, const QString &group)
-{
-
-}
-
-void Settings::eventGroups_editTextChanged(quint16 id, const QString &newGroup)
+void Settings::eventGroups_currentIndexChanged(const QString &group)
 {
 
 }
@@ -236,18 +222,45 @@ void Settings::colorSelected(QColor color)
 
 }
 
-void Settings::configs_currentIndexChanged(QString &config)
+void Settings::configs_currentIndexChanged(const QString& config)
 {
 
 }
 
-void Settings::configs_editTextChanged(quint16 id, const QString &newConfig)
+void Settings::btn_removeConfig_clicked(const QString& config)
 {
+    QFile file;
+
+    QString filename(m_configsPath.append(config).append(".xml"));
+
+    if(file.remove(filename))
+    {
+        m_configs.remove(m_configs.indexOf(config));
+        LOG(INFO, logger, QString("Config <%1> removed succesfully").arg(filename));
+        return;
+    }
+    LOG(ERROR, logger, QString("Config <%1> could not be removed").arg(filename));
 
 }
+
 
 void Settings::loadConfig_clicked(const QString& config)
 {
+
+}
+
+void Settings::btn_addConfig_clicked(const QString &config)
+{
+    QFile file;
+
+    QString filename(m_configsPath.append(config).append(".xml"));
+    if(file.open(QIODevice::WriteOnly))
+    {
+        m_configs.append(config);
+        LOG(INFO, logger, QString("Config <%1> added succesfully").arg(filename));
+        return;
+    }
+    LOG(ERROR, logger, QString("Config <%1> could not be added").arg(filename));
 
 }
 

@@ -3,16 +3,13 @@
 
 ApplicationContext::ApplicationContext()
 {
-    m_calendarSystem = new CalendarSystem();
-    m_globalTime = new CustomDateTime();
-    m_settings = new Settings(m_calendarSystem, m_globalTime);
+    m_calendarSystem = std::shared_ptr<CalendarSystem>(new CalendarSystem());
+    m_globalTime = std::shared_ptr<CustomDateTime>(new CustomDateTime());
+    m_settings = std::shared_ptr<Settings>(new Settings(m_calendarSystem.get(), m_globalTime.get()));
 }
 
 ApplicationContext::~ApplicationContext()
 {
-    delete m_calendarSystem;
-    delete m_globalTime;
-    delete m_settings;
 }
 
 void ApplicationContext::initializeBasicSystems()

@@ -5,21 +5,24 @@
 #include "calendarsystem.h"
 #include "customdatetime.h"
 #include "settings.h"
+#include <memory>
+
+class CalendarSystem;
 
 class ApplicationContext
 {
 private:
-    CalendarSystem *m_calendarSystem;
-    CustomDateTime *m_globalTime;
-    Settings *m_settings;
+    std::shared_ptr<CalendarSystem> m_calendarSystem;
+    std::shared_ptr<CustomDateTime> m_globalTime;
+    std::shared_ptr<Settings> m_settings;
 
 public:
     ApplicationContext();
     ~ApplicationContext();
 
-    CalendarSystem* calendarSystem() const { return m_calendarSystem; }
-    CustomDateTime* globalTime() const { return m_globalTime; }
-    Settings* settings() const { return m_settings; }
+    CalendarSystem* calendarSystem() const { return m_calendarSystem.get(); }
+    CustomDateTime* globalTime() const { return m_globalTime.get(); }
+    Settings* settings() const { return m_settings.get(); }
 
 
     void initializeBasicSystems();

@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QColorDialog>
+#include "settings.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -14,15 +15,12 @@ class SettingsWindow : public QWidget
 {
     Q_OBJECT
 signals:
-    void cb_months_currentIndexChanged(quint16 id);
     void sb_dpm_valueChanged(int days, const QString& month);
-    void cb_days_currentIndexChanged(quint16 id);
-    void cb_days_editTextChanged(quint16 id, const QString &newName);
-    void cb_days_currentTextChanged(quint16 id, const QString& newName);
+    void cb_days_currentIndexChanged(const QString& day);
     void btn_addDay_clicked();
     void btn_removeDay_clicked();
 
-    void cb_months_editTextChanged(quint16 id, const QString &newName);
+    void cb_months_currentIndexChanged(const QString& month);
     void btn_addMonth_clicked();
     void btn_removeMonth_clicked();
 
@@ -30,24 +28,25 @@ signals:
     void sb_minPerHour_valueChanged(int mph);
     void sb_hourPerDay_valueChanged(int hpd);
 
-    void cb_eventGroups_currentIndexChanged(quint16 id);
-    void cb_eventGroups_editTextChanged(quint16 id, const QString &newGroup);
+    void cb_eventGroups_currentIndexChanged(const QString& group);
     void colorSelected(QColor color);
 
-    void cb_configs_currentIndexChanged(const QString &config);
-    void cb_configs_editTextChanged(quint16 id, const QString &newConfig);
+    void cb_configs_currentIndexChanged(const QString& config);
     void btn_loadConfig_clicked(const QString& config);
     void btn_saveConfig_clicked(const QString& config);
-    void btn_addConfig_clicked();
-    void btn_removeConfig_clicked();
+    void btn_addConfig_clicked(const QString& config);
+    void btn_removeConfig_clicked(const QString& config);
 
     void btn_apply_clicked();
     void btn_cancel_clicked();
 
 private:
     Ui::SettingsWindow *ui;
+    Settings *m_settings;
+    void setupConnections();
+
 public:
-    SettingsWindow(QWidget *parent = nullptr);
+    SettingsWindow(Settings *settings, QWidget *parent = nullptr);
     void setGlobalTime(CustomDateTime *globalTime);
 private slots:
     void on_cb_days_currentIndexChanged(int index);

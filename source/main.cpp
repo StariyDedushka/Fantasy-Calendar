@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 
     ApplicationContext context;
     context.initializeBasicSystems();
-    SettingsWindow settingsWindow;
+    SettingsWindow settingsWindow(context.settings());
 
     MainWindow w;
     w.show();
