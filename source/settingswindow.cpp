@@ -142,3 +142,39 @@ void SettingsWindow::on_btn_addDay_clicked()
     emit btn_addDay_clicked();
 }
 
+
+void SettingsWindow::on_lineEdit_configName_editingFinished()
+{
+
+}
+
+
+void SettingsWindow::on_btn_removeMonth_clicked()
+{
+
+}
+
+
+void SettingsWindow::on_btn_addMonth_clicked()
+{
+
+}
+
+
+void SettingsWindow::on_btn_removeDay_clicked()
+{
+
+}
+
+
+void SettingsWindow::on_btn_removeConfig_clicked()
+{
+
+}
+
+
+void SettingsWindow::on_btn_addConfig_clicked()
+{
+
+}
+
