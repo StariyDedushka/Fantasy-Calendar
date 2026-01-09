@@ -16,6 +16,7 @@ void SettingsWindow::setupConnections()
     connect(this, &SettingsWindow::sb_dpm_valueChanged, m_settings, &Settings::dpm_valueChanged);
     connect(this, &SettingsWindow::btn_addConfig_clicked, m_settings, &Settings::btn_addConfig_clicked);
     connect(this, &SettingsWindow::btn_removeConfig_clicked, m_settings, &Settings::btn_removeConfig_clicked);
+    connect(m_settings, &Settings::configRemoved, this, &SettingsWindow::on_configRemoved);
     connect(this, &SettingsWindow::sb_secPerMin_valueChanged, m_settings, &Settings::secPerMin_valueChanged);
     connect(this, &SettingsWindow::sb_minPerHour_valueChanged, m_settings, &Settings::minPerHour_valueChanged);
     connect(this, &SettingsWindow::sb_hourPerDay_valueChanged, m_settings, &Settings::hourPerDay_valueChanged);
@@ -140,13 +141,32 @@ void SettingsWindow::on_btn_removeDay_clicked()
 
 void SettingsWindow::on_btn_removeConfig_clicked()
 {
-    emit btn_removeConfig_clicked(ui->cb_configs->currentText());
+    LOG(INFO, logger, QString("Emitted remove config signal; index: <%1>, name: <%2>")
+                              .arg(ui->cb_configs->currentIndex())
+                              .arg(ui->cb_configs->currentText()));
+
+    emit btn_removeConfig_clicked(std::pair<int, QString>(ui->cb_configs->currentIndex(), ui->cb_configs->currentText()));
 }
 
+void SettingsWindow::on_configRemoved(int i)
+{
+    if(i >= 0 && i < ui->cb_configs->count())
+    {
+        ui->cb_configs->removeItem(i);
+        LOG(INFO, logger, QString("Removed item at index %1 from combobox").arg(i));
+    }
+    else
+    {
+        LOG(WARN, logger, QString("Invalid index %1 for combobox removal").arg(i));
+    }
+}
 
 void SettingsWindow::on_btn_addConfig_clicked()
 {
-    ui->cb_configs->addItem(ui->lineEdit_configName->text());
-    emit btn_addConfig_clicked(ui->lineEdit_configName->text());
-}
+    QString configName = ui->lineEdit_configName->text();
+    if(configName.isEmpty()) return;
 
+    ui->cb_configs->addItem(configName);
+    int index = ui->cb_configs->findText(configName); // Находим актуальный индекс
+    emit btn_addConfig_clicked(std::pair<int, QString>(index, configName));
+}

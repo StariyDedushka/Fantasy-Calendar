@@ -15,6 +15,9 @@ class Settings : public QObject
 
 signals:
     void appliedChanges();
+    void configRemoved(int i);
+    void eventGroups_changed();
+
 public slots:
     bool loadSettings();
     bool writeSettings();
@@ -28,15 +31,12 @@ public slots:
     void configs_currentIndexChanged(const QString& config);
     void loadConfig_clicked(const QString& config);
     void saveConfig_clicked(const QString& config);
-    void btn_addConfig_clicked(const QString& config);
-    void btn_removeConfig_clicked(const QString& config);
+    void btn_addConfig_clicked(const std::pair<int, QString>& config);
+    void btn_removeConfig_clicked(const std::pair<int, QString>& config);
 
     void apply_clicked();
     void cancel_clicked();
     void addDay_clicked();
-
-signals:
-    void eventGroups_changed();
 
 private:
 
@@ -46,8 +46,8 @@ private:
     QMap<quint16, QColor> containerColors;
     QVector<DayOfWeek> m_days;
     QVector<Month> m_months;
-    QVector<QString> m_configs;
-    QString m_currentConfig;
+    QVector<std::pair<int, QString>> m_configs;
+    std::pair<int, QString> m_currentConfig;
     QString m_configsPath;
 
     QSqlDatabase m_db;
@@ -65,7 +65,7 @@ public:
     Settings(CalendarSystem* system, CustomDateTime* globalTime, QObject *parent = nullptr);
     virtual ~Settings() override;
     void createDatabase(const QString& newConfig);
-    const EventContainerData& getContainer(quint32 id) const;
+    EventContainerData getContainer(quint32 id) const;
 };
 
 #endif // SETTINGS_H

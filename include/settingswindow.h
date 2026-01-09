@@ -34,8 +34,8 @@ signals:
     void cb_configs_currentIndexChanged(const QString& config);
     void btn_loadConfig_clicked(const QString& config);
     void btn_saveConfig_clicked(const QString& config);
-    void btn_addConfig_clicked(const QString& config);
-    void btn_removeConfig_clicked(const QString& config);
+    void btn_addConfig_clicked(const std::pair<int, QString>& config);
+    void btn_removeConfig_clicked(const std::pair<int, QString>& config);
 
     void btn_apply_clicked();
     void btn_cancel_clicked();
@@ -48,6 +48,10 @@ private:
 public:
     SettingsWindow(Settings *settings, QWidget *parent = nullptr);
     void setGlobalTime(CustomDateTime *globalTime);
+
+public slots:
+    void on_configRemoved(int i);
+
 private slots:
     void on_cb_days_currentIndexChanged(int index);
     void on_btn_addDay_clicked();

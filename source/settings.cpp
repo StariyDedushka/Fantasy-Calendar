@@ -17,7 +17,7 @@ Settings::~Settings()
         m_db.close();
 }
 
-const EventContainerData& Settings::getContainer(quint32 id) const
+EventContainerData Settings::getContainer(quint32 id) const
 {
     EventContainerData data;
     for(EventContainerData data : m_containers)
@@ -68,7 +68,7 @@ bool Settings::loadSettings()
 {
     quint16 spm = 0, mph = 0, hpd = 0;
     QFile file;
-    file.setFileName(QString("../%1").arg(m_currentConfig));
+    file.setFileName(QString("../%1").arg(m_currentConfig.second));
 
     QXmlStreamReader reader(&file);
     while(!reader.atEnd())
@@ -128,7 +128,7 @@ bool Settings::loadSettings()
         }
 }
     m_system->setTimeSystem(spm, mph, hpd);
-    m_system->setDatabase(m_currentConfig);
+    m_system->setDatabase(m_currentConfig.second);
     file.close();
     return true;
 }
@@ -139,7 +139,7 @@ bool Settings::writeSettings()
 
     QFile file;
     QXmlStreamWriter writer(&file);
-    file.setFileName(QString("../%1").arg(m_currentConfig));
+    file.setFileName(QString("../%1").arg(m_currentConfig.second));
     writer.writeStartDocument();
 //-----------------------------------------------------
     writer.writeStartElement("settings");
@@ -224,23 +224,48 @@ void Settings::colorSelected(QColor color)
 
 void Settings::configs_currentIndexChanged(const QString& config)
 {
-
+    m_currentConfig.second = config;
+    LOG(INFO, logger, QString("The current config is now <%1>").arg(config));
 }
 
-void Settings::btn_removeConfig_clicked(const QString& config)
+void Settings::btn_removeConfig_clicked(const std::pair<int, QString>& config)
 {
     QFile file;
-
-    QString filename(m_configsPath.append(config).append(".xml"));
+    QString filename(m_configsPath);
+    filename.append(config.second).append(".xml");
 
     if(file.remove(filename))
     {
-        m_configs.remove(m_configs.indexOf(config));
-        LOG(INFO, logger, QString("Config <%1> removed succesfully").arg(filename));
+        int uiIndex = config.first; // Сохраняем индекс из UI
+
+        // Ищем и удаляем из вектора
+        int foundIndex = -1;
+        for(int i = 0; i < m_configs.size(); ++i)
+        {
+            if(m_configs[i].second == config.second)
+            {
+                foundIndex = i;
+                break;
+            }
+        }
+
+        if(foundIndex != -1)
+        {
+            LOG(INFO, logger, QString("Trying to remove pair: <%1>:<%2>").arg(foundIndex).arg(config.second));
+            m_configs.remove(foundIndex);
+        }
+        else
+        {
+            LOG(WARN, logger, QString("Config <%1> not found in vector").arg(config.second));
+        }
+
+        LOG(INFO, logger, QString("Config <%1> removed successfully").arg(filename));
+
+        // Отправляем индекс из UI для удаления из комбобокса
+        emit configRemoved(uiIndex);
         return;
     }
     LOG(ERROR, logger, QString("Config <%1> could not be removed").arg(filename));
-
 }
 
 
@@ -249,11 +274,13 @@ void Settings::loadConfig_clicked(const QString& config)
 
 }
 
-void Settings::btn_addConfig_clicked(const QString &config)
+void Settings::btn_addConfig_clicked(const std::pair<int, QString>& config)
 {
     QFile file;
 
-    QString filename(m_configsPath.append(config).append(".xml"));
+    QString filename(m_configsPath);
+    filename.append(config.second).append(".xml");
+    file.setFileName(filename);
     if(file.open(QIODevice::WriteOnly))
     {
         m_configs.append(config);
